@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pokémon Search</title>
+    <link rel="stylesheet" href="search_pokemon.css">
+</head>
+<body>
+    <h1>Pokémon Search</h1>
+    <div class="search-container">
+        <button onclick="window.location.href='favorite_pokemon.html'" aria-label="View favorite Pokémon">Favorites</button>
+        <input type="text" id="txtSearch" placeholder="Search by name, ID, type, or ability..." aria-label="Search for Pokémon">
+    </div>
+    <div id="loader" class="loader"><img src="loading.gif" alt="Loading..."></div>
+    <table>
+        <thead>
+            <tr>
+                <th>Sprite</th>
+                <th>Name</th>
+                <th>ID</th>
+                <th>Type</th>
+                <th>Abilities</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody id="pokemonList"></tbody>
+    </table>
+    <div id="statsModal" class="modal" role="dialog" aria-label="Pokémon stats">
+        <div class="modal-content">
+            <span class="close-button" onclick="closeStatsModal()" aria-label="Close stats modal">×</span>
+            <h2 id="modalTitle"></h2>
+            <div id="modalLoader" class="modal-loader"><img src="loading.gif" alt="Loading stats..."></div>
+            <ul id="modalStats"></ul>
+        </div>
+    </div>
+    <script src="search_pokemon.js"></script>
+</body>
+</html>

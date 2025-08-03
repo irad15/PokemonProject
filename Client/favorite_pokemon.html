@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Favorite Pokémon</title>
+    <link rel="stylesheet" href="favorite_pokemon.css">
+</head>
+<body>
+    <h1>Favorite Pokémon</h1>
+    <div class="search-container">
+        <button onclick="saveFavoritesAsJson()" aria-label="Save favorite Pokémon list as JSON file">Save Favorites as JSON</button>
+        <button onclick="window.location.href='search_pokemon.html'" aria-label="Go to Pokémon search page">Search Pokémon</button>
+        <select id="sortField" aria-label="Select sort field">
+            <option value="name">Name</option>
+            <option value="id">ID</option>
+        </select>
+        <select id="sortDirection" aria-label="Select sort direction">
+            <option value="asc">Ascending</option>
+            <option value="desc">Descending</option>
+        </select>
+        <button onclick="applySort()" aria-label="Apply sorting">Sort</button>
+    </div>
+    <table>
+        <thead>
+            <tr>
+                <th>Sprite</th>
+                <th>Name</th>
+                <th>ID</th>
+                <th>Type</th>
+                <th>Abilities</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody id="favoritePokemonList"></tbody>
+    </table>
+    <div id="statsModal" class="modal" role="dialog" aria-label="Pokémon stats">
+        <div class="modal-content">
+            <span class="close-button" onclick="closeStatsModal()" aria-label="Close stats modal">&times;</span>
+            <h2 id="modalTitle"></h2>
+            <div id="modalLoader" class="modal-loader"><img src="loading.gif" alt="Loading stats..."></div>
+            <ul id="modalStats"></ul>
+        </div>
+    </div>
+    <script src="favorite_pokemon.js"></script>
+</body>
+</html>
