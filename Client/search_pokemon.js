@@ -6,61 +6,52 @@ const statsModal = document.getElementById("statsModal"); // Modal for displayin
 const modalTitle = document.getElementById("modalTitle"); // Modal title (Pokémon name)
 const modalStats = document.getElementById("modalStats"); // Modal stats list
 const modalLoader = document.getElementById("modalLoader"); // Modal loading spinner
-const baseUrl = "https://pokeapi.co/api/v2/"; // Base URL for PokéAPI
 
-// Fetches JSON data from the specified URL
-// Handles HTTP errors, including rate limiting (429)
-const fetchJson = async (url) => {
-    const response = await fetch(url);
-    if (!response.ok) {
-        if (response.status === 429) throw new Error("Too many requests. Please try again later.");
-        throw new Error(`HTTP error! status: ${response.status}`);
+// Saves a Pokémon to the user's favorites via server API
+async function saveToFavorites(pokemon) {
+    try {
+        const response = await fetch('/api/favorites', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ pokemonId: pokemon.id })
+        });
+        
+        const result = await response.json();
+        
+        if (response.ok) {
+            alert(`${formatPokemonName(pokemon.name)} added to favorites! (${result.count}/10)`);
+            // Update the counter after successful addition
+            loadFavoritesCounter();
+        } else {
+            alert(result.error || 'Failed to add to favorites');
+        }
+    } catch (error) {
+        console.error('Error adding to favorites:', error);
+        alert('Failed to add to favorites. Please try again.');
     }
-    return response.json();
-};
-
-// Saves a Pokémon to the favorites list in localStorage
-function saveToFavorites(pokemon) {
-    // Load existing favorites or initialize an empty array
-    const favorites = JSON.parse(localStorage.getItem("favoritePokemons") || "[]");
-    
-    // Create a simplified Pokémon object for storage
-    const pokemonData = {
-        id: pokemon.id,
-        name: pokemon.name.charAt(0).toUpperCase() + pokemon.name.slice(1), // Capitalize for storage
-        sprite: pokemon.sprites.front_default || "https://via.placeholder.com/100?text=No+Image",
-        types: pokemon.types.map(t => t.type.name),
-        abilities: pokemon.abilities.map(a => a.ability.name),
-    };
-    
-    // Check if Pokémon is already in favorites
-    if (favorites.some(fav => fav.id === pokemonData.id)) {
-        alert(`${pokemonData.name} is already in favorites!`);
-        return;
-    }
-    
-    // Add Pokémon to favorites and save to localStorage
-    favorites.push(pokemonData);
-    localStorage.setItem("favoritePokemons", JSON.stringify(favorites));
-    alert(`${pokemonData.name} added to favorites!`);
 }
 
-// Displays stats in a modal
-function showStatsModal(pokemonName, stats) {
+// Fetches Pokémon stats from PokéAPI and displays them in a modal
+async function fetchPokemonStats(pokemonId, pokemonName) {
     modalLoader.classList.add("active"); // Show loading spinner
     modalStats.innerHTML = ""; // Clear previous stats
     try {
-        // Set modal title and stats list
-        modalTitle.textContent = `${pokemonName.charAt(0).toUpperCase() + pokemonName.slice(1)} Stats`;
-        modalStats.innerHTML = stats.map(stat => `<li>${stat.name.charAt(0).toUpperCase() + stat.name.slice(1)}: ${stat.value}</li>`).join("");
+        // Fetch Pokémon data from PokéAPI
+        const pokemon = await fetchJson(`${API_BASE_URL}pokemon/${pokemonId}`);
+        
+        // Display comprehensive Pokemon details
+        showPokemonDetailsModal(pokemon);
     } catch (error) {
         // Display error message if stats fail to load
-        modalStats.innerHTML = `<li>Error displaying stats: ${error.message}</li>`;
-    } finally {
+        modalStats.innerHTML = `<li>Error loading Pokemon details: ${error.message}</li>`;
         modalLoader.classList.remove("active"); // Hide loading spinner
-        statsModal.style.display = "block"; // Show modal
+        statsModal.style.display = "block"; // Show modal with error
     }
 }
+
+// Note: showStatsModal function is now available from shared.js (legacy function)
 
 // Closes the stats modal and clears its content
 function closeStatsModal() {
@@ -80,19 +71,15 @@ function displayPokemon(pokemonArray) {
     // Generate table rows for each Pokémon
     const rows = pokemonArray.map((pokemon) => {
         const sprite = pokemon.sprites.front_default || 'https://via.placeholder.com/100?text=No+Image';
-        const name = pokemon.name.charAt(0).toUpperCase() + pokemon.name.slice(1); // Capitalize for display
+        const name = formatPokemonName(pokemon.name); // Use shared formatting
         const id = pokemon.id;
         const types = pokemon.types.map(t => t.type.name).join(", ");
         const abilities = pokemon.abilities.map(a => a.ability.name).join(", ");
-        const stats = pokemon.stats.map(stat => ({
-            name: stat.stat.name.replace("-", " "), // Format stats for modal
-            value: stat.base_stat
-        }));
         
         return `
             <tr>
                 <td><img src="${sprite}" alt="${name}" width="100"></td>
-                <td><span class="name-link" onclick='showStatsModal("${name}", ${JSON.stringify(stats)})' aria-label="View stats for ${name}">${name}</span></td>
+                <td><span class="name-link" onclick="fetchPokemonStats(${id}, '${name}')" aria-label="View details for ${name}">${name}</span></td>
                 <td>${id}</td>
                 <td>${types}</td>
                 <td>${abilities}</td>
@@ -109,31 +96,31 @@ function displayPokemon(pokemonArray) {
 
 // Search handler: Fetches Pokémon by ID
 async function searchById(id) {
-    return [await fetchJson(`${baseUrl}pokemon/${id}`)];
+    return [await fetchJson(`${API_BASE_URL}pokemon/${id}`)];
 }
 
 // Search handler: Fetches Pokémon by name
 async function searchByName(name) {
-    return [await fetchJson(`${baseUrl}pokemon/${name.toLowerCase()}`)];
+    return [await fetchJson(`${API_BASE_URL}pokemon/${name.toLowerCase()}`)];
 }
 
 // Search handler: Fetches Pokémon with a specific ability
 async function searchByAbility(ability) {
-    const data = await fetchJson(`${baseUrl}ability/${ability.toLowerCase()}`);
+    const data = await fetchJson(`${API_BASE_URL}ability/${ability.toLowerCase()}`);
     const pokemonPromises = data.pokemon.map(p => fetchJson(p.pokemon.url));
     return Promise.all(pokemonPromises);
 }
 
 // Search handler: Fetches Pokémon of a specific type
 async function searchByType(type) {
-    const data = await fetchJson(`${baseUrl}type/${type.toLowerCase()}`);
+    const data = await fetchJson(`${API_BASE_URL}type/${type.toLowerCase()}`);
     const pokemonPromises = data.pokemon.map(p => fetchJson(p.pokemon.url));
     return Promise.all(pokemonPromises);
 }
 
 // Search handler: Fetches Pokémon whose names start with a prefix
 async function searchByPrefix(prefix) {
-    const data = await fetchJson(`${baseUrl}pokemon?limit=1025`);
+    const data = await fetchJson(`${API_BASE_URL}pokemon?limit=1025`);
     const matches = data.results.filter(p => p.name.startsWith(prefix.toLowerCase()));
     const pokemonPromises = matches.map(p => fetchJson(p.url));
     return Promise.all(pokemonPromises);
@@ -177,17 +164,13 @@ async function fetchPokemon(searchQuery) {
     }
 }
 
-// Debounces a function to limit how often it runs
-function debounce(func, delay) {
-    let timeout;
-    return (...args) => {
-        clearTimeout(timeout);
-        timeout = setTimeout(() => func(...args), delay);
-    };
-}
+// Use shared debounce function instead of local one
 
 // Initializes search functionality on page load
 document.addEventListener("DOMContentLoaded", () => {
+    // Load favorites counter
+    loadFavoritesCounter();
+    
     // Create debounced search handler (waits 500ms after typing stops)
     const debouncedSearch = debounce(() => {
         const searchQuery = txtSearch.value.trim().toLowerCase();
@@ -218,3 +201,35 @@ document.addEventListener("DOMContentLoaded", () => {
     // Attach debounced search to input field
     txtSearch.addEventListener("input", debouncedSearch);
 });
+
+// Function to clear search box and table
+function clearSearch() {
+    txtSearch.value = "";
+    pokemonListBody.innerHTML = "";
+    localStorage.removeItem("searchQuery");
+    // Clear URL parameters
+    window.history.replaceState(null, "", window.location.pathname);
+}
+
+// Load and display favorites counter
+async function loadFavoritesCounter() {
+    try {
+        const response = await fetch('/api/favorites/count');
+        const data = await response.json();
+        
+        const counterElement = document.getElementById('favoritesCounter');
+        if (counterElement) {
+            counterElement.textContent = `Favorites: ${data.count}/${data.maxCount}`;
+            
+            // Update counter styling based on count
+            counterElement.classList.remove('warning', 'full');
+            if (data.count >= data.maxCount) {
+                counterElement.classList.add('full');
+            } else if (data.count >= data.maxCount * 0.8) {
+                counterElement.classList.add('warning');
+            }
+        }
+    } catch (error) {
+        console.error('Error loading favorites counter:', error);
+    }
+}

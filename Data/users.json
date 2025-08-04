@@ -1,0 +1,16 @@
+[
+  {
+    "id": "1754240521784",
+    "firstName": "Irad",
+    "email": "Iradyaacoby@gmail.com",
+    "password": "$2b$10$GTRLDF1nEmAmreKM7u51PeFvzxpk8doqLsSJ66dAT/H5aAevE2qvG",
+    "createdAt": "2025-08-03T17:02:01.784Z"
+  },
+  {
+    "id": "1754242401575",
+    "firstName": "Irada",
+    "email": "Iradyaacoby@gmail.com2",
+    "password": "$2b$10$xRnbYzLeqTeKBkOB5YyIUeVUHN6L.m4aVhj3zVAedy2Pcdmd.Z5Ki",
+    "createdAt": "2025-08-03T17:33:21.575Z"
+  }
+]

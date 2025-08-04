@@ -5,11 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pokémon Search</title>
     <link rel="stylesheet" href="search_pokemon.css">
+    <link rel="stylesheet" href="auth-header.css">
 </head>
 <body>
     <h1>Pokémon Search</h1>
     <div class="search-container">
         <button onclick="window.location.href='favorite_pokemon.html'" aria-label="View favorite Pokémon">Favorites</button>
+        <span id="favoritesCounter" class="favorites-counter">Favorites: 0/10</span>
         <input type="text" id="txtSearch" placeholder="Search by name, ID, type, or ability..." aria-label="Search for Pokémon">
     </div>
     <div id="loader" class="loader"><img src="loading.gif" alt="Loading..."></div>
@@ -34,6 +36,8 @@
             <ul id="modalStats"></ul>
         </div>
     </div>
+    <script src="shared.js"></script>
+    <script src="auth-header.js"></script>
     <script src="search_pokemon.js"></script>
 </body>
 </html>

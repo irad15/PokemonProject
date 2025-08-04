@@ -5,11 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Favorite Pokémon</title>
     <link rel="stylesheet" href="favorite_pokemon.css">
+    <link rel="stylesheet" href="auth-header.css">
 </head>
 <body>
     <h1>Favorite Pokémon</h1>
     <div class="search-container">
-        <button onclick="saveFavoritesAsJson()" aria-label="Save favorite Pokémon list as JSON file">Save Favorites as JSON</button>
+        <button onclick="saveFavoritesAsJson()" aria-label="Save favorite Pokémon list as JSON file">Save as JSON</button>
+        <button onclick="saveFavoritesAsCsv()" aria-label="Save favorite Pokémon list as CSV file">Save as CSV</button>
         <button onclick="window.location.href='search_pokemon.html'" aria-label="Go to Pokémon search page">Search Pokémon</button>
         <select id="sortField" aria-label="Select sort field">
             <option value="name">Name</option>
@@ -42,6 +44,8 @@
             <ul id="modalStats"></ul>
         </div>
     </div>
+    <script src="shared.js"></script>
+    <script src="auth-header.js"></script>
     <script src="favorite_pokemon.js"></script>
 </body>
 </html>

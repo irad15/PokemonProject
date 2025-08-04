@@ -1,0 +1,9 @@
+/* Login page specific styles */
+/* Override container max-width for login form */
+.container {
+    max-width: 500px;
+}
+
+.login-form {
+    margin-bottom: 20px;
+} 

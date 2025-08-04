@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - Pokemon Project</title>
+    <link rel="stylesheet" href="register.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1 class="main-title">Register</h1>
+            <p class="subtitle">Create your account to access Pokemon features</p>
+        </header>
+
+        <main class="main-content">
+            <form id="registerForm" class="register-form">
+                <div class="form-group">
+                    <label for="firstName">First Name</label>
+                    <input type="text" id="firstName" name="firstName" required>
+                    <div class="error-message" id="firstNameError"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" required>
+                    <div class="error-message" id="emailError"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" required>
+                    <div class="error-message" id="passwordError"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="confirmPassword">Confirm Password</label>
+                    <input type="password" id="confirmPassword" name="confirmPassword" required>
+                    <div class="error-message" id="confirmPasswordError"></div>
+                </div>
+
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary">Register</button>
+                </div>
+
+                <div class="form-links">
+                    <p>Already have an account? <a href="/login">Login here</a></p>
+                    <p><a href="/">Back to Home</a></p>
+                </div>
+            </form>
+
+            <div class="validation-rules">
+                <h3>Registration Rules</h3>
+                <ul>
+                    <li>First name: Maximum 50 characters, no numbers or special characters</li>
+                    <li>Email: Must be a valid email format</li>
+                    <li>Password: 7-15 characters minimum</li>
+                    <li>Password must contain: at least one uppercase letter, one lowercase letter, and one non-alphanumeric character</li>
+                    <li>Passwords must match</li>
+                </ul>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <p>&copy; 2025 Pokemon Project</p>
+        </footer>
+    </div>
+
+    <script src="register.js"></script>
+</body>
+</html> 

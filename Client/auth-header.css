@@ -1,0 +1,78 @@
+/* Authentication Header Styles */
+.auth-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 15px 0;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.auth-header-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.user-info {
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.user-info span {
+    color: white;
+}
+
+.auth-actions {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+}
+
+.btn-logout {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    padding: 8px 20px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.btn-logout:hover {
+    background: rgba(255, 255, 255, 0.3);
+    border-color: rgba(255, 255, 255, 0.5);
+    transform: translateY(-1px);
+}
+
+/* Adjust body padding to account for fixed header */
+body {
+    padding-top: 0;
+}
+
+/* Responsive design for auth header */
+@media (max-width: 768px) {
+    .auth-header-content {
+        padding: 0 15px;
+        flex-direction: column;
+        gap: 10px;
+        text-align: center;
+    }
+    
+    .user-info {
+        font-size: 1rem;
+    }
+    
+    .btn-logout {
+        padding: 6px 16px;
+        font-size: 0.8rem;
+    }
+} 
