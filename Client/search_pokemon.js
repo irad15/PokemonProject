@@ -33,33 +33,6 @@ async function saveToFavorites(pokemon) {
     }
 }
 
-// Fetches Pokémon stats from PokéAPI and displays them in a modal
-async function fetchPokemonStats(pokemonId, pokemonName) {
-    modalLoader.classList.add("active"); // Show loading spinner
-    modalStats.innerHTML = ""; // Clear previous stats
-    try {
-        // Fetch Pokémon data from PokéAPI
-        const pokemon = await fetchJson(`${API_BASE_URL}pokemon/${pokemonId}`);
-        
-        // Display comprehensive Pokemon details
-        showPokemonDetailsModal(pokemon);
-    } catch (error) {
-        // Display error message if stats fail to load
-        modalStats.innerHTML = `<li>Error loading Pokemon details: ${error.message}</li>`;
-        modalLoader.classList.remove("active"); // Hide loading spinner
-        statsModal.style.display = "block"; // Show modal with error
-    }
-}
-
-// Note: showStatsModal function is now available from shared.js (legacy function)
-
-// Closes the stats modal and clears its content
-function closeStatsModal() {
-    statsModal.style.display = "none";
-    modalStats.innerHTML = "";
-    modalTitle.textContent = "";
-}
-
 // Renders Pokémon search results to the table
 function displayPokemon(pokemonArray) {
     // Display "No Pokémon found" if array is empty
@@ -118,10 +91,10 @@ async function searchByType(type) {
     return Promise.all(pokemonPromises);
 }
 
-// Search handler: Fetches Pokémon whose names start with a prefix
-async function searchByPrefix(prefix) {
+// Search handler: Fetches Pokémon whose names contain the search query (substring search)
+async function searchBySubstring(query) {
     const data = await fetchJson(`${API_BASE_URL}pokemon?limit=1025`);
-    const matches = data.results.filter(p => p.name.startsWith(prefix.toLowerCase()));
+    const matches = data.results.filter(p => p.name.includes(query.toLowerCase()));
     const pokemonPromises = matches.map(p => fetchJson(p.url));
     return Promise.all(pokemonPromises);
 }
@@ -147,7 +120,7 @@ async function fetchPokemon(searchQuery) {
                     try {
                         pokemonArray = await searchByType(searchQuery);
                     } catch {
-                        pokemonArray = await searchByPrefix(searchQuery);
+                        pokemonArray = await searchBySubstring(searchQuery);
                     }
                 }
             }
@@ -201,15 +174,6 @@ document.addEventListener("DOMContentLoaded", () => {
     // Attach debounced search to input field
     txtSearch.addEventListener("input", debouncedSearch);
 });
-
-// Function to clear search box and table
-function clearSearch() {
-    txtSearch.value = "";
-    pokemonListBody.innerHTML = "";
-    localStorage.removeItem("searchQuery");
-    // Clear URL parameters
-    window.history.replaceState(null, "", window.location.pathname);
-}
 
 // Load and display favorites counter
 async function loadFavoritesCounter() {

@@ -85,14 +85,3 @@ async function handleLogout() {
         window.location.href = '/';
     }
 }
-
-// Function to get current user data
-function getCurrentUser() {
-    const userData = sessionStorage.getItem('user');
-    return userData ? JSON.parse(userData) : null;
-}
-
-// Function to check if user is authenticated
-function isAuthenticated() {
-    return sessionStorage.getItem('user') !== null;
-} 

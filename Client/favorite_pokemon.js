@@ -166,34 +166,7 @@ async function saveFavoritesAsCsv() {
     }
 }
 
-// Fetches Pokémon stats from PokéAPI and displays them in a modal
-async function fetchPokemonStats(pokemonId, pokemonName) {
-    modalLoader.classList.add("active"); // Show loading spinner
-    modalStats.innerHTML = ""; // Clear previous stats
-    try {
-        // Fetch Pokémon data from PokéAPI
-        const pokemon = await fetchJson(`${API_BASE_URL}pokemon/${pokemonId}`);
-        
-        // Display comprehensive Pokemon details
-        showPokemonDetailsModal(pokemon);
-    } catch (error) {
-        // Display error message if stats fail to load
-        modalStats.innerHTML = `<li>Error loading Pokemon details: ${error.message}</li>`;
-        modalLoader.classList.remove("active"); // Hide loading spinner
-        statsModal.style.display = "block"; // Show modal with error
-    }
-}
-
-// Note: showStatsModal function is now available from shared.js (legacy function)
-
-// Note: loadYouTubeVideos function is now available from shared.js
-
-// Closes the stats modal and clears its content
-function closeStatsModal() {
-    statsModal.style.display = "none";
-    modalStats.innerHTML = "";
-    modalTitle.textContent = "";
-}
+// Note: fetchPokemonStats and closeStatsModal functions are now available from shared.js
 
 // Applies sorting based on dropdown selections
 function applySort() {

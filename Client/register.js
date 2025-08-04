@@ -77,41 +77,6 @@ function validateField(field) {
     return isValid;
 }
 
-function isValidEmail(email) {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
-}
-
-function isValidPassword(password) {
-    const hasUpperCase = /[A-Z]/.test(password);
-    const hasLowerCase = /[a-z]/.test(password);
-    const hasNonAlphanumeric = /[^A-Za-z0-9]/.test(password);
-    
-    return hasUpperCase && hasLowerCase && hasNonAlphanumeric;
-}
-
-function showFieldError(field, message) {
-    field.classList.remove('success');
-    field.classList.add('error');
-    
-    const errorElement = document.getElementById(field.name + 'Error');
-    if (errorElement) {
-        errorElement.textContent = message;
-    }
-}
-
-function showFieldSuccess(field) {
-    field.classList.remove('error');
-    field.classList.add('success');
-}
-
-function clearFieldError(field) {
-    const errorElement = document.getElementById(field.name + 'Error');
-    if (errorElement) {
-        errorElement.textContent = '';
-    }
-}
-
 function validateForm() {
     const inputs = document.querySelectorAll('#registerForm input');
     let isValid = true;
@@ -158,57 +123,20 @@ async function handleFormSubmission(event) {
         const result = await response.json();
         
         if (response.ok) {
-            showSuccessMessage('Registration successful! Redirecting to login...');
+            showSuccessMessage('Registration successful! Redirecting to login...', 'registerForm');
             setTimeout(() => {
                 window.location.href = '/login';
             }, 2000);
         } else {
-            showErrorMessage(result.error || 'Registration failed. Please try again.');
+            showErrorMessage(result.error || 'Registration failed. Please try again.', 'registerForm');
         }
         
     } catch (error) {
         console.error('Registration error:', error);
-        showErrorMessage('Network error. Please check your connection and try again.');
+        showErrorMessage('Network error. Please check your connection and try again.', 'registerForm');
     } finally {
         // Re-enable button
         submitButton.disabled = false;
         submitButton.textContent = originalText;
     }
 }
-
-function showSuccessMessage(message) {
-    const existingMessage = document.querySelector('.success-message');
-    if (existingMessage) {
-        existingMessage.remove();
-    }
-    
-    const successDiv = document.createElement('div');
-    successDiv.className = 'success-message';
-    successDiv.textContent = message;
-    
-    const form = document.getElementById('registerForm');
-    form.insertBefore(successDiv, form.firstChild);
-}
-
-function showErrorMessage(message) {
-    const existingMessage = document.querySelector('.error-message-global');
-    if (existingMessage) {
-        existingMessage.remove();
-    }
-    
-    const errorDiv = document.createElement('div');
-    errorDiv.className = 'error-message-global';
-    errorDiv.style.cssText = `
-        background: #fed7d7;
-        color: #c53030;
-        padding: 15px;
-        border-radius: 8px;
-        border: 1px solid #feb2b2;
-        margin-bottom: 20px;
-        text-align: center;
-    `;
-    errorDiv.textContent = message;
-    
-    const form = document.getElementById('registerForm');
-    form.insertBefore(errorDiv, form.firstChild);
-} 

@@ -2,17 +2,17 @@
 // Common functions used across multiple pages
 
 // API utilities
-const API_BASE_URL = 'https://pokeapi.co/api/v2/';
+var API_BASE_URL = 'https://pokeapi.co/api/v2/';
 
 // Fetches JSON data from the specified URL with error handling
-const fetchJson = async (url) => {
+async function fetchJson(url) {
     const response = await fetch(url);
     if (!response.ok) {
         if (response.status === 429) throw new Error("Too many requests. Please try again later.");
         throw new Error(`HTTP error! status: ${response.status}`);
     }
     return response.json();
-};
+}
 
 // Validation utilities
 const isValidEmail = (email) => {
@@ -112,94 +112,22 @@ const showErrorMessage = (message, formId) => {
 };
 
 // Pokemon utilities
-const capitalizeFirst = (str) => {
+function capitalizeFirst(str) {
     return str.charAt(0).toUpperCase() + str.slice(1);
-};
+}
 
-const formatPokemonName = (name) => {
+function formatPokemonName(name) {
     return capitalizeFirst(name);
-};
-
-// Modal utilities
-const showModal = (modalId) => {
-    const modal = document.getElementById(modalId);
-    if (modal) {
-        modal.style.display = "block";
-    }
-};
-
-const hideModal = (modalId) => {
-    const modal = document.getElementById(modalId);
-    if (modal) {
-        modal.style.display = "none";
-    }
-};
-
-const clearModal = (modalId) => {
-    const modal = document.getElementById(modalId);
-    if (modal) {
-        const content = modal.querySelector('.modal-content');
-        if (content) {
-            content.innerHTML = "";
-        }
-    }
-};
-
-// Loading utilities
-const showLoading = (elementId) => {
-    const element = document.getElementById(elementId);
-    if (element) {
-        element.classList.add("active");
-    }
-};
-
-const hideLoading = (elementId) => {
-    const element = document.getElementById(elementId);
-    if (element) {
-        element.classList.remove("active");
-    }
-};
+}
 
 // Debounce utility
-const debounce = (func, delay) => {
+function debounce(func, delay) {
     let timeout;
-    return (...args) => {
+    return function(...args) {
         clearTimeout(timeout);
         timeout = setTimeout(() => func(...args), delay);
     };
-};
-
-// Session utilities
-const getUserSession = () => {
-    const userData = sessionStorage.getItem('user');
-    return userData ? JSON.parse(userData) : null;
-};
-
-const setUserSession = (userData) => {
-    sessionStorage.setItem('user', JSON.stringify(userData));
-};
-
-const clearUserSession = () => {
-    sessionStorage.removeItem('user');
-};
-
-// API response handler
-const handleApiResponse = async (response, successCallback, errorCallback) => {
-    try {
-        const result = await response.json();
-        
-        if (response.ok) {
-            if (successCallback) successCallback(result);
-        } else {
-            if (errorCallback) errorCallback(result.error || 'Request failed');
-        }
-        
-        return { success: response.ok, data: result };
-    } catch (error) {
-        if (errorCallback) errorCallback('Network error. Please check your connection.');
-        return { success: false, error: error.message };
-    }
-};
+}
 
 // Search utilities
 const clearSearchData = () => {
@@ -211,7 +139,7 @@ const clearSearchData = () => {
 };
 
 // Pokemon details modal functionality
-const showPokemonDetailsModal = async (pokemon) => {
+function showPokemonDetailsModal(pokemon) {
     try {
         // Set modal title
         const modalTitle = document.getElementById('modalTitle');
@@ -319,13 +247,45 @@ const showPokemonDetailsModal = async (pokemon) => {
         const statsModal = document.getElementById('statsModal');
         statsModal.style.display = "block";
     }
-};
+}
 
-// Legacy function for backward compatibility
-const loadYouTubeVideos = async (pokemonName) => {
-    // This function is no longer needed as we're using direct links
-    // Keeping it for compatibility but it's not used
-};
+// Fetches Pokémon stats from PokéAPI and displays them in a modal
+function fetchPokemonStats(pokemonId, pokemonName) {
+    const modalLoader = document.getElementById("modalLoader");
+    const modalStats = document.getElementById("modalStats");
+    const statsModal = document.getElementById("statsModal");
+    
+    modalLoader.classList.add("active"); // Show loading spinner
+    modalStats.innerHTML = ""; // Clear previous stats
+    try {
+        // Fetch Pokémon data from PokéAPI
+        fetchJson(`${API_BASE_URL}pokemon/${pokemonId}`).then(pokemon => {
+            // Display comprehensive Pokemon details
+            showPokemonDetailsModal(pokemon);
+        }).catch(error => {
+            // Display error message if stats fail to load
+            modalStats.innerHTML = `<li>Error loading Pokemon details: ${error.message}</li>`;
+            modalLoader.classList.remove("active"); // Hide loading spinner
+            statsModal.style.display = "block"; // Show modal with error
+        });
+    } catch (error) {
+        // Display error message if stats fail to load
+        modalStats.innerHTML = `<li>Error loading Pokemon details: ${error.message}</li>`;
+        modalLoader.classList.remove("active"); // Hide loading spinner
+        statsModal.style.display = "block"; // Show modal with error
+    }
+}
+
+// Closes the stats modal and clears its content
+function closeStatsModal() {
+    const statsModal = document.getElementById("statsModal");
+    const modalStats = document.getElementById("modalStats");
+    const modalTitle = document.getElementById("modalTitle");
+    
+    statsModal.style.display = "none";
+    modalStats.innerHTML = "";
+    modalTitle.textContent = "";
+}
 
 // Export utilities for use in other files
 if (typeof module !== 'undefined' && module.exports) {
@@ -341,16 +301,11 @@ if (typeof module !== 'undefined' && module.exports) {
         showErrorMessage,
         capitalizeFirst,
         formatPokemonName,
-        showModal,
-        hideModal,
-        clearModal,
-        showLoading,
-        hideLoading,
         debounce,
-        getUserSession,
-        setUserSession,
-        clearUserSession,
-        handleApiResponse,
+        showPokemonDetailsModal,
+        fetchPokemonStats,
+        closeStatsModal,
+        clearSearchData,
         API_BASE_URL
     };
 }
@@ -368,18 +323,10 @@ if (typeof window !== 'undefined') {
     window.showErrorMessage = showErrorMessage;
     window.capitalizeFirst = capitalizeFirst;
     window.formatPokemonName = formatPokemonName;
-    window.showModal = showModal;
-    window.hideModal = hideModal;
-    window.clearModal = clearModal;
-    window.showLoading = showLoading;
-    window.hideLoading = hideLoading;
     window.debounce = debounce;
-    window.getUserSession = getUserSession;
-    window.setUserSession = setUserSession;
-    window.clearUserSession = clearUserSession;
-    window.handleApiResponse = handleApiResponse;
     window.showPokemonDetailsModal = showPokemonDetailsModal;
-    window.loadYouTubeVideos = loadYouTubeVideos;
+    window.fetchPokemonStats = fetchPokemonStats;
+    window.closeStatsModal = closeStatsModal;
     window.clearSearchData = clearSearchData;
     window.API_BASE_URL = API_BASE_URL;
 } 
