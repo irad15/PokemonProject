@@ -144,6 +144,10 @@ async function sendChallenge(opponentId, opponentName) {
         if (response.ok) {
             console.log('Challenge sent successfully, ID:', data.challengeId);
             alert(`Challenge sent to ${opponentName}! Waiting for response...`);
+            
+            // Clear any existing accepted challenge checks to prevent conflicts
+            clearInterval(acceptedCheckInterval);
+            acceptedCheckInterval = setInterval(checkForAcceptedChallenges, 2000);
         } else {
             alert(data.error || 'Failed to send challenge');
         }
@@ -165,6 +169,12 @@ async function acceptChallenge(challengeId) {
         const data = await response.json();
         
         if (response.ok) {
+            // Clear all intervals before redirecting to prevent any lingering requests
+            clearInterval(refreshInterval);
+            clearInterval(challengesInterval);
+            clearInterval(declinedCheckInterval);
+            clearInterval(acceptedCheckInterval);
+            
             window.location.href = data.redirectUrl;
         } else {
             alert(data.error || 'Failed to accept challenge');
@@ -218,8 +228,9 @@ async function checkForAcceptedChallenges() {
         const data = await response.json();
         
         if (response.ok && data.challenge) {
-            window.location.href = `/arena/battle?challengeId=${data.challenge.id}`;
+            // Clear the interval before redirecting to prevent multiple redirects
             clearInterval(acceptedCheckInterval);
+            window.location.href = `/arena/battle?challengeId=${data.challenge.id}`;
         }
     } catch (error) {
         console.error('Error checking for accepted challenges:', error);
@@ -232,4 +243,20 @@ window.addEventListener('beforeunload', () => {
     clearInterval(challengesInterval);
     clearInterval(declinedCheckInterval);
     clearInterval(acceptedCheckInterval);
+});
+
+// Also cleanup when the page is hidden (user navigates away)
+document.addEventListener('visibilitychange', () => {
+    if (document.hidden) {
+        clearInterval(refreshInterval);
+        clearInterval(challengesInterval);
+        clearInterval(declinedCheckInterval);
+        clearInterval(acceptedCheckInterval);
+    } else {
+        // Restart intervals when page becomes visible again
+        refreshInterval = setInterval(loadOnlinePlayers, 5000);
+        challengesInterval = setInterval(loadPendingChallenges, 3000);
+        declinedCheckInterval = setInterval(checkForDeclinedChallenges, 2000);
+        acceptedCheckInterval = setInterval(checkForAcceptedChallenges, 2000);
+    }
 });

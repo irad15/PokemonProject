@@ -416,7 +416,14 @@ const updateChallengeStatus = (challengeId, status) => {
 const cleanupExpiredChallenges = () => {
     const now = Date.now();
     for (const [challengeId, challenge] of pendingChallenges.entries()) {
-        if (now - challenge.timestamp > 30000) { // 30 seconds
+        // Remove expired challenges (30 seconds)
+        if (now - challenge.timestamp > 30000) {
+            pendingChallenges.delete(challengeId);
+        }
+        // Remove accepted challenges where both users have been notified
+        else if (challenge.status === 'accepted' && 
+                 challenge.notifiedUsers && 
+                 challenge.notifiedUsers.length >= 2) {
             pendingChallenges.delete(challengeId);
         }
     }
@@ -448,6 +455,87 @@ const calculateBattleScore = (pokemon) => {
     const smallRandVal = Math.random() * 2; // Small random value for variety
     
     return baseScore + smallRandVal;
+};
+
+// Function to calculate leaderboard
+const calculateLeaderboard = (currentUserId) => {
+    try {
+        const users = JSON.parse(fs.readFileSync(usersFile, 'utf8'));
+        const leaderboardData = [];
+        
+        for (const user of users) {
+            const userId = user.id;
+            const battlesData = loadUserBattles(userId);
+            
+            // Only include users with at least 5 battles
+            if (battlesData.battles.length < 5) {
+                continue;
+            }
+            
+            // Get the 10 most recent battles
+            const recentBattles = battlesData.battles
+                .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
+                .slice(0, 10);
+            
+            if (recentBattles.length === 0) {
+                continue;
+            }
+            
+            // Calculate statistics
+            let wins = 0;
+            let draws = 0;
+            let totalScore = 0;
+            
+            recentBattles.forEach(battle => {
+                if (battle.details) {
+                    // Calculate total score from battle details
+                    if (battle.details.myPokemon && battle.details.opponentPokemon) {
+                        totalScore += (battle.details.myPokemon.score || 0);
+                    } else if (battle.details.player1Pokemon && battle.details.player2Pokemon) {
+                        totalScore += (battle.details.player1Pokemon.battleScore || 0);
+                    }
+                    
+                    // Determine result
+                    if (battle.details.result === 'won') {
+                        wins++;
+                    } else if (battle.details.result === 'tie') {
+                        draws++;
+                    }
+                }
+            });
+            
+            const totalBattles = recentBattles.length;
+            const winRate = totalBattles > 0 ? Math.round((wins / totalBattles) * 100) : 0;
+            
+            // Calculate points based on scoring system
+            const points = (wins * 3) + (draws * 1);
+            
+            leaderboardData.push({
+                userId: userId,
+                username: user.firstName,
+                totalBattles: totalBattles,
+                wins: wins,
+                winRate: winRate,
+                totalScore: totalScore,
+                points: points,
+                isCurrentUser: userId === currentUserId
+            });
+        }
+        
+        // Sort by points (descending), then by total score (descending)
+        leaderboardData.sort((a, b) => {
+            if (b.points !== a.points) {
+                return b.points - a.points;
+            }
+            return b.totalScore - a.totalScore;
+        });
+        
+        return leaderboardData;
+        
+    } catch (error) {
+        console.error('Error calculating leaderboard:', error);
+        return [];
+    }
 };
 
 // API endpoint to get user's favorites
@@ -689,6 +777,21 @@ app.get('/api/arena/history', requireAuth, (req, res) => {
     }
 });
 
+// API endpoint to get leaderboard data
+app.get('/api/leaderboard', requireAuth, (req, res) => {
+    try {
+        const currentUserId = req.session.userId;
+        const leaderboard = calculateLeaderboard(currentUserId);
+        
+        res.json({
+            leaderboard: leaderboard
+        });
+    } catch (error) {
+        console.error('Error getting leaderboard:', error);
+        res.status(500).json({ error: 'Failed to get leaderboard' });
+    }
+});
+
 // API endpoint to get online players
 app.get('/api/arena/online-players', requireAuth, (req, res) => {
     try {
@@ -803,12 +906,20 @@ app.get('/api/arena/accepted-challenges', requireAuth, (req, res) => {
         cleanupExpiredChallenges();
         
         // Find accepted challenges where this user is either the challenger or opponent
+        // and this user hasn't been notified yet
         const acceptedChallenge = Array.from(pendingChallenges.values()).find(challenge => 
             (challenge.challengerId === userId || challenge.opponentId === userId) && 
-            challenge.status === 'accepted'
+            challenge.status === 'accepted' &&
+            !challenge.notifiedUsers?.includes(userId)
         );
         
         if (acceptedChallenge && acceptedChallenge.battleData) {
+            // Mark this user as notified
+            if (!acceptedChallenge.notifiedUsers) {
+                acceptedChallenge.notifiedUsers = [];
+            }
+            acceptedChallenge.notifiedUsers.push(userId);
+            
             res.json({
                 challenge: {
                     ...acceptedChallenge,
@@ -949,6 +1060,12 @@ app.post('/api/arena/accept-challenge', requireAuth, async (req, res) => {
         
         // Record the battle for both players
         recordPlayerBattle(challenge.challengerId, userId, challenge.challengerName, challenge.opponentName, challengerPokemon, opponentPokemon);
+        
+        // Mark the accepting user as notified since they're being redirected immediately
+        if (!challenge.notifiedUsers) {
+            challenge.notifiedUsers = [];
+        }
+        challenge.notifiedUsers.push(userId);
         
         res.json({
             challengeId: challengeId,

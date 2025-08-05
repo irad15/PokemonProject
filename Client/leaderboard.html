@@ -3,18 +3,69 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Leaderboard - Coming Soon</title>
+    <title>Player Leaderboard</title>
     <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/poke-ball.png">
     <link rel="stylesheet" href="/leaderboard.css">
 </head>
 <body>
     <div class="container">
-        <div class="feature-icon">🏆</div>
-        <h1>Leaderboard</h1>
-        <p>This feature is coming soon!</p>
-        <p>You'll be able to see the top players and rankings here.</p>
-        <p>Compete with other trainers and climb the leaderboard!</p>
-        <button class="back-btn" onclick="window.location.href='/arena'">Back to Arena</button>
+        <div class="header">
+            <button class="back-btn" onclick="window.location.href='/arena'">← Back to Arena</button>
+            <h1>🏆 Player Leaderboard</h1>
+            <p class="subtitle">Top trainers ranked by battle performance</p>
+        </div>
+
+        <div class="leaderboard-info">
+            <div class="info-card">
+                <h3>Scoring System</h3>
+                <ul>
+                    <li><span class="win">Win:</span> 3 points</li>
+                    <li><span class="draw">Draw:</span> 1 point</li>
+                    <li><span class="loss">Loss:</span> 0 points</li>
+                </ul>
+            </div>
+            <div class="info-card">
+                <h3>Ranking Rules</h3>
+                <ul>
+                    <li>Based on 10 most recent battles</li>
+                    <li>Minimum 5 battles required</li>
+                    <li>Ranked by total points</li>
+                </ul>
+            </div>
+        </div>
+
+        <div id="loadingSection" class="loading-section">
+            <div class="spinner"></div>
+            <p>Loading leaderboard...</p>
+        </div>
+
+        <div id="leaderboardSection" class="leaderboard-section" style="display: none;">
+            <div class="table-container">
+                <table class="leaderboard-table">
+                    <thead>
+                        <tr>
+                            <th>Rank</th>
+                            <th>Username</th>
+                            <th>Total Battles</th>
+                            <th>Wins</th>
+                            <th>Win Rate</th>
+                            <th>Total Score</th>
+                            <th>Points</th>
+                        </tr>
+                    </thead>
+                    <tbody id="leaderboardBody">
+                        <!-- Leaderboard data will be populated here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="noDataSection" class="no-data-section" style="display: none;">
+            <div class="no-data-icon">📊</div>
+            <h3>No Leaderboard Data</h3>
+            <p>Not enough players have completed battles yet.</p>
+            <p>Complete at least 5 battles to appear on the leaderboard!</p>
+        </div>
     </div>
     
     <script src="/leaderboard.js"></script>
