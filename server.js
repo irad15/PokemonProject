@@ -8,7 +8,7 @@ const app = express();
 const PORT = 3000;
 
 // Serve static files (CSS, JS, images)
-app.use(express.static(path.join(__dirname, 'Client')));
+app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json({ limit: '10mb' })); // Increased limit for large Pokemon data
 
 // Session configuration
@@ -63,7 +63,7 @@ function requireAuth(req, res, next) {
 
 // Route for the home page (public)
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'Client', 'home.html'));
+    res.sendFile(path.join(__dirname, 'views', 'home.html'));
 });
 
 // Route for the register page
@@ -72,7 +72,7 @@ app.get('/register', (req, res) => {
     if (req.session.userId) {
         return res.redirect('/search');
     }
-    res.sendFile(path.join(__dirname, 'Client', 'register.html'));
+    res.sendFile(path.join(__dirname, 'views', 'register.html'));
 });
 
 // Route for the login page
@@ -81,7 +81,7 @@ app.get('/login', (req, res) => {
     if (req.session.userId) {
         return res.redirect('/search');
     }
-    res.sendFile(path.join(__dirname, 'Client', 'login.html'));
+    res.sendFile(path.join(__dirname, 'views', 'login.html'));
 });
 
 // API endpoint for project information
@@ -1202,32 +1202,32 @@ function validateRegistrationData(firstName, email, password) {
 
 // Protected routes - require authentication
 app.get('/search', requireAuth, (req, res) => {
-    res.sendFile(path.join(__dirname, 'Client', 'search_pokemon.html'));
+    res.sendFile(path.join(__dirname, 'views', 'search_pokemon.html'));
 });
 
 app.get('/favorites', requireAuth, (req, res) => {
-    res.sendFile(path.join(__dirname, 'Client', 'favorite_pokemon.html'));
+    res.sendFile(path.join(__dirname, 'views', 'favorite_pokemon.html'));
 });
 
 app.get('/arena', requireAuth, (req, res) => {
-    res.sendFile(path.join(__dirname, 'Client', 'arena.html'));
+    res.sendFile(path.join(__dirname, 'views', 'arena.html'));
 });
 
 // Battle page routes (to be implemented later)
 app.get('/arena/vs-bot', requireAuth, (req, res) => {
-    res.sendFile(path.join(__dirname, 'Client', 'vs-bot.html'));
+    res.sendFile(path.join(__dirname, 'views', 'vs-bot.html'));
 });
 
 app.get('/arena/random-vs-player', requireAuth, (req, res) => {
-    res.sendFile(path.join(__dirname, 'Client', 'random-vs-player.html'));
+    res.sendFile(path.join(__dirname, 'views', 'random-vs-player.html'));
 });
 
 app.get('/arena/battle', requireAuth, (req, res) => {
-    res.sendFile(path.join(__dirname, 'Client', 'battle.html'));
+    res.sendFile(path.join(__dirname, 'views', 'battle.html'));
 });
 
 app.get('/arena/leaderboard', requireAuth, (req, res) => {
-    res.sendFile(path.join(__dirname, 'Client', 'leaderboard.html'));
+    res.sendFile(path.join(__dirname, 'views', 'leaderboard.html'));
 });
 
 // Start server

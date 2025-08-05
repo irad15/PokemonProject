@@ -1,65 +1,25 @@
 {
   "battles": [
     {
-      "id": "1754412658326",
+      "id": "1754416974035",
       "type": "player",
       "opponent": "Irad",
-      "timestamp": "2025-08-05T16:50:58.326Z",
+      "timestamp": "2025-08-05T18:02:54.035Z",
       "details": {
         "myPokemon": {
-          "name": "ariados",
-          "image": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/168.png",
-          "score": 76.17598503795095
-        },
-        "opponentPokemon": {
-          "name": "electrike",
-          "image": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/309.png",
-          "score": 45.13413925221759
-        },
-        "result": "won",
-        "opponentName": "Irad"
-      }
-    },
-    {
-      "id": "1754412691805",
-      "type": "player",
-      "opponent": "Irad",
-      "timestamp": "2025-08-05T16:51:31.805Z",
-      "details": {
-        "myPokemon": {
-          "name": "abra",
-          "image": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/63.png",
-          "score": 28.914250499186117
-        },
-        "opponentPokemon": {
-          "name": "pecharunt",
-          "image": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1025.png",
-          "score": 103.67814663900651
-        },
-        "result": "lost",
-        "opponentName": "Irad"
-      }
-    },
-    {
-      "id": "1754413277996",
-      "type": "player",
-      "opponent": "Irad",
-      "timestamp": "2025-08-05T17:01:17.996Z",
-      "details": {
-        "myPokemon": {
-          "name": "absol",
-          "image": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/359.png",
-          "score": 92.15268744919929
+          "name": "nidoran-f",
+          "image": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/29.png",
+          "score": 50.437136356423515
         },
         "opponentPokemon": {
           "name": "psyduck",
           "image": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/54.png",
-          "score": 52.499012142407906
+          "score": 52.75804929128204
         },
-        "result": "won",
+        "result": "lost",
         "opponentName": "Irad"
       }
     }
   ],
-  "lastReset": "2025-08-05T16:50:58.326Z"
+  "lastReset": "2025-08-05T18:02:54.035Z"
 }
