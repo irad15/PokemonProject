@@ -3,6 +3,7 @@ const path = require('path');
 const fs = require('fs');
 const bcrypt = require('bcrypt');
 const session = require('express-session');
+const fetch = require('node-fetch');
 const app = express();
 const PORT = 3000;
 
@@ -62,11 +63,19 @@ app.get('/', (req, res) => {
 
 // Route for the register page
 app.get('/register', (req, res) => {
+    // Check if user is already authenticated
+    if (req.session.userId) {
+        return res.redirect('/search');
+    }
     res.sendFile(path.join(__dirname, 'Client', 'register.html'));
 });
 
 // Route for the login page
 app.get('/login', (req, res) => {
+    // Check if user is already authenticated
+    if (req.session.userId) {
+        return res.redirect('/search');
+    }
     res.sendFile(path.join(__dirname, 'Client', 'login.html'));
 });
 
@@ -230,6 +239,206 @@ const ensureUserFavoritesDir = (userId) => {
     }
 };
 
+// Battle utilities
+const getUserBattlesFile = (userId) => path.join(dataDir, userId, 'battles.json');
+
+const loadUserBattles = (userId) => {
+    const userBattlesFile = getUserBattlesFile(userId);
+    if (fs.existsSync(userBattlesFile)) {
+        return JSON.parse(fs.readFileSync(userBattlesFile, 'utf8'));
+    }
+    return { battles: [], lastReset: new Date().toISOString() };
+};
+
+const saveUserBattles = (userId, battlesData) => {
+    const userBattlesFile = getUserBattlesFile(userId);
+    fs.writeFileSync(userBattlesFile, JSON.stringify(battlesData, null, 2));
+};
+
+const getBattlesToday = (userId) => {
+    const battlesData = loadUserBattles(userId);
+    const today = new Date().toDateString();
+    const lastReset = new Date(battlesData.lastReset).toDateString();
+    
+    // Reset battles if it's a new day
+    if (today !== lastReset) {
+        battlesData.battles = [];
+        battlesData.lastReset = new Date().toISOString();
+        saveUserBattles(userId, battlesData);
+    }
+    
+    return battlesData.battles.length;
+};
+
+const canBattle = (userId) => {
+    return getBattlesToday(userId) < 5;
+};
+
+const recordBattle = (userId, battleType, opponent = null, battleDetails = null) => {
+    console.log('Recording battle for user:', userId, 'type:', battleType, 'opponent:', opponent);
+    const battlesData = loadUserBattles(userId);
+    const battle = {
+        id: Date.now().toString(),
+        type: battleType, // 'bot' or 'player'
+        opponent: opponent,
+        timestamp: new Date().toISOString(),
+        details: battleDetails // Store detailed battle information
+    };
+    
+    battlesData.battles.push(battle);
+    saveUserBattles(userId, battlesData);
+    console.log('Battle saved for user:', userId);
+};
+
+// Record battle for both players in a player vs player battle
+const recordPlayerBattle = (player1Id, player2Id, player1Name, player2Name, player1Pokemon, player2Pokemon) => {
+    // Determine winner and create battle details
+    const player1Score = player1Pokemon.battleScore;
+    const player2Score = player2Pokemon.battleScore;
+    const player1Won = player1Score > player2Score;
+    const player2Won = player2Score > player1Score;
+    
+    // Battle details for player 1
+    const player1Details = {
+        myPokemon: {
+            name: player1Pokemon.name,
+            image: player1Pokemon.sprites.front_default,
+            score: player1Score
+        },
+        opponentPokemon: {
+            name: player2Pokemon.name,
+            image: player2Pokemon.sprites.front_default,
+            score: player2Score
+        },
+        result: player1Won ? 'won' : (player2Won ? 'lost' : 'tie'),
+        opponentName: player2Name
+    };
+    
+    // Battle details for player 2
+    const player2Details = {
+        myPokemon: {
+            name: player2Pokemon.name,
+            image: player2Pokemon.sprites.front_default,
+            score: player2Score
+        },
+        opponentPokemon: {
+            name: player1Pokemon.name,
+            image: player1Pokemon.sprites.front_default,
+            score: player1Score
+        },
+        result: player2Won ? 'won' : (player1Won ? 'lost' : 'tie'),
+        opponentName: player1Name
+    };
+    
+    // Record for player 1
+    recordBattle(player1Id, 'player', player2Name, player1Details);
+    
+    // Record for player 2
+    recordBattle(player2Id, 'player', player1Name, player2Details);
+};
+
+// Online players tracking
+const onlinePlayers = new Map(); // userId -> { firstName, lastSeen }
+
+// Challenge system
+const pendingChallenges = new Map(); // challengeId -> { challengerId, challengerName, opponentId, opponentName, timestamp }
+const declinedChallenges = new Map(); // challengeId -> { challengerId, challengerName, opponentId, opponentName, timestamp, declinedBy }
+
+const updateOnlineStatus = (userId, firstName) => {
+    onlinePlayers.set(userId, {
+        firstName: firstName,
+        lastSeen: Date.now()
+    });
+};
+
+const getOnlinePlayers = () => {
+    const now = Date.now();
+    const onlineThreshold = 30000; // 30 seconds
+    
+    // Remove players who haven't been seen in 30 seconds
+    for (const [userId, data] of onlinePlayers.entries()) {
+        if (now - data.lastSeen > onlineThreshold) {
+            onlinePlayers.delete(userId);
+        }
+    }
+    
+    return Array.from(onlinePlayers.entries()).map(([userId, data]) => ({
+        id: userId,
+        firstName: data.firstName
+    }));
+};
+
+// Challenge utilities
+const createChallenge = (challengerId, challengerName, opponentId, opponentName) => {
+    const challengeId = Date.now().toString();
+    const challenge = {
+        id: challengeId,
+        challengerId,
+        challengerName,
+        opponentId,
+        opponentName,
+        timestamp: Date.now(),
+        status: 'pending' // pending, accepted, declined, expired
+    };
+    
+    pendingChallenges.set(challengeId, challenge);
+    
+    // Auto-expire challenges after 30 seconds
+    setTimeout(() => {
+        if (pendingChallenges.has(challengeId)) {
+            const challenge = pendingChallenges.get(challengeId);
+            if (challenge.status === 'pending') {
+                challenge.status = 'expired';
+            }
+        }
+    }, 30000);
+    
+    return challenge;
+};
+
+const getChallenge = (challengeId) => {
+    return pendingChallenges.get(challengeId);
+};
+
+const updateChallengeStatus = (challengeId, status) => {
+    const challenge = pendingChallenges.get(challengeId);
+    if (challenge) {
+        challenge.status = status;
+        return challenge;
+    }
+    return null;
+};
+
+const cleanupExpiredChallenges = () => {
+    const now = Date.now();
+    for (const [challengeId, challenge] of pendingChallenges.entries()) {
+        if (now - challenge.timestamp > 30000) { // 30 seconds
+            pendingChallenges.delete(challengeId);
+        }
+    }
+    
+    // Clean up declined challenges after 10 seconds
+    for (const [challengeId, challenge] of declinedChallenges.entries()) {
+        if (now - challenge.declinedAt > 10000) { // 10 seconds
+            declinedChallenges.delete(challengeId);
+        }
+    }
+};
+
+// Battle score calculation
+const calculateBattleScore = (pokemon) => {
+    const hp = pokemon.stats[0].base_stat;
+    const attack = pokemon.stats[1].base_stat;
+    const defense = pokemon.stats[2].base_stat;
+    const speed = pokemon.stats[5].base_stat;
+    
+    // Formula: HP × 0.3 + Attack × 0.4 + Defense × 0.2 + Speed × 0.1 + smallRandVal
+    const baseScore = hp * 0.3 + attack * 0.4 + defense * 0.2 + speed * 0.1;
+    const smallRandVal = Math.random() * 2; // Small random value for variety
+    
+    return baseScore + smallRandVal;
+};
+
 // API endpoint to get user's favorites
 app.get('/api/favorites', requireAuth, (req, res) => {
     try {
@@ -368,8 +577,443 @@ app.get('/api/favorites/download', requireAuth, async (req, res) => {
         res.send(csvContent);
         
     } catch (error) {
-        console.error('Error downloading favorites as CSV:', error);
+        console.log('Error downloading favorites as CSV:', error);
         res.status(500).json({ error: 'Failed to download favorites as CSV' });
+    }
+});
+
+// Arena API endpoints
+app.get('/api/arena/status', requireAuth, (req, res) => {
+    try {
+        const userId = req.session.userId;
+        const battlesToday = getBattlesToday(userId);
+        const canBattleToday = canBattle(userId);
+        const favorites = loadUserFavorites(userId);
+        
+        res.json({
+            battlesUsed: battlesToday,
+            battlesRemaining: 5 - battlesToday,
+            canBattle: canBattleToday,
+            hasFavorites: favorites.length > 0,
+            favoritesCount: favorites.length
+        });
+    } catch (error) {
+        console.error('Error getting arena status:', error);
+        res.status(500).json({ error: 'Failed to get arena status' });
+    }
+});
+
+app.post('/api/arena/battle/bot', requireAuth, (req, res) => {
+    try {
+        const userId = req.session.userId;
+        const favorites = loadUserFavorites(userId);
+        
+        // Check if user has favorites
+        if (favorites.length === 0) {
+            return res.status(400).json({ error: 'You need at least one favorite Pokemon to enter battles' });
+        }
+        
+        // Check if user can battle
+        if (!canBattle(userId)) {
+            return res.status(400).json({ error: 'You have used all 5 battles for today. Come back tomorrow!' });
+        }
+        
+        // Record the battle
+        recordBattle(userId, 'bot');
+        
+        res.json({
+            message: 'Battle against bot recorded',
+            battlesUsed: getBattlesToday(userId),
+            battlesRemaining: 5 - getBattlesToday(userId)
+        });
+    } catch (error) {
+        console.error('Error recording bot battle:', error);
+        res.status(500).json({ error: 'Failed to record battle' });
+    }
+});
+
+app.post('/api/arena/battle/player', requireAuth, (req, res) => {
+    try {
+        const userId = req.session.userId;
+        const favorites = loadUserFavorites(userId);
+        
+        // Check if user has favorites
+        if (favorites.length === 0) {
+            return res.status(400).json({ error: 'You need at least one favorite Pokemon to enter battles' });
+        }
+        
+        // Check if user can battle
+        if (!canBattle(userId)) {
+            return res.status(400).json({ error: 'You have used all 5 battles for today. Come back tomorrow!' });
+        }
+        
+        // Record the battle
+        recordBattle(userId, 'player');
+        
+        res.json({
+            message: 'Battle against player recorded',
+            battlesUsed: getBattlesToday(userId),
+            battlesRemaining: 5 - getBattlesToday(userId)
+        });
+    } catch (error) {
+        console.error('Error recording player battle:', error);
+        res.status(500).json({ error: 'Failed to record battle' });
+    }
+});
+
+
+
+app.get('/api/arena/history', requireAuth, (req, res) => {
+    try {
+        const userId = req.session.userId;
+        const battlesData = loadUserBattles(userId);
+        
+        res.json({
+            battles: battlesData.battles,
+            totalBattles: battlesData.battles.length
+        });
+    } catch (error) {
+        console.error('Error getting battle history:', error);
+        res.status(500).json({ error: 'Failed to get battle history' });
+    }
+});
+
+// API endpoint to get online players
+app.get('/api/arena/online-players', requireAuth, (req, res) => {
+    try {
+        const userId = req.session.userId;
+        const firstName = req.session.userFirstName;
+        
+        // Update current user's online status
+        updateOnlineStatus(userId, firstName);
+        
+        // Get all online players
+        const onlinePlayersList = getOnlinePlayers();
+        
+        res.json({
+            players: onlinePlayersList
+        });
+    } catch (error) {
+        console.error('Error getting online players:', error);
+        res.status(500).json({ error: 'Failed to get online players' });
+    }
+});
+
+// API endpoint to send a challenge to a player
+app.post('/api/arena/send-challenge', requireAuth, async (req, res) => {
+    try {
+        const userId = req.session.userId;
+        const { opponentId } = req.body;
+        
+        // Check if user can battle
+        if (!canBattle(userId)) {
+            return res.status(400).json({ error: 'You have used all 5 battles for today. Come back tomorrow!' });
+        }
+        
+        // Check if opponent exists and is online
+        const onlinePlayersList = getOnlinePlayers();
+        const opponent = onlinePlayersList.find(p => p.id === opponentId);
+        
+        if (!opponent) {
+            return res.status(400).json({ error: 'Opponent is no longer online' });
+        }
+        
+        // Check if user has favorites
+        const userFavorites = loadUserFavorites(userId);
+        if (userFavorites.length === 0) {
+            return res.status(400).json({ error: 'You need at least one favorite Pokemon to battle' });
+        }
+        
+        // Check if opponent has favorites
+        const opponentFavorites = loadUserFavorites(opponentId);
+        if (opponentFavorites.length === 0) {
+            return res.status(400).json({ error: 'Opponent has no favorite Pokemon' });
+        }
+        
+        // Check if there's already a pending challenge between these two users (either direction)
+        for (const [challengeId, challenge] of pendingChallenges.entries()) {
+            if (challenge.status === 'pending' && 
+                ((challenge.challengerId === opponentId && challenge.opponentId === userId) ||
+                 (challenge.challengerId === userId && challenge.opponentId === opponentId))) {
+                return res.status(400).json({ error: 'There is already a pending challenge between you and this player. Please accept or decline it first.' });
+            }
+        }
+        
+        // Clear any existing accepted challenges for this user
+        for (const [challengeId, challenge] of pendingChallenges.entries()) {
+            if ((challenge.challengerId === userId || challenge.opponentId === userId) && 
+                challenge.status === 'accepted') {
+                pendingChallenges.delete(challengeId);
+            }
+        }
+        
+        // Create challenge
+        const challenge = createChallenge(
+            userId, 
+            req.session.userFirstName, 
+            opponentId, 
+            opponent.firstName
+        );
+        
+        res.json({
+            message: 'Challenge sent successfully',
+            challengeId: challenge.id
+        });
+        
+    } catch (error) {
+        console.error('Error sending challenge:', error);
+        res.status(500).json({ error: 'Failed to send challenge' });
+    }
+});
+
+// API endpoint to get pending challenges for a user
+app.get('/api/arena/pending-challenges', requireAuth, (req, res) => {
+    try {
+        const userId = req.session.userId;
+        cleanupExpiredChallenges();
+        
+        const userChallenges = Array.from(pendingChallenges.values()).filter(challenge => 
+            challenge.opponentId === userId && challenge.status === 'pending'
+        );
+        
+        res.json({
+            challenges: userChallenges
+        });
+    } catch (error) {
+        console.error('Error getting pending challenges:', error);
+        res.status(500).json({ error: 'Failed to get pending challenges' });
+    }
+});
+
+// API endpoint to check for accepted challenges for a user
+app.get('/api/arena/accepted-challenges', requireAuth, (req, res) => {
+    try {
+        const userId = req.session.userId;
+        cleanupExpiredChallenges();
+        
+        // Find accepted challenges where this user is either the challenger or opponent
+        const acceptedChallenge = Array.from(pendingChallenges.values()).find(challenge => 
+            (challenge.challengerId === userId || challenge.opponentId === userId) && 
+            challenge.status === 'accepted'
+        );
+        
+        if (acceptedChallenge && acceptedChallenge.battleData) {
+            res.json({
+                challenge: {
+                    ...acceptedChallenge,
+                    ...acceptedChallenge.battleData
+                }
+            });
+        } else {
+            res.json({
+                challenge: null
+            });
+        }
+    } catch (error) {
+        console.error('Error getting accepted challenges:', error);
+        res.status(500).json({ error: 'Failed to get accepted challenges' });
+    }
+});
+
+// API endpoint to check for declined challenges for a user
+app.get('/api/arena/declined-challenges', requireAuth, (req, res) => {
+    try {
+        const userId = req.session.userId;
+        
+        // Find declined challenges where this user is the challenger
+        const declinedChallenge = Array.from(declinedChallenges.values()).find(challenge => 
+            challenge.challengerId === userId
+        );
+        
+        if (declinedChallenge) {
+            res.json({
+                challenge: declinedChallenge
+            });
+        } else {
+            res.json({
+                challenge: null
+            });
+        }
+    } catch (error) {
+        console.error('Error getting declined challenges:', error);
+        res.status(500).json({ error: 'Failed to get declined challenges' });
+    }
+});
+
+// API endpoint to get battle data for a challenge
+app.get('/api/arena/battle-data/:challengeId', requireAuth, (req, res) => {
+    try {
+        const challengeId = req.params.challengeId;
+        const challenge = getChallenge(challengeId);
+        
+        if (challenge && challenge.battleData) {
+            res.json({
+                battleData: challenge.battleData
+            });
+        } else {
+            res.status(404).json({ error: 'Battle data not found' });
+        }
+    } catch (error) {
+        console.error('Error getting battle data:', error);
+        res.status(500).json({ error: 'Failed to get battle data' });
+    }
+});
+
+// API endpoint to accept a challenge
+app.post('/api/arena/accept-challenge', requireAuth, async (req, res) => {
+    try {
+        const userId = req.session.userId;
+        const { challengeId } = req.body;
+        
+        const challenge = getChallenge(challengeId);
+        if (!challenge || challenge.opponentId !== userId) {
+            return res.status(400).json({ error: 'Invalid challenge' });
+        }
+        
+        if (challenge.status !== 'pending') {
+            return res.status(400).json({ error: 'Challenge is no longer pending' });
+        }
+        
+        // Check if both players can still battle
+        if (!canBattle(challenge.challengerId) || !canBattle(userId)) {
+            updateChallengeStatus(challengeId, 'expired');
+            return res.status(400).json({ error: 'One or both players have used all battles for today' });
+        }
+        
+        // Update challenge status
+        updateChallengeStatus(challengeId, 'accepted');
+        
+        // Get both users' favorites
+        const challengerFavorites = loadUserFavorites(challenge.challengerId);
+        const opponentFavorites = loadUserFavorites(userId);
+        
+        // Randomly select Pokemon for each player
+        const challengerPokemonId = challengerFavorites[Math.floor(Math.random() * challengerFavorites.length)].id;
+        const opponentPokemonId = opponentFavorites[Math.floor(Math.random() * opponentFavorites.length)].id;
+        
+        // Fetch Pokemon data from PokeAPI
+        const [challengerPokemon, opponentPokemon] = await Promise.all([
+            fetch(`https://pokeapi.co/api/v2/pokemon/${challengerPokemonId}`).then(res => res.json()),
+            fetch(`https://pokeapi.co/api/v2/pokemon/${opponentPokemonId}`).then(res => res.json())
+        ]);
+        
+        // Calculate battle scores
+        challengerPokemon.battleScore = calculateBattleScore(challengerPokemon);
+        opponentPokemon.battleScore = calculateBattleScore(opponentPokemon);
+        
+        // Store battle data in the challenge for both players to access
+        challenge.battleData = {
+            player1Pokemon: challengerPokemon,
+            player2Pokemon: opponentPokemon,
+            player1Name: challenge.challengerName,
+            player2Name: challenge.opponentName,
+            player1Id: challenge.challengerId,
+            player2Id: userId
+        };
+        
+        // Record the battle for both players
+        console.log('Recording battle for players:', challenge.challengerName, 'and', challenge.opponentName);
+        recordPlayerBattle(challenge.challengerId, userId, challenge.challengerName, challenge.opponentName, challengerPokemon, opponentPokemon);
+        console.log('Battle recorded successfully');
+        
+        res.json({
+            challengeId: challengeId,
+            redirectUrl: `/arena/battle?challengeId=${challengeId}`
+        });
+        
+    } catch (error) {
+        console.error('Error accepting challenge:', error);
+        res.status(500).json({ error: 'Failed to accept challenge' });
+    }
+});
+
+// API endpoint to decline a challenge
+app.post('/api/arena/decline-challenge', requireAuth, (req, res) => {
+    try {
+        const userId = req.session.userId;
+        const { challengeId } = req.body;
+        
+        const challenge = getChallenge(challengeId);
+        if (!challenge || challenge.opponentId !== userId) {
+            return res.status(400).json({ error: 'Invalid challenge' });
+        }
+        
+        updateChallengeStatus(challengeId, 'declined');
+        
+        // Store declined challenge for the challenger to see
+        const declinedChallenge = {
+            ...challenge,
+            declinedBy: req.session.userFirstName,
+            declinedAt: Date.now()
+        };
+        declinedChallenges.set(challengeId, declinedChallenge);
+        
+        res.json({
+            message: 'Challenge declined'
+        });
+    } catch (error) {
+        console.error('Error declining challenge:', error);
+        res.status(500).json({ error: 'Failed to decline challenge' });
+    }
+});
+
+// API endpoint to challenge a player (legacy - now sends challenge instead)
+app.post('/api/arena/challenge-player', requireAuth, async (req, res) => {
+    try {
+        const userId = req.session.userId;
+        const { opponentId } = req.body;
+        
+        // Check if user can battle
+        if (!canBattle(userId)) {
+            return res.status(400).json({ error: 'You have used all 5 battles for today. Come back tomorrow!' });
+        }
+        
+        // Check if opponent exists and is online
+        const onlinePlayersList = getOnlinePlayers();
+        const opponent = onlinePlayersList.find(p => p.id === opponentId);
+        
+        if (!opponent) {
+            return res.status(400).json({ error: 'Opponent is no longer online' });
+        }
+        
+        // Get both users' favorites
+        const userFavorites = loadUserFavorites(userId);
+        const opponentFavorites = loadUserFavorites(opponentId);
+        
+        if (userFavorites.length === 0) {
+            return res.status(400).json({ error: 'You need at least one favorite Pokemon to battle' });
+        }
+        
+        if (opponentFavorites.length === 0) {
+            return res.status(400).json({ error: 'Opponent has no favorite Pokemon' });
+        }
+        
+        // Randomly select Pokemon for each player
+        const userPokemonId = userFavorites[Math.floor(Math.random() * userFavorites.length)].id;
+        const opponentPokemonId = opponentFavorites[Math.floor(Math.random() * opponentFavorites.length)].id;
+        
+        // Fetch Pokemon data from PokeAPI
+        const [userPokemon, opponentPokemon] = await Promise.all([
+            fetch(`https://pokeapi.co/api/v2/pokemon/${userPokemonId}`).then(res => res.json()),
+            fetch(`https://pokeapi.co/api/v2/pokemon/${opponentPokemonId}`).then(res => res.json())
+        ]);
+        
+        // Calculate battle scores
+        userPokemon.battleScore = calculateBattleScore(userPokemon);
+        opponentPokemon.battleScore = calculateBattleScore(opponentPokemon);
+        
+        res.json({
+            player1Pokemon: userPokemon,
+            player2Pokemon: opponentPokemon,
+            player1Name: req.session.userFirstName,
+            player2Name: opponent.firstName,
+            player1Id: userId,
+            player2Id: opponentId
+        });
+        
+    } catch (error) {
+        console.error('Error challenging player:', error);
+        res.status(500).json({ error: 'Failed to challenge player' });
     }
 });
 
@@ -419,6 +1063,27 @@ app.get('/favorites', requireAuth, (req, res) => {
     res.sendFile(path.join(__dirname, 'Client', 'favorite_pokemon.html'));
 });
 
+app.get('/arena', requireAuth, (req, res) => {
+    res.sendFile(path.join(__dirname, 'Client', 'arena.html'));
+});
+
+// Battle page routes (to be implemented later)
+app.get('/arena/vs-bot', requireAuth, (req, res) => {
+    res.sendFile(path.join(__dirname, 'Client', 'vs-bot.html'));
+});
+
+app.get('/arena/random-vs-player', requireAuth, (req, res) => {
+    res.sendFile(path.join(__dirname, 'Client', 'random-vs-player.html'));
+});
+
+app.get('/arena/battle', requireAuth, (req, res) => {
+    res.sendFile(path.join(__dirname, 'Client', 'battle.html'));
+});
+
+app.get('/arena/leaderboard', requireAuth, (req, res) => {
+    res.sendFile(path.join(__dirname, 'Client', 'leaderboard.html'));
+});
+
 // Start server
 app.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);
@@ -427,4 +1092,8 @@ app.listen(PORT, () => {
     console.log(`Login page: http://localhost:${PORT}/login`);
     console.log(`Search page: http://localhost:${PORT}/search`);
     console.log(`Favorites page: http://localhost:${PORT}/favorites`);
+    console.log(`Arena page: http://localhost:${PORT}/arena`);
+    console.log(`VS Bot Battle page: http://localhost:${PORT}/arena/vs-bot`);
+    console.log(`Random Player Battle page: http://localhost:${PORT}/arena/random-vs-player`);
+    console.log(`Leaderboard page: http://localhost:${PORT}/arena/leaderboard`);
 });

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Battle Arena</title>
+    <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/poke-ball.png">
+    <link rel="stylesheet" href="arena.css">
+    <link rel="stylesheet" href="auth-header.css">
+</head>
+<body>
+    <div class="arena-container">
+        <h1>⚔️ Battle Arena ⚔️</h1>
+        
+        <div class="arena-status">
+            <div class="status-card">
+                <h3>Today's Battles</h3>
+                <div class="battle-counter">
+                    <span id="battlesUsed">0</span> / <span id="battlesTotal">5</span>
+                </div>
+                <div class="battles-remaining">
+                    <span id="battlesRemaining">5</span> battles remaining today
+                </div>
+            </div>
+            
+            <div class="status-card">
+                <h3>Favorites Status</h3>
+                <div class="favorites-status">
+                    <span id="favoritesCount">0</span> favorite Pokemon
+                </div>
+                <div id="favoritesWarning" class="warning-message" style="display: none;">
+                    You need at least 1 favorite Pokemon to battle!
+                </div>
+            </div>
+        </div>
+
+        <div class="battle-options">
+            <h2>Choose Your Battle</h2>
+            
+            <div class="battle-grid">
+                <div class="battle-option">
+                    <h3>🤖 Battle vs Bot</h3>
+                    <p>Challenge an AI opponent with your favorite Pokemon</p>
+                    <button id="botBattleBtn" class="battle-btn">Enter Battle</button>
+                </div>
+                
+                <div class="battle-option">
+                    <h3>👥 Random Player Battle</h3>
+                    <p>Fight against another player in real-time</p>
+                    <button id="playerBattleBtn" class="battle-btn">Enter Battle</button>
+                </div>
+                
+                <div class="battle-option">
+                    <h3>📊 Battle History</h3>
+                    <p>View your past battles and statistics</p>
+                    <button id="historyBtn" class="battle-btn">View History</button>
+                </div>
+                
+                <div class="battle-option">
+                    <h3>🏆 Leaderboard</h3>
+                    <p>See the top players and rankings</p>
+                    <button id="leaderboardBtn" class="battle-btn">View Leaderboard</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="navigation">
+            <button onclick="window.location.href='/search'" class="nav-btn">Back to Search</button>
+            <button onclick="window.location.href='/favorites'" class="nav-btn">View Favorites</button>
+        </div>
+    </div>
+
+    <!-- Battle History Modal -->
+    <div id="historyModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button" onclick="closeHistoryModal()">&times;</span>
+            <h2>Battle History</h2>
+            <div id="historyContent">
+                <div class="history-stats">
+                    <div class="stat-item">
+                        <span class="stat-label">Total Battles:</span>
+                        <span id="totalBattles">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Bot Battles:</span>
+                        <span id="botBattles">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Player Battles:</span>
+                        <span id="playerBattles">0</span>
+                    </div>
+                </div>
+                <div id="battleList" class="battle-list">
+                    <!-- Battle history will be populated here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="shared.js"></script>
+    <script src="auth-header.js"></script>
+    <script src="arena.js"></script>
+</body>
+</html> 

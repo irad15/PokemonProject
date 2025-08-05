@@ -137,8 +137,6 @@ async function fetchPokemon(searchQuery) {
     }
 }
 
-// Use shared debounce function instead of local one
-
 // Initializes search functionality on page load
 document.addEventListener("DOMContentLoaded", () => {
     // Load favorites counter

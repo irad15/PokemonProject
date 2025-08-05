@@ -1,4 +1,10 @@
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', async function() {
+    // Check if user is already authenticated and redirect if necessary
+    const isRedirected = await checkAuthAndRedirect();
+    if (isRedirected) {
+        return; // Stop execution if redirected
+    }
+    
     const form = document.getElementById('registerForm');
     const inputs = form.querySelectorAll('input');
     

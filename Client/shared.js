@@ -4,6 +4,24 @@
 // API utilities
 var API_BASE_URL = 'https://pokeapi.co/api/v2/';
 
+// Authentication check and redirect function
+async function checkAuthAndRedirect() {
+    try {
+        const response = await fetch('/api/auth-status');
+        const authData = await response.json();
+        
+        if (authData.isAuthenticated) {
+            // User is logged in, redirect to search page
+            window.location.href = '/search';
+            return true;
+        }
+        return false;
+    } catch (error) {
+        console.error('Error checking authentication status:', error);
+        return false;
+    }
+}
+
 // Fetches JSON data from the specified URL with error handling
 async function fetchJson(url) {
     const response = await fetch(url);
@@ -291,6 +309,7 @@ function closeStatsModal() {
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = {
         fetchJson,
+        checkAuthAndRedirect,
         isValidEmail,
         isValidPassword,
         validateField,
@@ -313,6 +332,7 @@ if (typeof module !== 'undefined' && module.exports) {
 // For browser usage, ensure functions are available globally
 if (typeof window !== 'undefined') {
     window.fetchJson = fetchJson;
+    window.checkAuthAndRedirect = checkAuthAndRedirect;
     window.isValidEmail = isValidEmail;
     window.isValidPassword = isValidPassword;
     window.validateField = validateField;

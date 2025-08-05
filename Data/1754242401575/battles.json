@@ -1,0 +1,65 @@
+{
+  "battles": [
+    {
+      "id": "1754393841778",
+      "type": "player",
+      "opponent": "Irad",
+      "timestamp": "2025-08-05T11:37:21.778Z",
+      "details": {
+        "myPokemon": {
+          "name": "ariados",
+          "image": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/168.png",
+          "score": 75.33785168700545
+        },
+        "opponentPokemon": {
+          "name": "electrike",
+          "image": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/309.png",
+          "score": 44.62424272932083
+        },
+        "result": "won",
+        "opponentName": "Irad"
+      }
+    },
+    {
+      "id": "1754393842998",
+      "type": "player",
+      "opponent": "Irad",
+      "timestamp": "2025-08-05T11:37:22.998Z",
+      "details": {
+        "myPokemon": {
+          "name": "ariados",
+          "image": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/168.png",
+          "score": 75.33785168700545
+        },
+        "opponentPokemon": {
+          "name": "electrike",
+          "image": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/309.png",
+          "score": 44.62424272932083
+        },
+        "result": "won",
+        "opponentName": "Irad"
+      }
+    },
+    {
+      "id": "1754394149343",
+      "type": "player",
+      "opponent": "Irad",
+      "timestamp": "2025-08-05T11:42:29.343Z",
+      "details": {
+        "myPokemon": {
+          "name": "arcanine",
+          "image": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/59.png",
+          "score": 97.33396311753616
+        },
+        "opponentPokemon": {
+          "name": "electrike",
+          "image": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/309.png",
+          "score": 45.50354659178314
+        },
+        "result": "won",
+        "opponentName": "Irad"
+      }
+    }
+  ],
+  "lastReset": "2025-08-05T11:37:21.778Z"
+}

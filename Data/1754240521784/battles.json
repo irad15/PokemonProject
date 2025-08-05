@@ -1,0 +1,65 @@
+{
+  "battles": [
+    {
+      "id": "1754393841779",
+      "type": "player",
+      "opponent": "Irada",
+      "timestamp": "2025-08-05T11:37:21.779Z",
+      "details": {
+        "myPokemon": {
+          "name": "electrike",
+          "image": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/309.png",
+          "score": 44.62424272932083
+        },
+        "opponentPokemon": {
+          "name": "ariados",
+          "image": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/168.png",
+          "score": 75.33785168700545
+        },
+        "result": "lost",
+        "opponentName": "Irada"
+      }
+    },
+    {
+      "id": "1754393842999",
+      "type": "player",
+      "opponent": "Irada",
+      "timestamp": "2025-08-05T11:37:22.999Z",
+      "details": {
+        "myPokemon": {
+          "name": "electrike",
+          "image": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/309.png",
+          "score": 44.62424272932083
+        },
+        "opponentPokemon": {
+          "name": "ariados",
+          "image": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/168.png",
+          "score": 75.33785168700545
+        },
+        "result": "lost",
+        "opponentName": "Irada"
+      }
+    },
+    {
+      "id": "1754394149342",
+      "type": "player",
+      "opponent": "Irada",
+      "timestamp": "2025-08-05T11:42:29.342Z",
+      "details": {
+        "myPokemon": {
+          "name": "electrike",
+          "image": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/309.png",
+          "score": 45.50354659178314
+        },
+        "opponentPokemon": {
+          "name": "arcanine",
+          "image": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/59.png",
+          "score": 97.33396311753616
+        },
+        "result": "lost",
+        "opponentName": "Irada"
+      }
+    }
+  ],
+  "lastReset": "2025-08-05T11:37:21.779Z"
+}

@@ -19,8 +19,9 @@
   },
   "homepage": "https://github.com/irad15/PokemonProject#readme",
   "dependencies": {
-    "express": "^5.1.0",
     "bcrypt": "^5.1.1",
-    "express-session": "^1.17.3"
+    "express": "^5.1.0",
+    "express-session": "^1.17.3",
+    "node-fetch": "^2.7.0"
   }
 }
