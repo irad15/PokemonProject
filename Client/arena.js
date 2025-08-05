@@ -99,8 +99,11 @@ async function showBattleHistory() {
         if (response.ok) {
             displayBattleHistory(data);
             historyModal.style.display = 'block';
+        } else if (response.status === 401) {
+            alert('Session expired. Please log in again.');
+            window.location.href = '/login';
         } else {
-            alert('Failed to load battle history');
+            alert('Failed to load battle history: ' + (data.error || 'Unknown error'));
         }
     } catch (error) {
         console.error('Error loading battle history:', error);
@@ -151,28 +154,67 @@ function displayBattleHistory(data) {
             // Add detailed battle information if available
             if (battle.details) {
                 const details = battle.details;
-                const resultClass = details.result === 'won' ? 'battle-won' : 
-                                  details.result === 'lost' ? 'battle-lost' : 'battle-tie';
-                const resultText = details.result === 'won' ? 'Victory' : 
-                                 details.result === 'lost' ? 'Defeat' : 'Tie';
+                
+                // Handle different battle data structures
+                let myPokemon, opponentPokemon, result, opponentName;
+                
+                if (details.myPokemon && details.opponentPokemon) {
+                    // Player vs Player battle structure
+                    myPokemon = details.myPokemon;
+                    opponentPokemon = details.opponentPokemon;
+                    result = details.result;
+                    opponentName = details.opponentName;
+                } else if (details.player1Pokemon && details.player2Pokemon) {
+                    // Bot battle structure
+                    myPokemon = details.player1Pokemon;
+                    opponentPokemon = details.player2Pokemon;
+                    // For bot battles, determine result based on scores
+                    const myScore = myPokemon.battleScore || 0;
+                    const opponentScore = opponentPokemon.battleScore || 0;
+                    result = myScore > opponentScore ? 'won' : (myScore < opponentScore ? 'lost' : 'tie');
+                    opponentName = 'Bot';
+                } else {
+                    // Fallback for unknown structure
+                    battleContent += `
+                        <div class="battle-details">
+                            <div class="battle-result">Unknown</div>
+                        </div>
+                    `;
+                    battleContent += `
+                    </div>
+                </div>
+            `;
+                    return battleContent;
+                }
+                
+                const resultClass = result === 'won' ? 'battle-won' : 
+                                  result === 'lost' ? 'battle-lost' : 'battle-tie';
+                const resultText = result === 'won' ? 'Victory' : 
+                                 result === 'lost' ? 'Defeat' : 'Tie';
+                
+                // Use sprite for image, fallback to image if sprite doesn't exist
+                const myImage = myPokemon.sprite || myPokemon.image || '';
+                const opponentImage = opponentPokemon.sprite || opponentPokemon.image || '';
+                const myScore = myPokemon.battleScore || myPokemon.score || 0;
+                const opponentScore = opponentPokemon.battleScore || opponentPokemon.score || 0;
                 
                 battleContent += `
                         <div class="battle-details">
                             <div class="battle-result ${resultClass}">${resultText}</div>
                             <div class="battle-pokemon-info">
                                 <div class="my-pokemon">
-                                    <img src="${details.myPokemon.image}" alt="${details.myPokemon.name}" class="pokemon-thumbnail">
-                                    <span>${details.myPokemon.name}</span>
-                                    <span class="score">${details.myPokemon.score.toFixed(1)}</span>
+                                    <img src="${myImage}" alt="${myPokemon.name}" class="pokemon-thumbnail">
+                                    <span>${myPokemon.name}</span>
+                                    <span class="score">${myScore.toFixed(1)}</span>
                                 </div>
                                 <div class="vs-separator">VS</div>
                                 <div class="opponent-pokemon">
-                                    <img src="${details.opponentPokemon.image}" alt="${details.opponentPokemon.name}" class="pokemon-thumbnail">
-                                    <span>${details.opponentPokemon.name}</span>
-                                    <span class="score">${details.opponentPokemon.score.toFixed(1)}</span>
+                                    <img src="${opponentImage}" alt="${opponentPokemon.name}" class="pokemon-thumbnail">
+                                    <span>${opponentPokemon.name}</span>
+                                    <span class="score">${opponentScore.toFixed(1)}</span>
                                 </div>
                             </div>
-                            ${battle.type === 'player' ? `<div class="opponent-name">vs ${details.opponentName}</div>` : ''}
+                            ${battle.type === 'player' ? `<div class="opponent-name">vs ${opponentName}</div>` : ''}
                         </div>
                 `;
             }
