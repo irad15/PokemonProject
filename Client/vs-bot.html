@@ -3,71 +3,63 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bot Battle - Coming Soon</title>
+    <title>Random Battle vs Bot</title>
     <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/poke-ball.png">
-    <style>
-        body { 
-            font-family: Arial, sans-serif; 
-            text-align: center; 
-            padding: 50px; 
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
-            color: white; 
-            margin: 0;
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .container { 
-            background: rgba(255,255,255,0.1); 
-            padding: 40px; 
-            border-radius: 20px; 
-            max-width: 500px; 
-            margin: 0 auto;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-        }
-        h1 { 
-            color: #fff; 
-            margin-bottom: 20px;
-            font-size: 2.5em;
-        }
-        p {
-            font-size: 1.2em;
-            line-height: 1.6;
-            margin-bottom: 15px;
-        }
-        .back-btn { 
-            background: #007bff; 
-            color: white; 
-            padding: 12px 25px; 
-            border: none; 
-            border-radius: 8px; 
-            cursor: pointer; 
-            margin-top: 20px;
-            font-size: 1.1em;
-            font-weight: bold;
-            transition: all 0.3s ease;
-        }
-        .back-btn:hover {
-            background: #0056b3;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3);
-        }
-        .feature-icon {
-            font-size: 4em;
-            margin-bottom: 20px;
-        }
-    </style>
+    <link rel="stylesheet" href="/vs-bot.css">
+    <link rel="stylesheet" href="/auth-header.css">
 </head>
 <body>
     <div class="container">
-        <div class="feature-icon">🤖</div>
-        <h1>Bot Battle</h1>
-        <p>This feature is coming soon!</p>
-        <p>You'll be able to battle against AI opponents here.</p>
-        <p>Choose your favorite Pokemon and challenge the computer!</p>
-        <button class="back-btn" onclick="window.location.href='/arena'">Back to Arena</button>
+        <button class="back-btn" onclick="window.location.href='/arena'">← Back to Arena</button>
+        
+        <h1>🤖 Random Battle vs Bot</h1>
+        
+        <div id="loadingSection" class="loading">
+            <span class="spinner"></span>
+            Loading your favorites...
+        </div>
+        
+        <div id="selectionSection" style="display: none;">
+            <div class="selection-header">
+                <h2>Choose Your Pokemon</h2>
+                <p>Select one of your favorite Pokemon to battle against the bot!</p>
+            </div>
+            
+            <div id="favoritesGrid" class="favorites-grid">
+                <!-- Favorites will be loaded here -->
+            </div>
+            
+            <div id="battleSetup" class="battle-setup" style="display: none;">
+                <h3>Battle Setup</h3>
+                <div class="pokemon-comparison">
+                    <div class="pokemon-card selected-pokemon">
+                        <h4>Your Pokemon</h4>
+                        <img id="selectedPokemonImage" class="pokemon-image" src="" alt="Selected Pokemon">
+                        <div id="selectedPokemonName" class="pokemon-name"></div>
+                        <div id="selectedPokemonStats" class="pokemon-stats"></div>
+                    </div>
+                    
+                    <div class="vs-divider">
+                        <span>VS</span>
+                    </div>
+                    
+                    <div class="pokemon-card bot-pokemon">
+                        <h4>Bot Pokemon</h4>
+                        <img id="botPokemonImage" class="pokemon-image" src="" alt="Bot Pokemon">
+                        <div id="botPokemonName" class="pokemon-name"></div>
+                        <div id="botPokemonStats" class="pokemon-stats"></div>
+                    </div>
+                </div>
+                
+                <button id="startBattleBtn" class="start-battle-btn" onclick="startBattle()">
+                    ⚔️ Start Battle
+                </button>
+            </div>
+        </div>
     </div>
+
+    <script src="/shared.js"></script>
+    <script src="/auth-header.js"></script>
+    <script src="/vs-bot.js"></script>
 </body>
-</html> 
+</html>

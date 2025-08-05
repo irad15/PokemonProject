@@ -275,7 +275,6 @@ const canBattle = (userId) => {
 };
 
 const recordBattle = (userId, battleType, opponent = null, battleDetails = null) => {
-    console.log('Recording battle for user:', userId, 'type:', battleType, 'opponent:', opponent);
     const battlesData = loadUserBattles(userId);
     const battle = {
         id: Date.now().toString(),
@@ -287,7 +286,6 @@ const recordBattle = (userId, battleType, opponent = null, battleDetails = null)
     
     battlesData.battles.push(battle);
     saveUserBattles(userId, battlesData);
-    console.log('Battle saved for user:', userId);
 };
 
 // Record battle for both players in a player vs player battle
@@ -343,6 +341,7 @@ const onlinePlayers = new Map(); // userId -> { firstName, lastSeen }
 // Challenge system
 const pendingChallenges = new Map(); // challengeId -> { challengerId, challengerName, opponentId, opponentName, timestamp }
 const declinedChallenges = new Map(); // challengeId -> { challengerId, challengerName, opponentId, opponentName, timestamp, declinedBy }
+const botBattles = new Map(); // battleId -> { battleData, createdAt }
 
 const updateOnlineStatus = (userId, firstName) => {
     onlinePlayers.set(userId, {
@@ -421,6 +420,13 @@ const cleanupExpiredChallenges = () => {
     for (const [challengeId, challenge] of declinedChallenges.entries()) {
         if (now - challenge.declinedAt > 10000) { // 10 seconds
             declinedChallenges.delete(challengeId);
+        }
+    }
+    
+    // Clean up bot battles after 10 minutes
+    for (const [battleId, botBattle] of botBattles.entries()) {
+        if (now - botBattle.createdAt > 600000) { // 10 minutes
+            botBattles.delete(battleId);
         }
     }
 };
@@ -840,19 +846,44 @@ app.get('/api/arena/declined-challenges', requireAuth, (req, res) => {
     }
 });
 
-// API endpoint to get battle data for a challenge
-app.get('/api/arena/battle-data/:challengeId', requireAuth, (req, res) => {
+// API endpoint to get battle data for a challenge or bot battle
+app.get('/api/arena/battle-data/:battleId', requireAuth, (req, res) => {
     try {
-        const challengeId = req.params.challengeId;
-        const challenge = getChallenge(challengeId);
+        const battleId = req.params.battleId;
+        console.log('Requesting battle data for ID:', battleId);
         
-        if (challenge && challenge.battleData) {
-            res.json({
-                battleData: challenge.battleData
-            });
+        // Check if it's a bot battle
+        if (battleId.startsWith('bot_')) {
+            console.log('This is a bot battle');
+            const botBattle = botBattles.get(battleId);
+            console.log('Bot battle found:', !!botBattle);
+            console.log('Available bot battles:', Array.from(botBattles.keys()));
+            
+            if (botBattle && botBattle.battleData) {
+                console.log('Returning bot battle data');
+                res.json({
+                    battleData: botBattle.battleData
+                });
+                return;
+            } else {
+                console.log('Bot battle not found or missing battle data');
+            }
         } else {
-            res.status(404).json({ error: 'Battle data not found' });
+            console.log('This is a regular challenge');
+            const challenge = getChallenge(battleId);
+            console.log('Challenge found:', !!challenge);
+            
+            if (challenge && challenge.battleData) {
+                res.json({
+                    battleData: challenge.battleData
+                });
+                return;
+            }
         }
+        
+        console.log('Battle data not found for ID:', battleId);
+        res.status(404).json({ error: 'Battle data not found' });
+        
     } catch (error) {
         console.error('Error getting battle data:', error);
         res.status(500).json({ error: 'Failed to get battle data' });
@@ -912,9 +943,7 @@ app.post('/api/arena/accept-challenge', requireAuth, async (req, res) => {
         };
         
         // Record the battle for both players
-        console.log('Recording battle for players:', challenge.challengerName, 'and', challenge.opponentName);
         recordPlayerBattle(challenge.challengerId, userId, challenge.challengerName, challenge.opponentName, challengerPokemon, opponentPokemon);
-        console.log('Battle recorded successfully');
         
         res.json({
             challengeId: challengeId,
@@ -957,65 +986,60 @@ app.post('/api/arena/decline-challenge', requireAuth, (req, res) => {
     }
 });
 
-// API endpoint to challenge a player (legacy - now sends challenge instead)
-app.post('/api/arena/challenge-player', requireAuth, async (req, res) => {
+// API endpoint to create a bot battle
+app.post('/api/arena/create-bot-battle', requireAuth, async (req, res) => {
     try {
         const userId = req.session.userId;
-        const { opponentId } = req.body;
+        const { player1Pokemon, player2Pokemon } = req.body;
+        
+        console.log('Creating bot battle for user:', userId);
+        console.log('Player 1 Pokemon:', player1Pokemon.name);
+        console.log('Player 2 Pokemon:', player2Pokemon.name);
         
         // Check if user can battle
         if (!canBattle(userId)) {
             return res.status(400).json({ error: 'You have used all 5 battles for today. Come back tomorrow!' });
         }
         
-        // Check if opponent exists and is online
-        const onlinePlayersList = getOnlinePlayers();
-        const opponent = onlinePlayersList.find(p => p.id === opponentId);
+        // Generate a unique battle ID for the bot battle
+        const battleId = `bot_${userId}_${Date.now()}`;
+        console.log('Generated battle ID:', battleId);
         
-        if (!opponent) {
-            return res.status(400).json({ error: 'Opponent is no longer online' });
-        }
+        // Create battle data
+        const battleData = {
+            player1Pokemon: player1Pokemon,
+            player2Pokemon: player2Pokemon,
+            player1Name: 'You',
+            player2Name: 'Bot',
+            player1Id: userId,
+            player2Id: 'bot',
+            battleType: 'bot'
+        };
         
-        // Get both users' favorites
-        const userFavorites = loadUserFavorites(userId);
-        const opponentFavorites = loadUserFavorites(opponentId);
+        // Store the bot battle data
+        botBattles.set(battleId, {
+            battleData: battleData,
+            createdAt: Date.now()
+        });
         
-        if (userFavorites.length === 0) {
-            return res.status(400).json({ error: 'You need at least one favorite Pokemon to battle' });
-        }
+        console.log('Bot battle stored. Total bot battles:', botBattles.size);
+        console.log('Available bot battles:', Array.from(botBattles.keys()));
         
-        if (opponentFavorites.length === 0) {
-            return res.status(400).json({ error: 'Opponent has no favorite Pokemon' });
-        }
-        
-        // Randomly select Pokemon for each player
-        const userPokemonId = userFavorites[Math.floor(Math.random() * userFavorites.length)].id;
-        const opponentPokemonId = opponentFavorites[Math.floor(Math.random() * opponentFavorites.length)].id;
-        
-        // Fetch Pokemon data from PokeAPI
-        const [userPokemon, opponentPokemon] = await Promise.all([
-            fetch(`https://pokeapi.co/api/v2/pokemon/${userPokemonId}`).then(res => res.json()),
-            fetch(`https://pokeapi.co/api/v2/pokemon/${opponentPokemonId}`).then(res => res.json())
-        ]);
-        
-        // Calculate battle scores
-        userPokemon.battleScore = calculateBattleScore(userPokemon);
-        opponentPokemon.battleScore = calculateBattleScore(opponentPokemon);
+        // Record the battle for the user
+        recordBattle(userId, 'bot', 'Bot', battleData);
         
         res.json({
-            player1Pokemon: userPokemon,
-            player2Pokemon: opponentPokemon,
-            player1Name: req.session.userFirstName,
-            player2Name: opponent.firstName,
-            player1Id: userId,
-            player2Id: opponentId
+            battleId: battleId,
+            message: 'Bot battle created successfully'
         });
         
     } catch (error) {
-        console.error('Error challenging player:', error);
-        res.status(500).json({ error: 'Failed to challenge player' });
+        console.error('Error creating bot battle:', error);
+        res.status(500).json({ error: 'Failed to create bot battle' });
     }
 });
+
+
 
 function validateRegistrationData(firstName, email, password) {
     // First name validation

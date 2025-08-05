@@ -1,65 +1,275 @@
 {
   "battles": [
     {
-      "id": "1754393841778",
+      "id": "1754403908250",
       "type": "player",
       "opponent": "Irad",
-      "timestamp": "2025-08-05T11:37:21.778Z",
+      "timestamp": "2025-08-05T14:25:08.250Z",
       "details": {
         "myPokemon": {
           "name": "ariados",
           "image": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/168.png",
-          "score": 75.33785168700545
+          "score": 75.18122987725188
         },
         "opponentPokemon": {
-          "name": "electrike",
-          "image": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/309.png",
-          "score": 44.62424272932083
+          "name": "pecharunt",
+          "image": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1025.png",
+          "score": 102.94037445009377
         },
-        "result": "won",
+        "result": "lost",
         "opponentName": "Irad"
       }
     },
     {
-      "id": "1754393842998",
-      "type": "player",
-      "opponent": "Irad",
-      "timestamp": "2025-08-05T11:37:22.998Z",
+      "id": "1754403956421",
+      "type": "bot",
+      "opponent": "Bot",
+      "timestamp": "2025-08-05T14:25:56.421Z",
       "details": {
-        "myPokemon": {
-          "name": "ariados",
-          "image": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/168.png",
-          "score": 75.33785168700545
+        "player1Pokemon": {
+          "id": 168,
+          "name": "Ariados",
+          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/168.png",
+          "stats": [
+            {
+              "base_stat": 70,
+              "effort": 0,
+              "stat": {
+                "name": "hp",
+                "url": "https://pokeapi.co/api/v2/stat/1/"
+              }
+            },
+            {
+              "base_stat": 90,
+              "effort": 2,
+              "stat": {
+                "name": "attack",
+                "url": "https://pokeapi.co/api/v2/stat/2/"
+              }
+            },
+            {
+              "base_stat": 70,
+              "effort": 0,
+              "stat": {
+                "name": "defense",
+                "url": "https://pokeapi.co/api/v2/stat/3/"
+              }
+            },
+            {
+              "base_stat": 60,
+              "effort": 0,
+              "stat": {
+                "name": "special-attack",
+                "url": "https://pokeapi.co/api/v2/stat/4/"
+              }
+            },
+            {
+              "base_stat": 70,
+              "effort": 0,
+              "stat": {
+                "name": "special-defense",
+                "url": "https://pokeapi.co/api/v2/stat/5/"
+              }
+            },
+            {
+              "base_stat": 40,
+              "effort": 0,
+              "stat": {
+                "name": "speed",
+                "url": "https://pokeapi.co/api/v2/stat/6/"
+              }
+            }
+          ],
+          "battleScore": 67.5
         },
-        "opponentPokemon": {
-          "name": "electrike",
-          "image": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/309.png",
-          "score": 44.62424272932083
+        "player2Pokemon": {
+          "id": 746,
+          "name": "Wishiwashi-solo",
+          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/746.png",
+          "stats": [
+            {
+              "base_stat": 45,
+              "effort": 1,
+              "stat": {
+                "name": "hp",
+                "url": "https://pokeapi.co/api/v2/stat/1/"
+              }
+            },
+            {
+              "base_stat": 20,
+              "effort": 0,
+              "stat": {
+                "name": "attack",
+                "url": "https://pokeapi.co/api/v2/stat/2/"
+              }
+            },
+            {
+              "base_stat": 20,
+              "effort": 0,
+              "stat": {
+                "name": "defense",
+                "url": "https://pokeapi.co/api/v2/stat/3/"
+              }
+            },
+            {
+              "base_stat": 25,
+              "effort": 0,
+              "stat": {
+                "name": "special-attack",
+                "url": "https://pokeapi.co/api/v2/stat/4/"
+              }
+            },
+            {
+              "base_stat": 25,
+              "effort": 0,
+              "stat": {
+                "name": "special-defense",
+                "url": "https://pokeapi.co/api/v2/stat/5/"
+              }
+            },
+            {
+              "base_stat": 40,
+              "effort": 0,
+              "stat": {
+                "name": "speed",
+                "url": "https://pokeapi.co/api/v2/stat/6/"
+              }
+            }
+          ],
+          "battleScore": 31.25
         },
-        "result": "won",
-        "opponentName": "Irad"
+        "player1Name": "You",
+        "player2Name": "Bot",
+        "player1Id": "1754242401575",
+        "player2Id": "bot",
+        "battleType": "bot"
       }
     },
     {
-      "id": "1754394149343",
-      "type": "player",
-      "opponent": "Irad",
-      "timestamp": "2025-08-05T11:42:29.343Z",
+      "id": "1754403972736",
+      "type": "bot",
+      "opponent": "Bot",
+      "timestamp": "2025-08-05T14:26:12.736Z",
       "details": {
-        "myPokemon": {
-          "name": "arcanine",
-          "image": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/59.png",
-          "score": 97.33396311753616
+        "player1Pokemon": {
+          "id": 59,
+          "name": "Arcanine",
+          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/59.png",
+          "stats": [
+            {
+              "base_stat": 90,
+              "effort": 0,
+              "stat": {
+                "name": "hp",
+                "url": "https://pokeapi.co/api/v2/stat/1/"
+              }
+            },
+            {
+              "base_stat": 110,
+              "effort": 2,
+              "stat": {
+                "name": "attack",
+                "url": "https://pokeapi.co/api/v2/stat/2/"
+              }
+            },
+            {
+              "base_stat": 80,
+              "effort": 0,
+              "stat": {
+                "name": "defense",
+                "url": "https://pokeapi.co/api/v2/stat/3/"
+              }
+            },
+            {
+              "base_stat": 100,
+              "effort": 0,
+              "stat": {
+                "name": "special-attack",
+                "url": "https://pokeapi.co/api/v2/stat/4/"
+              }
+            },
+            {
+              "base_stat": 80,
+              "effort": 0,
+              "stat": {
+                "name": "special-defense",
+                "url": "https://pokeapi.co/api/v2/stat/5/"
+              }
+            },
+            {
+              "base_stat": 95,
+              "effort": 0,
+              "stat": {
+                "name": "speed",
+                "url": "https://pokeapi.co/api/v2/stat/6/"
+              }
+            }
+          ],
+          "battleScore": 93.75
         },
-        "opponentPokemon": {
-          "name": "electrike",
-          "image": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/309.png",
-          "score": 45.50354659178314
+        "player2Pokemon": {
+          "id": 683,
+          "name": "Aromatisse",
+          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/683.png",
+          "stats": [
+            {
+              "base_stat": 101,
+              "effort": 2,
+              "stat": {
+                "name": "hp",
+                "url": "https://pokeapi.co/api/v2/stat/1/"
+              }
+            },
+            {
+              "base_stat": 72,
+              "effort": 0,
+              "stat": {
+                "name": "attack",
+                "url": "https://pokeapi.co/api/v2/stat/2/"
+              }
+            },
+            {
+              "base_stat": 72,
+              "effort": 0,
+              "stat": {
+                "name": "defense",
+                "url": "https://pokeapi.co/api/v2/stat/3/"
+              }
+            },
+            {
+              "base_stat": 99,
+              "effort": 0,
+              "stat": {
+                "name": "special-attack",
+                "url": "https://pokeapi.co/api/v2/stat/4/"
+              }
+            },
+            {
+              "base_stat": 89,
+              "effort": 0,
+              "stat": {
+                "name": "special-defense",
+                "url": "https://pokeapi.co/api/v2/stat/5/"
+              }
+            },
+            {
+              "base_stat": 29,
+              "effort": 0,
+              "stat": {
+                "name": "speed",
+                "url": "https://pokeapi.co/api/v2/stat/6/"
+              }
+            }
+          ],
+          "battleScore": 68.5
         },
-        "result": "won",
-        "opponentName": "Irad"
+        "player1Name": "You",
+        "player2Name": "Bot",
+        "player1Id": "1754242401575",
+        "player2Id": "bot",
+        "battleType": "bot"
       }
     }
   ],
-  "lastReset": "2025-08-05T11:37:21.778Z"
+  "lastReset": "2025-08-05T14:25:08.250Z"
 }
