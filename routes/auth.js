@@ -21,6 +21,11 @@ function requireAuth(req, res, next) {
     }
 }
 
+// Route for the home page (public)
+router.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, '..', 'views', 'home.html'));
+});
+
 // Route for the register page
 router.get('/register', (req, res) => {
     if (req.session.userId) {
@@ -35,6 +40,23 @@ router.get('/login', (req, res) => {
         return res.redirect('/search');
     }
     res.sendFile(path.join(__dirname, '..', 'views', 'login.html'));
+});
+
+// API endpoint for project information
+router.get('/api/project-info', (req, res) => {
+    const projectData = {
+        projectDescription: `The Pokemon Project is a web application that allows users to search for Pokemon, add them to favorites, and manage their personal list. 
+        The application was built using modern technologies including HTML5, CSS3, JavaScript, and Node.js on the server side. 
+        The system includes an advanced user authentication system and secure data storage.`,
+        developers: [
+            {
+                name: "Irad Yaacoby",
+                id: "319074951"
+            }
+        ]
+    };
+    
+    res.json(projectData);
 });
 
 // API endpoint for user registration

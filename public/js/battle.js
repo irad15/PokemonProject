@@ -118,6 +118,18 @@ function startBattle() {
     }, 1000);
 }
 
+// Function to remove user from online players
+async function removeFromOnlinePlayers() {
+    try {
+        await fetch('/api/arena/remove-online', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' }
+        });
+    } catch (error) {
+        console.error('Error removing from online players:', error);
+    }
+}
+
 // Execute battle and show results
 function executeBattle() {
     const player1Card = document.getElementById('player1Card');
@@ -150,6 +162,9 @@ function executeBattle() {
     
     battleScore.textContent = `${battleData.player1Name}: ${player1Score.toFixed(1)} | ${battleData.player2Name}: ${player2Score.toFixed(1)}`;
     battleResult.style.display = 'block';
+    
+    // Remove players from online list after battle ends
+    removeFromOnlinePlayers();
     
     // Battle is automatically recorded on the server when challenge is accepted
     // No need to record it again here

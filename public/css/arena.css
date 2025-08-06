@@ -257,15 +257,6 @@ h1 {
     margin-bottom: 10px;
     background: #f8f9fa;
     border-radius: 8px;
-    border-left: 4px solid #007bff;
-}
-
-.battle-item.bot-battle {
-    border-left-color: #28a745;
-}
-
-.battle-item.player-battle {
-    border-left-color: #dc3545;
 }
 
 .battle-info {

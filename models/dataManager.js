@@ -207,20 +207,6 @@ const cleanupExpiredChallenges = () => {
     }
 };
 
-// Battle score calculation
-const calculateBattleScore = (pokemon) => {
-    const hp = pokemon.stats[0].base_stat;
-    const attack = pokemon.stats[1].base_stat;
-    const defense = pokemon.stats[2].base_stat;
-    const speed = pokemon.stats[5].base_stat;
-    
-    // Formula: HP × 0.3 + Attack × 0.4 + Defense × 0.2 + Speed × 0.1 + smallRandVal
-    const baseScore = hp * 0.3 + attack * 0.4 + defense * 0.2 + speed * 0.1;
-    const smallRandVal = Math.random() * 2; // Small random value for variety
-    
-    return baseScore + smallRandVal;
-};
-
 // Leaderboard calculation
 const calculateLeaderboard = (currentUserId) => {
     try {

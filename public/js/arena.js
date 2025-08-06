@@ -138,8 +138,8 @@ function displayBattleHistory(data) {
             let battleType = battle.type === 'bot' ? 'Bot Battle' : 'Player Battle';
             
             // Add opponent name for player battles
-            if (battle.type === 'player' && battle.details && battle.details.opponentName) {
-                battleType = `Player Battle - ${battle.details.opponentName}`;
+            if (battle.type === 'player-vs-player' && battle.details && battle.details.player2Name) {
+                battleType = `Player Battle - ${battle.details.player2Name}`;
             }
             
             const battleClass = battle.type === 'bot' ? 'bot-battle' : 'player-battle';
@@ -158,21 +158,28 @@ function displayBattleHistory(data) {
                 // Handle different battle data structures
                 let myPokemon, opponentPokemon, result, opponentName;
                 
-                if (details.myPokemon && details.opponentPokemon) {
-                    // Player vs Player battle structure
+                if (details.player1Pokemon && details.player2Pokemon) {
+                    // Unified structure (both bot and player battles now use this)
+                    myPokemon = details.player1Pokemon;
+                    opponentPokemon = details.player2Pokemon;
+                    
+                    // Determine result based on scores
+                    const myScore = myPokemon.battleScore || 0;
+                    const opponentScore = opponentPokemon.battleScore || 0;
+                    result = myScore > opponentScore ? 'won' : (myScore < opponentScore ? 'lost' : 'tie');
+                    
+                    // Determine opponent name based on battle type
+                    if (details.battleType === 'bot') {
+                        opponentName = 'Bot';
+                    } else {
+                        opponentName = details.player2Name || 'Opponent';
+                    }
+                } else if (details.myPokemon && details.opponentPokemon) {
+                    // Legacy player battle structure (for backward compatibility)
                     myPokemon = details.myPokemon;
                     opponentPokemon = details.opponentPokemon;
                     result = details.result;
                     opponentName = details.opponentName;
-                } else if (details.player1Pokemon && details.player2Pokemon) {
-                    // Bot battle structure
-                    myPokemon = details.player1Pokemon;
-                    opponentPokemon = details.player2Pokemon;
-                    // For bot battles, determine result based on scores
-                    const myScore = myPokemon.battleScore || 0;
-                    const opponentScore = opponentPokemon.battleScore || 0;
-                    result = myScore > opponentScore ? 'won' : (myScore < opponentScore ? 'lost' : 'tie');
-                    opponentName = 'Bot';
                 } else {
                     // Fallback for unknown structure
                     battleContent += `
@@ -193,8 +200,8 @@ function displayBattleHistory(data) {
                                  result === 'lost' ? 'Defeat' : 'Tie';
                 
                 // Use sprite for image, fallback to image if sprite doesn't exist
-                const myImage = myPokemon.sprite || myPokemon.image || '';
-                const opponentImage = opponentPokemon.sprite || opponentPokemon.image || '';
+                const myImage = myPokemon.sprite || myPokemon.sprites?.front_default || myPokemon.image || '';
+                const opponentImage = opponentPokemon.sprite || opponentPokemon.sprites?.front_default || opponentPokemon.image || '';
                 const myScore = myPokemon.battleScore || myPokemon.score || 0;
                 const opponentScore = opponentPokemon.battleScore || opponentPokemon.score || 0;
                 

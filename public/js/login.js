@@ -97,6 +97,9 @@ async function handleFormSubmission(event) {
                 email: result.email
             }));
             
+            // Set flag to clear search on next page load
+            localStorage.setItem('clearSearchOnLoad', 'true');
+            
             setTimeout(() => {
                 window.location.href = '/search';
             }, 2000);

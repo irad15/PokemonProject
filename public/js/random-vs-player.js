@@ -19,8 +19,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Check for declined challenges every 2 seconds
     declinedCheckInterval = setInterval(checkForDeclinedChallenges, 2000);
     
-    // Check for accepted challenges every 2 seconds
-    acceptedCheckInterval = setInterval(checkForAcceptedChallenges, 2000);
+    // Check for accepted challenges every 500ms for faster response
+    acceptedCheckInterval = setInterval(checkForAcceptedChallenges, 500);
 });
 
 // Load current user info
@@ -147,7 +147,7 @@ async function sendChallenge(opponentId, opponentName) {
             
             // Clear any existing accepted challenge checks to prevent conflicts
             clearInterval(acceptedCheckInterval);
-            acceptedCheckInterval = setInterval(checkForAcceptedChallenges, 2000);
+            acceptedCheckInterval = setInterval(checkForAcceptedChallenges, 500);
         } else {
             alert(data.error || 'Failed to send challenge');
         }
@@ -237,12 +237,25 @@ async function checkForAcceptedChallenges() {
     }
 }
 
+// Function to remove user from online players
+async function removeFromOnlinePlayers() {
+    try {
+        await fetch('/api/arena/remove-online', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' }
+        });
+    } catch (error) {
+        console.error('Error removing from online players:', error);
+    }
+}
+
 // Cleanup on page unload
 window.addEventListener('beforeunload', () => {
     clearInterval(refreshInterval);
     clearInterval(challengesInterval);
     clearInterval(declinedCheckInterval);
     clearInterval(acceptedCheckInterval);
+    removeFromOnlinePlayers();
 });
 
 // Also cleanup when the page is hidden (user navigates away)
@@ -252,11 +265,12 @@ document.addEventListener('visibilitychange', () => {
         clearInterval(challengesInterval);
         clearInterval(declinedCheckInterval);
         clearInterval(acceptedCheckInterval);
+        removeFromOnlinePlayers();
     } else {
         // Restart intervals when page becomes visible again
         refreshInterval = setInterval(loadOnlinePlayers, 5000);
         challengesInterval = setInterval(loadPendingChallenges, 3000);
         declinedCheckInterval = setInterval(checkForDeclinedChallenges, 2000);
-        acceptedCheckInterval = setInterval(checkForAcceptedChallenges, 2000);
+        acceptedCheckInterval = setInterval(checkForAcceptedChallenges, 500);
     }
 });

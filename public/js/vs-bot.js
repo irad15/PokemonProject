@@ -131,7 +131,7 @@ async function selectPokemon(pokemonId) {
             name: formatPokemonName(fullPokemonData.name),
             sprite: fullPokemonData.sprites.front_default || "https://via.placeholder.com/100?text=No+Image",
             stats: fullPokemonData.stats,
-            battleScore: calculateBattleScore(fullPokemonData.stats)
+            types: fullPokemonData.types
         };
         
         // Generate random bot Pokemon
@@ -157,7 +157,7 @@ async function generateBotPokemon() {
             name: formatPokemonName(botData.name),
             sprite: botData.sprites.front_default || "https://via.placeholder.com/100?text=No+Image",
             stats: botData.stats,
-            battleScore: calculateBattleScore(botData.stats)
+            types: botData.types
         };
         
     } catch (error) {
@@ -166,18 +166,7 @@ async function generateBotPokemon() {
     }
 }
 
-// Calculate battle score based on stats
-function calculateBattleScore(stats) {
-    // Use the same scoring system as the battle page
-    const relevantStats = [
-        stats[0].base_stat, // HP
-        stats[1].base_stat, // Attack
-        stats[2].base_stat, // Defense
-        stats[5].base_stat  // Speed
-    ];
-    
-    return relevantStats.reduce((sum, stat) => sum + stat, 0) / relevantStats.length;
-}
+
 
 // Display battle setup with both Pokemon
 function displayBattleSetup() {

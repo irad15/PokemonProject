@@ -142,6 +142,15 @@ document.addEventListener("DOMContentLoaded", () => {
     // Load favorites counter
     loadFavoritesCounter();
     
+    // Check if we should clear search (after login)
+    const shouldClearSearch = localStorage.getItem('clearSearchOnLoad') === 'true';
+    if (shouldClearSearch) {
+        localStorage.removeItem('clearSearchOnLoad');
+        localStorage.removeItem('searchQuery');
+        txtSearch.value = '';
+        pokemonListBody.innerHTML = '';
+    }
+    
     // Create debounced search handler (waits 500ms after typing stops)
     const debouncedSearch = debounce(() => {
         const searchQuery = txtSearch.value.trim().toLowerCase();
@@ -160,13 +169,15 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }, 500);
 
-    // Load initial search query from URL or localStorage
-    const urlParams = new URLSearchParams(window.location.search);
-    const searchQuery = urlParams.get("query") || localStorage.getItem("searchQuery") || "";
+    // Load initial search query from URL or localStorage (only if not clearing)
+    if (!shouldClearSearch) {
+        const urlParams = new URLSearchParams(window.location.search);
+        const searchQuery = urlParams.get("query") || localStorage.getItem("searchQuery") || "";
 
-    if (searchQuery) {
-        txtSearch.value = searchQuery;
-        fetchPokemon(searchQuery);
+        if (searchQuery) {
+            txtSearch.value = searchQuery;
+            fetchPokemon(searchQuery);
+        }
     }
 
     // Attach debounced search to input field
