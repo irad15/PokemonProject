@@ -24,11 +24,11 @@ async function loadUserFavorites() {
         
         if (response.ok) {
             userFavorites = favorites;
-            if (userFavorites.length === 0) {
-                showNoFavoritesMessage();
-            } else {
-                displayFavorites();
-            }
+                    if (userFavorites.length === 0) {
+            showNoFavoritesMessage(favoritesGrid);
+        } else {
+            displayFavorites();
+        }
         } else {
             alert('Failed to load favorites. Please try again.');
         }
@@ -64,7 +64,7 @@ async function displayFavorites() {
         const validPokemon = pokemonList.filter(pokemon => pokemon !== null);
         
         if (validPokemon.length === 0) {
-            showNoFavoritesMessage();
+            showNoFavoritesMessage(favoritesGrid);
             return;
         }
         
@@ -87,20 +87,43 @@ async function displayFavorites() {
     }
 }
 
-// Show message when user has no favorites
-function showNoFavoritesMessage() {
-    loadingSection.style.display = 'none';
-    selectionSection.style.display = 'block';
+
+
+// Generate HTML for Pokemon stats
+function generateStatsHTML(stats) {
+    const relevantStats = [
+        { label: 'HP', value: stats[0].base_stat },
+        { label: 'Attack', value: stats[1].base_stat },
+        { label: 'Defense', value: stats[2].base_stat },
+        { label: 'Speed', value: stats[5].base_stat }
+    ];
     
-    favoritesGrid.innerHTML = `
+    return relevantStats.map(stat => `
+        <div class="stat-item">
+            <span class="stat-label">${stat.label}</span>
+            <span class="stat-value">${stat.value}</span>
+        </div>
+    `).join('');
+}
+
+// Show message when user has no favorites
+function showNoFavoritesMessage(containerElement, showGoToSearchButton = true) {
+    let messageHTML = `
         <div style="grid-column: 1 / -1; text-align: center; padding: 40px;">
             <h3>No Favorite Pokemon Found</h3>
             <p>You need to add some Pokemon to your favorites first!</p>
+    `;
+    
+    if (showGoToSearchButton) {
+        messageHTML += `
             <button onclick="window.location.href='/search'" class="back-btn">
                 Go to Search Pokemon
             </button>
-        </div>
-    `;
+        `;
+    }
+    
+    messageHTML += '</div>';
+    containerElement.innerHTML = messageHTML;
 }
 
 // Select a Pokemon for battle
@@ -179,22 +202,7 @@ function displayBattleSetup() {
     startBattleBtn.disabled = false;
 }
 
-// Generate HTML for Pokemon stats
-function generateStatsHTML(stats) {
-    const relevantStats = [
-        { label: 'HP', value: stats[0].base_stat },
-        { label: 'Attack', value: stats[1].base_stat },
-        { label: 'Defense', value: stats[2].base_stat },
-        { label: 'Speed', value: stats[5].base_stat }
-    ];
-    
-    return relevantStats.map(stat => `
-        <div class="stat-item">
-            <span class="stat-label">${stat.label}</span>
-            <span class="stat-value">${stat.value}</span>
-        </div>
-    `).join('');
-}
+
 
 // Start the battle
 async function startBattle() {

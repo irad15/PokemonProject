@@ -1,41 +1,95 @@
 {
   "battles": [
     {
-      "timestamp": 1754573792247,
+      "timestamp": 1754575980842,
+      "type": "bot",
+      "opponent": "Bot",
+      "details": {
+        "myPokemon": {
+          "name": "pecharunt",
+          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1025.png",
+          "score": 103.29324640839582
+        },
+        "opponentPokemon": {
+          "name": "swadloon",
+          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/541.png",
+          "score": 65.5052773169803
+        },
+        "result": "won"
+      }
+    },
+    {
+      "timestamp": 1754576012347,
+      "type": "bot",
+      "opponent": "Bot",
+      "details": {
+        "myPokemon": {
+          "name": "pecharunt",
+          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1025.png",
+          "score": 103.94897625483443
+        },
+        "opponentPokemon": {
+          "name": "malamar",
+          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/687.png",
+          "score": 87.95424555301531
+        },
+        "result": "won"
+      }
+    },
+    {
+      "timestamp": 1754578286980,
       "type": "player-vs-player",
       "opponent": "Irada",
       "details": {
         "myPokemon": {
           "name": "pecharunt",
           "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1025.png",
-          "score": 103.72479980621831
+          "score": 103.07546217538422
         },
         "opponentPokemon": {
-          "name": "ariados",
-          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/168.png",
-          "score": 76.08298446606823
+          "name": "arbok",
+          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/24.png",
+          "score": 79.31452271559668
         },
         "opponentName": "Irada",
         "result": "won"
       }
     },
     {
-      "timestamp": 1754573821053,
+      "timestamp": 1754578645618,
       "type": "player-vs-player",
       "opponent": "Irada",
       "details": {
         "myPokemon": {
-          "name": "ursaring",
-          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/217.png",
-          "score": 100.94908170430375
+          "name": "bulbasaur",
+          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png",
+          "score": 47.53789353755708
         },
         "opponentPokemon": {
-          "name": "nidoran-f",
-          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/29.png",
-          "score": 50.269410577235966
+          "name": "absol",
+          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/359.png",
+          "score": 92.8290913155336
         },
         "opponentName": "Irada",
-        "result": "won"
+        "result": "lost"
+      }
+    },
+    {
+      "timestamp": 1754578672609,
+      "type": "bot",
+      "opponent": "Bot",
+      "details": {
+        "myPokemon": {
+          "name": "bulbasaur",
+          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png",
+          "score": 48.31809834376031
+        },
+        "opponentPokemon": {
+          "name": "mr-rime",
+          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/866.png",
+          "score": 80.50213149600194
+        },
+        "result": "lost"
       }
     }
   ]

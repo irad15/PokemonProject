@@ -1,3 +1,12 @@
+// Password validation
+const isValidPassword = (password) => {
+    const hasUpperCase = /[A-Z]/.test(password);
+    const hasLowerCase = /[a-z]/.test(password);
+    const hasNonAlphanumeric = /[^A-Za-z0-9]/.test(password);
+    
+    return hasUpperCase && hasLowerCase && hasNonAlphanumeric;
+};
+
 document.addEventListener('DOMContentLoaded', async function() {
     
     const form = document.getElementById('registerForm');

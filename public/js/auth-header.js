@@ -1,3 +1,12 @@
+// Clear search data from localStorage and URL
+const clearSearchData = () => {
+    localStorage.removeItem("searchQuery");
+    // Clear URL parameters if on search page
+    if (window.location.pathname.includes('search')) {
+        window.history.replaceState(null, "", window.location.pathname);
+    }
+};
+
 // Authentication header functionality
 document.addEventListener('DOMContentLoaded', function() {
     addAuthHeader();

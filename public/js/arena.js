@@ -120,7 +120,7 @@ function displayBattleHistory(data) {
     
     // Calculate statistics
     const botBattles = data.battles.filter(battle => battle.type === 'bot').length;
-    const playerBattles = data.battles.filter(battle => battle.type === 'player').length;
+    const playerBattles = data.battles.filter(battle => battle.type === 'player-vs-player').length;
     
     // Update statistics
     totalBattlesElement.textContent = data.totalBattles;
@@ -138,8 +138,8 @@ function displayBattleHistory(data) {
             let battleType = battle.type === 'bot' ? 'Bot Battle' : 'Player Battle';
             
             // Add opponent name for player battles
-            if (battle.type === 'player-vs-player' && battle.details && battle.details.player2Name) {
-                battleType = `Player Battle - ${battle.details.player2Name}`;
+            if (battle.type === 'player-vs-player' && battle.details && battle.details.opponentName) {
+                battleType = `Player Battle - ${battle.details.opponentName}`;
             }
             
             const battleClass = battle.type === 'bot' ? 'bot-battle' : 'player-battle';
@@ -175,7 +175,7 @@ function displayBattleHistory(data) {
                         opponentName = details.player2Name || 'Opponent';
                     }
                 } else if (details.myPokemon && details.opponentPokemon) {
-                    // Legacy player battle structure (for backward compatibility)
+                    // Player battle structure
                     myPokemon = details.myPokemon;
                     opponentPokemon = details.opponentPokemon;
                     result = details.result;
@@ -221,7 +221,7 @@ function displayBattleHistory(data) {
                                     <span class="score">${opponentScore.toFixed(1)}</span>
                                 </div>
                             </div>
-                            ${battle.type === 'player' ? `<div class="opponent-name">vs ${opponentName}</div>` : ''}
+                            ${battle.type === 'player-vs-player' ? `<div class="opponent-name">vs ${opponentName}</div>` : ''}
                         </div>
                 `;
             }

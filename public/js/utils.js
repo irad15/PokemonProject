@@ -22,13 +22,7 @@ const isValidEmail = (email) => {
     return emailRegex.test(email);
 };
 
-const isValidPassword = (password) => {
-    const hasUpperCase = /[A-Z]/.test(password);
-    const hasLowerCase = /[a-z]/.test(password);
-    const hasNonAlphanumeric = /[^A-Za-z0-9]/.test(password);
-    
-    return hasUpperCase && hasLowerCase && hasNonAlphanumeric;
-};
+
 
 // Form validation functions
 const validateField = (field, validationRules) => {
@@ -122,23 +116,9 @@ function formatPokemonName(name) {
     return capitalizeFirst(name);
 }
 
-// Debounce utility
-function debounce(func, delay) {
-    let timeout;
-    return function(...args) {
-        clearTimeout(timeout);
-        timeout = setTimeout(() => func(...args), delay);
-    };
-}
 
-// Search utilities
-const clearSearchData = () => {
-    localStorage.removeItem("searchQuery");
-    // Clear URL parameters if on search page
-    if (window.location.pathname.includes('search')) {
-        window.history.replaceState(null, "", window.location.pathname);
-    }
-};
+
+
 
 // Pokemon details modal functionality
 function showPokemonDetailsModal(pokemon) {
@@ -289,183 +269,17 @@ function closeStatsModal() {
     modalTitle.textContent = "";
 }
 
-// Additional Pokemon utilities from pokemonUtils.js
 
-// Fetch Pokemon data from API
-async function fetchPokemonData(pokemonId) {
-    try {
-        const response = await fetch(`${API_BASE_URL}pokemon/${pokemonId}`);
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        return await response.json();
-    } catch (error) {
-        console.error(`Error fetching Pokemon ${pokemonId}:`, error);
-        return null;
-    }
-}
 
-// Fetch multiple Pokemon data
-async function fetchMultiplePokemon(pokemonIds) {
-    const pokemonPromises = pokemonIds.map(async (pokemonId) => {
-        try {
-            return await fetchPokemonData(pokemonId);
-        } catch (error) {
-            console.error(`Error fetching Pokemon ${pokemonId}:`, error);
-            return null;
-        }
-    });
-    
-    const pokemonList = await Promise.all(pokemonPromises);
-    return pokemonList.filter(pokemon => pokemon !== null);
-}
 
-// Generate Pokemon table row HTML
-function generatePokemonTableRow(pokemon, showAddButton = true, showRemoveButton = false) {
-    const sprite = pokemon.sprites.front_default || 'https://via.placeholder.com/100?text=No+Image';
-    const name = formatPokemonName(pokemon.name);
-    const id = pokemon.id;
-    const types = pokemon.types.map(t => t.type.name).join(", ");
-    const abilities = pokemon.abilities.map(a => a.ability.name).join(", ");
-    
-    let actionButton = '';
-    if (showAddButton) {
-        actionButton = `<button onclick='saveToFavorites(${JSON.stringify(pokemon)})'>Add to Favorites</button>`;
-    } else if (showRemoveButton) {
-        actionButton = `<button onclick="removeFromFavorites(${pokemon.id})">Remove from Favorites</button>`;
-    }
-    
-    return `
-        <tr>
-            <td><img src="${sprite}" alt="${name}" width="100"></td>
-            <td><span class="name-link" onclick="fetchPokemonStats(${id}, '${name}')" aria-label="View details for ${name}">${name}</span></td>
-            <td>${id}</td>
-            <td>${types}</td>
-            <td>${abilities}</td>
-            <td>${actionButton}</td>
-        </tr>
-    `;
-}
 
-// Generate Pokemon card HTML for grid display
-function generatePokemonCard(pokemon, isSelectable = false, isSelected = false) {
-    const sprite = pokemon.sprites.front_default || "https://via.placeholder.com/100?text=No+Image";
-    const name = formatPokemonName(pokemon.name);
-    const id = pokemon.id;
-    
-    const cardClass = isSelectable ? 'favorite-card' : 'pokemon-card';
-    const selectedClass = isSelected ? 'selected' : '';
-    const onClick = isSelectable ? `onclick="selectPokemon(${id})"` : '';
-    const dataAttr = isSelectable ? `data-pokemon-id="${id}"` : '';
-    
-    return `
-        <div class="${cardClass} ${selectedClass}" ${onClick} ${dataAttr}>
-            <img src="${sprite}" alt="${name}" onerror="this.src='https://via.placeholder.com/100?text=Error'">
-            <div class="pokemon-name">${name}</div>
-            <div class="pokemon-id">#${id}</div>
-        </div>
-    `;
-}
 
-// Generate Pokemon stats HTML
-function generateStatsHTML(stats) {
-    const relevantStats = [
-        { label: 'HP', value: stats[0].base_stat },
-        { label: 'Attack', value: stats[1].base_stat },
-        { label: 'Defense', value: stats[2].base_stat },
-        { label: 'Speed', value: stats[5].base_stat }
-    ];
-    
-    return relevantStats.map(stat => `
-        <div class="stat-item">
-            <span class="stat-label">${stat.label}</span>
-            <span class="stat-value">${stat.value}</span>
-        </div>
-    `).join('');
-}
-
-// Display Pokemon in table
-function displayPokemonInTable(pokemonArray, tableBodyElement, showAddButton = true, showRemoveButton = false) {
-    if (!pokemonArray?.length) {
-        tableBodyElement.innerHTML = "<tr><td colspan='6'>No Pokémon found</td></tr>";
-        return;
-    }
-
-    const rows = pokemonArray.map(pokemon => 
-        generatePokemonTableRow(pokemon, showAddButton, showRemoveButton)
-    );
-
-    tableBodyElement.innerHTML = rows.join("");
-}
-
-// Display Pokemon in grid
-function displayPokemonInGrid(pokemonArray, gridElement, isSelectable = false) {
-    if (!pokemonArray?.length) {
-        gridElement.innerHTML = `
-            <div style="grid-column: 1 / -1; text-align: center; padding: 40px;">
-                <h3>No Pokemon Found</h3>
-                <p>No Pokemon to display.</p>
-            </div>
-        `;
-        return;
-    }
-
-    const cards = pokemonArray.map(pokemon => 
-        generatePokemonCard(pokemon, isSelectable)
-    );
-
-    gridElement.innerHTML = cards.join('');
-}
-
-// Load and display favorites counter
-async function loadFavoritesCounter() {
-    try {
-        const response = await fetch('/api/favorites/count');
-        const data = await response.json();
-        
-        const counterElement = document.getElementById('favoritesCounter');
-        if (counterElement) {
-            counterElement.textContent = `Favorites: ${data.count}/${data.maxCount}`;
-            
-            // Update counter styling based on count
-            counterElement.classList.remove('warning', 'full');
-            if (data.count >= data.maxCount) {
-                counterElement.classList.add('full');
-            } else if (data.count >= data.maxCount * 0.8) {
-                counterElement.classList.add('warning');
-            }
-        }
-    } catch (error) {
-        console.error('Error loading favorites counter:', error);
-    }
-}
-
-// Show no favorites message
-function showNoFavoritesMessage(containerElement, showGoToSearchButton = true) {
-    let messageHTML = `
-        <div style="grid-column: 1 / -1; text-align: center; padding: 40px;">
-            <h3>No Favorite Pokemon Found</h3>
-            <p>You need to add some Pokemon to your favorites first!</p>
-    `;
-    
-    if (showGoToSearchButton) {
-        messageHTML += `
-            <button onclick="window.location.href='/search'" class="back-btn">
-                Go to Search Pokemon
-            </button>
-        `;
-    }
-    
-    messageHTML += '</div>';
-    containerElement.innerHTML = messageHTML;
-}
 
 // Export utilities for use in other files
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = {
         fetchJson,
         isValidEmail,
-        isValidPassword,
         validateField,
         showFieldError,
         showFieldSuccess,
@@ -474,21 +288,10 @@ if (typeof module !== 'undefined' && module.exports) {
         showErrorMessage,
         capitalizeFirst,
         formatPokemonName,
-        debounce,
         showPokemonDetailsModal,
         fetchPokemonStats,
         closeStatsModal,
-        clearSearchData,
-        API_BASE_URL,
-        fetchPokemonData,
-        fetchMultiplePokemon,
-        generatePokemonTableRow,
-        generatePokemonCard,
-        generateStatsHTML,
-        displayPokemonInTable,
-        displayPokemonInGrid,
-        loadFavoritesCounter,
-        showNoFavoritesMessage
+        API_BASE_URL
     };
 }
 
@@ -496,7 +299,6 @@ if (typeof module !== 'undefined' && module.exports) {
 if (typeof window !== 'undefined') {
     window.fetchJson = fetchJson;
     window.isValidEmail = isValidEmail;
-    window.isValidPassword = isValidPassword;
     window.validateField = validateField;
     window.showFieldError = showFieldError;
     window.showFieldSuccess = showFieldSuccess;
@@ -505,19 +307,8 @@ if (typeof window !== 'undefined') {
     window.showErrorMessage = showErrorMessage;
     window.capitalizeFirst = capitalizeFirst;
     window.formatPokemonName = formatPokemonName;
-    window.debounce = debounce;
     window.showPokemonDetailsModal = showPokemonDetailsModal;
     window.fetchPokemonStats = fetchPokemonStats;
     window.closeStatsModal = closeStatsModal;
-    window.clearSearchData = clearSearchData;
     window.API_BASE_URL = API_BASE_URL;
-    window.fetchPokemonData = fetchPokemonData;
-    window.fetchMultiplePokemon = fetchMultiplePokemon;
-    window.generatePokemonTableRow = generatePokemonTableRow;
-    window.generatePokemonCard = generatePokemonCard;
-    window.generateStatsHTML = generateStatsHTML;
-    window.displayPokemonInTable = displayPokemonInTable;
-    window.displayPokemonInGrid = displayPokemonInGrid;
-    window.loadFavoritesCounter = loadFavoritesCounter;
-    window.showNoFavoritesMessage = showNoFavoritesMessage;
 } 

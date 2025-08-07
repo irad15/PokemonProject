@@ -137,6 +137,38 @@ async function fetchPokemon(searchQuery) {
     }
 }
 
+// Debounce utility
+function debounce(func, delay) {
+    let timeout;
+    return function(...args) {
+        clearTimeout(timeout);
+        timeout = setTimeout(() => func(...args), delay);
+    };
+}
+
+// Load and display favorites counter
+async function loadFavoritesCounter() {
+    try {
+        const response = await fetch('/api/favorites/count');
+        const data = await response.json();
+        
+        const counterElement = document.getElementById('favoritesCounter');
+        if (counterElement) {
+            counterElement.textContent = `Favorites: ${data.count} / ${data.maxCount}`;
+            
+            // Update counter styling based on count
+            counterElement.classList.remove('warning', 'full');
+            if (data.count >= data.maxCount) {
+                counterElement.classList.add('full');
+            } else if (data.count >= data.maxCount * 0.8) {
+                counterElement.classList.add('warning');
+            }
+        }
+    } catch (error) {
+        console.error('Error loading favorites counter:', error);
+    }
+}
+
 // Initializes search functionality on page load
 document.addEventListener("DOMContentLoaded", () => {
     // Load favorites counter
@@ -184,25 +216,3 @@ document.addEventListener("DOMContentLoaded", () => {
     txtSearch.addEventListener("input", debouncedSearch);
 });
 
-// Load and display favorites counter
-async function loadFavoritesCounter() {
-    try {
-        const response = await fetch('/api/favorites/count');
-        const data = await response.json();
-        
-        const counterElement = document.getElementById('favoritesCounter');
-        if (counterElement) {
-            counterElement.textContent = `Favorites: ${data.count}/${data.maxCount}`;
-            
-            // Update counter styling based on count
-            counterElement.classList.remove('warning', 'full');
-            if (data.count >= data.maxCount) {
-                counterElement.classList.add('full');
-            } else if (data.count >= data.maxCount * 0.8) {
-                counterElement.classList.add('warning');
-            }
-        }
-    } catch (error) {
-        console.error('Error loading favorites counter:', error);
-    }
-}
