@@ -29,21 +29,10 @@ app.use((req, res, next) => {
     next();
 });
 
-// File system utilities
-const dataDir = path.join(__dirname, 'Data');
-const usersFile = path.join(dataDir, 'users.json');
+// Import data manager utilities
+const { initializeDataFiles } = require('./utils/dataManager');
 
-// Initialize data directory and files
-const initializeDataFiles = () => {
-    if (!fs.existsSync(dataDir)) {
-        fs.mkdirSync(dataDir);
-    }
-    
-    if (!fs.existsSync(usersFile)) {
-        fs.writeFileSync(usersFile, JSON.stringify([], null, 2));
-    }
-};
-
+// Initialize data files
 initializeDataFiles();
 
 // Import routes and middleware

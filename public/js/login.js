@@ -3,11 +3,6 @@
 // For now, we'll assume shared.js is loaded before this file
 
 document.addEventListener('DOMContentLoaded', async function() {
-    // Check if user is already authenticated and redirect if necessary
-    const isRedirected = await checkAuthAndRedirect();
-    if (isRedirected) {
-        return; // Stop execution if redirected
-    }
     
     const form = document.getElementById('loginForm');
     const inputs = form.querySelectorAll('input');

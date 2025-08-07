@@ -1,0 +1,168 @@
+const fs = require('fs');
+const path = require('path');
+
+// File system utilities
+const dataDir = path.join(__dirname, '..', 'Data');
+const usersFile = path.join(dataDir, 'users.json');
+
+// Initialize data directory and files
+const initializeDataFiles = () => {
+    if (!fs.existsSync(dataDir)) {
+        fs.mkdirSync(dataDir);
+    }
+    
+    if (!fs.existsSync(usersFile)) {
+        fs.writeFileSync(usersFile, JSON.stringify([], null, 2));
+    }
+};
+
+// User favorites management
+const getUserFavoritesFile = (userId) => path.join(dataDir, userId, 'favorites.json');
+
+const loadUserFavorites = (userId) => {
+    const favoritesFile = getUserFavoritesFile(userId);
+    if (fs.existsSync(favoritesFile)) {
+        return JSON.parse(fs.readFileSync(favoritesFile, 'utf8'));
+    }
+    return [];
+};
+
+const saveUserFavorites = (userId, favorites) => {
+    const favoritesFile = getUserFavoritesFile(userId);
+    fs.writeFileSync(favoritesFile, JSON.stringify(favorites, null, 2));
+};
+
+const ensureUserFavoritesDir = (userId) => {
+    const userDir = path.join(dataDir, userId);
+    if (!fs.existsSync(userDir)) {
+        fs.mkdirSync(userDir, { recursive: true });
+    }
+};
+
+// User battles management
+const getUserBattlesFile = (userId) => path.join(dataDir, userId, 'battles.json');
+
+const loadUserBattles = (userId) => {
+    const battlesFile = getUserBattlesFile(userId);
+    if (fs.existsSync(battlesFile)) {
+        return JSON.parse(fs.readFileSync(battlesFile, 'utf8'));
+    }
+    return { battles: [] };
+};
+
+const saveUserBattles = (userId, battlesData) => {
+    const battlesFile = getUserBattlesFile(userId);
+    fs.writeFileSync(battlesFile, JSON.stringify(battlesData, null, 2));
+};
+
+const getBattlesToday = (userId) => {
+    const battlesData = loadUserBattles(userId);
+    const today = new Date().toDateString();
+    return battlesData.battles.filter(battle => {
+        const battleDate = new Date(battle.timestamp).toDateString();
+        return battleDate === today;
+    }).length;
+};
+
+const canBattle = (userId) => {
+    const battlesToday = getBattlesToday(userId);
+    return battlesToday < 5;
+};
+
+const recordBattle = (userId, battleType, opponent = null, battleDetails = null) => {
+    const battlesData = loadUserBattles(userId);
+    const battle = {
+        timestamp: Date.now(),
+        type: battleType,
+        opponent: opponent,
+        details: battleDetails
+    };
+    battlesData.battles.push(battle);
+    saveUserBattles(userId, battlesData);
+};
+
+// User management
+const loadUsers = () => {
+    if (fs.existsSync(usersFile)) {
+        return JSON.parse(fs.readFileSync(usersFile, 'utf8'));
+    }
+    return [];
+};
+
+const saveUsers = (users) => {
+    fs.writeFileSync(usersFile, JSON.stringify(users, null, 2));
+};
+
+const findUserByEmail = (email) => {
+    const users = loadUsers();
+    return users.find(user => user.email === email);
+};
+
+const createUser = (userData) => {
+    const users = loadUsers();
+    users.push(userData);
+    saveUsers(users);
+    
+    // Initialize user data directory and files
+    const userDataDir = path.join(dataDir, userData.id);
+    if (!fs.existsSync(userDataDir)) {
+        fs.mkdirSync(userDataDir, { recursive: true });
+    }
+    
+    // Initialize user favorites file
+    const favoritesFile = path.join(userDataDir, 'favorites.json');
+    fs.writeFileSync(favoritesFile, JSON.stringify([], null, 2));
+    
+    // Initialize user battles file
+    const battlesFile = path.join(userDataDir, 'battles.json');
+    fs.writeFileSync(battlesFile, JSON.stringify({ battles: [] }, null, 2));
+};
+
+// Authentication utilities
+const checkAuthStatus = async (req) => {
+    try {
+        // Check if user session exists
+        if (!req.session || !req.session.userId) {
+            return { isAuthenticated: false };
+        }
+        
+        // Check if user exists in our data
+        const users = loadUsers();
+        const user = users.find(u => u.id === req.session.userId);
+        
+        if (!user) {
+            return { isAuthenticated: false };
+        }
+        
+        return { 
+            isAuthenticated: true, 
+            user: {
+                id: user.id,
+                firstName: user.firstName,
+                email: user.email
+            }
+        };
+    } catch (error) {
+        console.error('Error checking authentication status:', error);
+        return { isAuthenticated: false };
+    }
+};
+
+module.exports = {
+    dataDir,
+    usersFile,
+    initializeDataFiles,
+    loadUserFavorites,
+    saveUserFavorites,
+    ensureUserFavoritesDir,
+    loadUserBattles,
+    saveUserBattles,
+    getBattlesToday,
+    canBattle,
+    recordBattle,
+    loadUsers,
+    saveUsers,
+    findUserByEmail,
+    createUser,
+    checkAuthStatus
+}; 

@@ -1,12 +1,15 @@
 const express = require('express');
 const bcrypt = require('bcrypt');
-const fs = require('fs');
 const path = require('path');
 const router = express.Router();
 
-// File system utilities
-const dataDir = path.join(__dirname, '..', 'Data');
-const usersFile = path.join(dataDir, 'users.json');
+// Import data manager utilities
+const { 
+    loadUsers, 
+    saveUsers, 
+    findUserByEmail, 
+    createUser 
+} = require('../utils/dataManager');
 
 // Authentication middleware
 function requireAuth(req, res, next) {
@@ -70,14 +73,8 @@ router.post('/api/register', async (req, res) => {
             return res.status(400).json({ error: validationResult.error });
         }
         
-        // Load existing users
-        let users = [];
-        if (fs.existsSync(usersFile)) {
-            users = JSON.parse(fs.readFileSync(usersFile, 'utf8'));
-        }
-        
         // Check if user already exists
-        const existingUser = users.find(user => user.email === email);
+        const existingUser = findUserByEmail(email);
         if (existingUser) {
             return res.status(400).json({ error: 'User with this email already exists' });
         }
@@ -93,23 +90,8 @@ router.post('/api/register', async (req, res) => {
             password: hashedPassword
         };
         
-        // Save user
-        users.push(newUser);
-        fs.writeFileSync(usersFile, JSON.stringify(users, null, 2));
-        
-        // Create user data directory
-        const userDataDir = path.join(dataDir, newUser.id);
-        if (!fs.existsSync(userDataDir)) {
-            fs.mkdirSync(userDataDir, { recursive: true });
-        }
-        
-        // Initialize user favorites file
-        const favoritesFile = path.join(userDataDir, 'favorites.json');
-        fs.writeFileSync(favoritesFile, JSON.stringify([], null, 2));
-        
-        // Initialize user battles file
-        const battlesFile = path.join(userDataDir, 'battles.json');
-        fs.writeFileSync(battlesFile, JSON.stringify({ battles: [] }, null, 2));
+        // Save user and initialize data files
+        createUser(newUser);
         
         res.json({ message: 'Registration successful' });
         
@@ -125,12 +107,8 @@ router.post('/api/login', async (req, res) => {
         const { email, password } = req.body;
         
         // Load users
-        if (!fs.existsSync(usersFile)) {
-            return res.status(400).json({ error: 'Invalid credentials' });
-        }
-        
-        const users = JSON.parse(fs.readFileSync(usersFile, 'utf8'));
-        const user = users.find(u => u.email === email);
+        const users = loadUsers();
+        const user = findUserByEmail(email);
         
         if (!user) {
             return res.status(400).json({ error: 'Invalid credentials' });

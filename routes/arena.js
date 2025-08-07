@@ -1,303 +1,40 @@
 const express = require('express');
-const fs = require('fs');
-const path = require('path');
 const fetch = require('node-fetch');
 const router = express.Router();
 
 // Import requireAuth middleware
 const { requireAuth } = require('./auth');
 
-// File system utilities
-const dataDir = path.join(__dirname, '..', 'Data');
-const usersFile = path.join(dataDir, 'users.json');
+// Import data manager utilities
+const { 
+    loadUserBattles, 
+    saveUserBattles, 
+    getBattlesToday, 
+    canBattle, 
+    recordBattle,
+    loadUsers
+} = require('../utils/dataManager');
 
-// Data manager functions
-const getUserBattlesFile = (userId) => path.join(dataDir, userId, 'battles.json');
-
-const loadUserBattles = (userId) => {
-    const battlesFile = getUserBattlesFile(userId);
-    if (fs.existsSync(battlesFile)) {
-        return JSON.parse(fs.readFileSync(battlesFile, 'utf8'));
-    }
-    return { battles: [] };
-};
-
-const saveUserBattles = (userId, battlesData) => {
-    const battlesFile = getUserBattlesFile(userId);
-    fs.writeFileSync(battlesFile, JSON.stringify(battlesData, null, 2));
-};
-
-const getBattlesToday = (userId) => {
-    const battlesData = loadUserBattles(userId);
-    const today = new Date().toDateString();
-    return battlesData.battles.filter(battle => {
-        const battleDate = new Date(battle.timestamp).toDateString();
-        return battleDate === today;
-    }).length;
-};
-
-const canBattle = (userId) => {
-    const battlesToday = getBattlesToday(userId);
-    return battlesToday < 5;
-};
-
-const recordBattle = (userId, battleType, opponent = null, battleDetails = null) => {
-    const battlesData = loadUserBattles(userId);
-    const battle = {
-        timestamp: Date.now(),
-        type: battleType,
-        opponent: opponent,
-        details: battleDetails
-    };
-    battlesData.battles.push(battle);
-    saveUserBattles(userId, battlesData);
-};
-
-const recordPlayerBattle = (player1Id, player2Id, player1Name, player2Name, player1Pokemon, player2Pokemon) => {
-    // Calculate battle scores
-    const player1Score = calculateBattleScore(player1Pokemon);
-    const player2Score = calculateBattleScore(player2Pokemon);
-    
-    // Determine winner
-    const player1Won = player1Score > player2Score;
-    const player2Won = player2Score > player1Score;
-    
-    // Create battle data using the same structure as bot battles
-    const battleData1 = {
-        player1Pokemon: player1Pokemon,
-        player2Pokemon: player2Pokemon,
-        player1Name: player1Name,
-        player2Name: player2Name,
-        player1Id: player1Id,
-        player2Id: player2Id,
-        battleType: 'player-vs-player'
-    };
-    
-    const battleData2 = {
-        player1Pokemon: player2Pokemon,
-        player2Pokemon: player1Pokemon,
-        player1Name: player2Name,
-        player2Name: player1Name,
-        player1Id: player2Id,
-        player2Id: player1Id,
-        battleType: 'player-vs-player'
-    };
-    
-    // Record battle for player 1
-    recordBattle(player1Id, 'player-vs-player', player2Name, battleData1);
-    
-    // Record battle for player 2
-    recordBattle(player2Id, 'player-vs-player', player1Name, battleData2);
-};
-
-// Online players tracking
-const onlinePlayers = new Map();
-
-const updateOnlineStatus = (userId, firstName) => {
-    onlinePlayers.set(userId, {
-        id: userId,
-        firstName: firstName,
-        lastSeen: Date.now()
-    });
-};
-
-const removeOnlineStatus = (userId) => {
-    onlinePlayers.delete(userId);
-};
-
-const getOnlinePlayers = () => {
-    const now = Date.now();
-    const timeout = 5 * 60 * 1000; // 5 minutes
-    
-    // Clean up expired players
-    for (const [userId, player] of onlinePlayers.entries()) {
-        if (now - player.lastSeen > timeout) {
-            onlinePlayers.delete(userId);
-        }
-    }
-    
-    return Array.from(onlinePlayers.values());
-};
-
-// Challenge system
-const pendingChallenges = new Map();
-const declinedChallenges = new Map();
-const botBattles = new Map();
-
-const createChallenge = (challengerId, challengerName, opponentId, opponentName) => {
-    const challenge = {
-        id: `challenge_${Date.now()}`,
-        challengerId: challengerId,
-        challengerName: challengerName,
-        opponentId: opponentId,
-        opponentName: opponentName,
-        status: 'pending',
-        createdAt: Date.now()
-    };
-    
-    pendingChallenges.set(challenge.id, challenge);
-    return challenge;
-};
-
-const getChallenge = (challengeId) => {
-    return pendingChallenges.get(challengeId);
-};
-
-const updateChallengeStatus = (challengeId, status) => {
-    const challenge = getChallenge(challengeId);
-    if (challenge) {
-        challenge.status = status;
-    }
-};
-
-const cleanupExpiredChallenges = () => {
-    const now = Date.now();
-    const timeout = 10 * 60 * 1000; // 10 minutes
-    
-    for (const [challengeId, challenge] of pendingChallenges.entries()) {
-        if (now - challenge.createdAt > timeout && challenge.status === 'pending') {
-            pendingChallenges.delete(challengeId);
-        }
-    }
-};
-
-// Shared function to create battle data (used by both bot and player battles)
-const createBattleData = (player1Pokemon, player2Pokemon, player1Name, player2Name, player1Id, player2Id) => {
-    try {
-        // Calculate battle scores
-        player1Pokemon.battleScore = calculateBattleScore(player1Pokemon);
-        player2Pokemon.battleScore = calculateBattleScore(player2Pokemon);
-        console.log('Battle scores calculated:', player1Pokemon.battleScore, player2Pokemon.battleScore);
-        
-        // Determine the result
-        let result;
-        if (player1Pokemon.battleScore > player2Pokemon.battleScore) {
-            result = 'won';
-        } else if (player2Pokemon.battleScore > player1Pokemon.battleScore) {
-            result = 'lost';
-        } else {
-            result = 'tie';
-        }
-        
-        // Create battle data structure
-        return {
-            player1Pokemon: player1Pokemon,
-            player2Pokemon: player2Pokemon,
-            player1Name: player1Name,
-            player2Name: player2Name,
-            player1Id: player1Id,
-            player2Id: player2Id,
-            battleType: player2Id === 'bot' ? 'bot' : 'player-vs-player',
-            result: result
-        };
-    } catch (error) {
-        console.error('Error creating battle data:', error);
-        throw error;
-    }
-};
-
-const calculateBattleScore = (pokemon) => {
-    const hp = pokemon.stats[0].base_stat;
-    const attack = pokemon.stats[1].base_stat;
-    const defense = pokemon.stats[2].base_stat;
-    const speed = pokemon.stats[5].base_stat;
-    
-    // Formula: HP × 0.3 + Attack × 0.4 + Defense × 0.2 + Speed × 0.1 + smallRandVal
-    const baseScore = hp * 0.3 + attack * 0.4 + defense * 0.2 + speed * 0.1;
-    const smallRandVal = Math.random() * 2; // Small random value for variety
-    
-    return baseScore + smallRandVal;
-};
+// Import arena logic functions
+const {
+    updateOnlineStatus,
+    removeOnlineStatus,
+    getOnlinePlayers,
+    createChallenge,
+    getChallenge,
+    updateChallengeStatus,
+    cleanupExpiredChallenges,
+    createBattleData,
+    calculateBattleScore,
+    recordPlayerBattle,
+    calculateLeaderboard,
+    pendingChallenges,
+    declinedChallenges,
+    botBattles
+} = require('../utils/arenaLogic');
 
 
-const calculateLeaderboard = (currentUserId) => {
-    try {
-        const users = JSON.parse(fs.readFileSync(usersFile, 'utf8'));
-        const leaderboardData = [];
-        
-        for (const user of users) {
-            const userId = user.id;
-            const battlesData = loadUserBattles(userId);
-            
-            // Only include users with at least 5 battles
-            if (battlesData.battles.length < 5) {
-                continue;
-            }
-            
-            // Get the 10 most recent battles
-            const recentBattles = battlesData.battles
-                .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
-                .slice(0, 10);
-            
-            if (recentBattles.length === 0) {
-                continue;
-            }
-            
-            console.log(`Processing ${recentBattles.length} battles for user ${userId}`);
-            
-            // Calculate statistics
-            let wins = 0;
-            let draws = 0;
-            let totalScore = 0;
-            
-            recentBattles.forEach(battle => {
-                if (battle.details) {
-                    // Calculate total score from battle details
-                    if (battle.details.myPokemon && battle.details.opponentPokemon) {
-                        totalScore += (battle.details.myPokemon.score || 0);
-                    } else if (battle.details.player1Pokemon && battle.details.player2Pokemon) {
-                        totalScore += (battle.details.player1Pokemon.battleScore || 0);
-                    }
-                    
-                    // Determine result by comparing battle scores
-                    if (battle.details.player1Pokemon && battle.details.player2Pokemon) {
-                        const player1Score = battle.details.player1Pokemon.battleScore || 0;
-                        const player2Score = battle.details.player2Pokemon.battleScore || 0;
-                        
-                        if (player1Score > player2Score) {
-                            wins++;
-                        } else if (player1Score === player2Score) {
-                            draws++;
-                        }
-                    }
-                }
-            });
-            
-            const totalBattles = recentBattles.length;
-            const winRate = totalBattles > 0 ? Math.round((wins / totalBattles) * 100) : 0;
-            
-            // Calculate points based on scoring system
-            const points = (wins * 3) + (draws * 1);
-            
-            console.log(`User ${userId}: ${wins} wins, ${draws} draws, ${totalBattles} total battles`);
-            
-            leaderboardData.push({
-                userId: userId,
-                username: user.firstName,
-                totalBattles: totalBattles,
-                wins: wins,
-                winRate: winRate,
-                totalScore: totalScore,
-                points: points,
-                isCurrentUser: userId === currentUserId
-            });
-        }
-        
-        // Sort by points (descending), then by win rate (descending)
-        leaderboardData.sort((a, b) => {
-            if (b.points !== a.points) {
-                return b.points - a.points;
-            }
-            return b.winRate - a.winRate;
-        });
-        
-        return leaderboardData;
-        
-    } catch (error) {
-        console.error('Error calculating leaderboard:', error);
-        return [];
-    }
-};
+
 
 // Arena API endpoints
 router.get('/api/arena/status', requireAuth, (req, res) => {
@@ -650,9 +387,9 @@ router.post('/api/arena/accept-challenge', requireAuth, async (req, res) => {
         
         // Create battle data using shared function
         const battleData = createBattleData(challengerPokemon, opponentPokemon, challenge.challengerName, challenge.opponentName, challenge.challengerId, userId);
-        challenge.battleData = battleData;
+        challenge.battleData = battleData.display; // Use display format for battle page
         
-        // Record the battle for both players
+        // Record the battle for both players (using storage format)
         recordPlayerBattle(challenge.challengerId, userId, challenge.challengerName, challenge.opponentName, challengerPokemon, opponentPokemon);
         
         // Mark the accepting user as notified since they're being redirected immediately
@@ -769,17 +506,17 @@ router.post('/api/arena/create-bot-battle', requireAuth, async (req, res) => {
         try {
             const battleData = createBattleData(player1Pokemon, player2Pokemon, 'You', 'Bot', userId, 'bot');
         
-            // Store the bot battle data
+            // Store the bot battle data (display format for battle page)
             botBattles.set(battleId, {
-                battleData: battleData,
+                battleData: battleData.display,
                 createdAt: Date.now()
             });
             
             console.log('Bot battle stored. Total bot battles:', botBattles.size);
             console.log('Available bot battles:', Array.from(botBattles.keys()));
             
-            // Record the battle for the user
-            recordBattle(userId, 'bot', 'Bot', battleData);
+            // Record the battle for the user (storage format for battles.json)
+            recordBattle(userId, 'bot', 'Bot', battleData.storage);
             
             res.json({
                 battleId: battleId,
@@ -798,21 +535,5 @@ router.post('/api/arena/create-bot-battle', requireAuth, async (req, res) => {
 });
 
 module.exports = { 
-    router, 
-    loadUserBattles, 
-    saveUserBattles, 
-    getBattlesToday, 
-    canBattle, 
-    recordBattle, 
-    recordPlayerBattle,
-    updateOnlineStatus,
-    removeOnlineStatus,
-    getOnlinePlayers,
-    createChallenge,
-    getChallenge,
-    updateChallengeStatus,
-    cleanupExpiredChallenges,
-    createBattleData,
-    calculateBattleScore,
-    calculateLeaderboard
+    router
 }; 

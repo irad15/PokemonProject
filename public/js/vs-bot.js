@@ -48,7 +48,7 @@ async function displayFavorites() {
                 return {
                     id: pokemon.id,
                     name: formatPokemonName(pokemon.name),
-                    sprite: pokemon.sprites.front_default || "https://via.placeholder.com/100?text=No+Image",
+                    sprites: pokemon.sprites,
                     types: pokemon.types.map(t => t.type.name),
                     abilities: pokemon.abilities.map(a => a.ability.name),
                     stats: pokemon.stats,
@@ -75,7 +75,7 @@ async function displayFavorites() {
         // Display favorites in grid
         favoritesGrid.innerHTML = validPokemon.map(pokemon => `
             <div class="favorite-card" onclick="selectPokemon(${pokemon.id})" data-pokemon-id="${pokemon.id}">
-                <img src="${pokemon.sprite}" alt="${pokemon.name}" onerror="this.src='https://via.placeholder.com/100?text=Error'">
+                <img src="${pokemon.sprites.front_default}" alt="${pokemon.name}" onerror="this.src='https://via.placeholder.com/100?text=Error'">
                 <div class="pokemon-name">${pokemon.name}</div>
                 <div class="pokemon-id">#${pokemon.id}</div>
             </div>
@@ -126,13 +126,7 @@ async function selectPokemon(pokemonId) {
         
         // Fetch full Pokemon data
         const fullPokemonData = await fetchJson(`${API_BASE_URL}pokemon/${pokemonId}`);
-        selectedPokemon = {
-            id: fullPokemonData.id,
-            name: formatPokemonName(fullPokemonData.name),
-            sprite: fullPokemonData.sprites.front_default || "https://via.placeholder.com/100?text=No+Image",
-            stats: fullPokemonData.stats,
-            types: fullPokemonData.types
-        };
+        selectedPokemon = fullPokemonData; // Send complete Pokemon data to server
         
         // Generate random bot Pokemon
         await generateBotPokemon();
@@ -152,13 +146,7 @@ async function generateBotPokemon() {
         const randomId = Math.floor(Math.random() * 1025) + 1;
         const botData = await fetchJson(`${API_BASE_URL}pokemon/${randomId}`);
         
-        botPokemon = {
-            id: botData.id,
-            name: formatPokemonName(botData.name),
-            sprite: botData.sprites.front_default || "https://via.placeholder.com/100?text=No+Image",
-            stats: botData.stats,
-            types: botData.types
-        };
+        botPokemon = botData; // Send complete Pokemon data to server
         
     } catch (error) {
         console.error('Error generating bot Pokemon:', error);
@@ -175,13 +163,13 @@ function displayBattleSetup() {
     }
     
     // Display selected Pokemon
-    document.getElementById('selectedPokemonImage').src = selectedPokemon.sprite;
-    document.getElementById('selectedPokemonName').textContent = selectedPokemon.name;
+    document.getElementById('selectedPokemonImage').src = selectedPokemon.sprites.front_default;
+    document.getElementById('selectedPokemonName').textContent = formatPokemonName(selectedPokemon.name);
     document.getElementById('selectedPokemonStats').innerHTML = generateStatsHTML(selectedPokemon.stats);
     
     // Display bot Pokemon
-    document.getElementById('botPokemonImage').src = botPokemon.sprite;
-    document.getElementById('botPokemonName').textContent = botPokemon.name;
+    document.getElementById('botPokemonImage').src = botPokemon.sprites.front_default;
+    document.getElementById('botPokemonName').textContent = formatPokemonName(botPokemon.name);
     document.getElementById('botPokemonStats').innerHTML = generateStatsHTML(botPokemon.stats);
     
     // Show battle setup

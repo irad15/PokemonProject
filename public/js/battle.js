@@ -165,7 +165,5 @@ function executeBattle() {
     
     // Remove players from online list after battle ends
     removeFromOnlinePlayers();
-    
-    // Battle is automatically recorded on the server when challenge is accepted
-    // No need to record it again here
+
 } 

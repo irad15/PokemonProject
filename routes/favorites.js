@@ -1,36 +1,15 @@
 const express = require('express');
-const fs = require('fs');
-const path = require('path');
 const router = express.Router();
 
 // Import requireAuth middleware
 const { requireAuth } = require('./auth');
 
-// File system utilities
-const dataDir = path.join(__dirname, '..', 'Data');
-
-// Data manager functions
-const getUserFavoritesFile = (userId) => path.join(dataDir, userId, 'favorites.json');
-
-const loadUserFavorites = (userId) => {
-    const favoritesFile = getUserFavoritesFile(userId);
-    if (fs.existsSync(favoritesFile)) {
-        return JSON.parse(fs.readFileSync(favoritesFile, 'utf8'));
-    }
-    return [];
-};
-
-const saveUserFavorites = (userId, favorites) => {
-    const favoritesFile = getUserFavoritesFile(userId);
-    fs.writeFileSync(favoritesFile, JSON.stringify(favorites, null, 2));
-};
-
-const ensureUserFavoritesDir = (userId) => {
-    const userDir = path.join(dataDir, userId);
-    if (!fs.existsSync(userDir)) {
-        fs.mkdirSync(userDir, { recursive: true });
-    }
-};
+// Import data manager utilities
+const { 
+    loadUserFavorites, 
+    saveUserFavorites, 
+    ensureUserFavoritesDir 
+} = require('../utils/dataManager');
 
 // API endpoint to get user's favorites
 router.get('/api/favorites', requireAuth, (req, res) => {
@@ -132,30 +111,19 @@ router.get('/api/favorites/count', requireAuth, (req, res) => {
 router.get('/api/favorites/download', requireAuth, async (req, res) => {
     try {
         const userId = req.session.userId;
-        const userFavoritesFile = path.join(dataDir, userId, 'favorites.json');
-        
-        if (!fs.existsSync(userFavoritesFile)) {
-            return res.status(404).json({ error: 'No favorites found' });
-        }
-        
-        const favorites = JSON.parse(fs.readFileSync(userFavoritesFile, 'utf8'));
+        const favorites = loadUserFavorites(userId);
         
         if (favorites.length === 0) {
             return res.status(404).json({ error: 'No favorites to download' });
         }
         
-        // Create CSV content
-        const headers = ['ID', 'Name', 'Types', 'Abilities', 'Added Date'];
+        // Create CSV content with basic info (since we only store IDs)
+        const headers = ['ID', 'Added Date'];
         const csvRows = [headers];
         
-        // For server-side CSV, we'll include basic info from the stored IDs
-        // Full data would require fetching from PokeAPI, but for CSV we can use IDs
         favorites.forEach(favorite => {
             csvRows.push([
                 favorite.id,
-                `Pokemon #${favorite.id}`, // Basic name since we only store ID
-                'N/A', // Types would need API call
-                'N/A', // Abilities would need API call
                 new Date(favorite.addedAt).toLocaleDateString()
             ]);
         });

@@ -48,11 +48,7 @@ async function saveFavoritesAsJson() {
             try {
                 const pokemon = await fetchJson(`${API_BASE_URL}pokemon/${favorite.id}`);
                 return {
-                    id: pokemon.id,
-                    name: formatPokemonName(pokemon.name),
-                    sprite: pokemon.sprites.front_default || "https://via.placeholder.com/100?text=No+Image",
-                    types: pokemon.types.map(t => t.type.name),
-                    abilities: pokemon.abilities.map(a => a.ability.name),
+                    ...pokemon,
                     addedAt: favorite.addedAt
                 };
             } catch (error) {
@@ -93,63 +89,12 @@ async function saveFavoritesAsJson() {
 // Saves the favorites list as a downloadable CSV file
 async function saveFavoritesAsCsv() {
     try {
-        const response = await fetch('/api/favorites');
-        const favoriteIds = await response.json();
-        
-        // Check if there are favorites to save
-        if (favoriteIds.length === 0) {
-            alert("No favorite Pokémon to save!");
-            return;
+        const response = await fetch('/api/favorites/download');
+        if (!response.ok) {
+            throw new Error('Failed to download favorites');
         }
         
-        // Fetch full Pokemon data for each favorite ID
-        const pokemonPromises = favoriteIds.map(async (favorite) => {
-            try {
-                const pokemon = await fetchJson(`${API_BASE_URL}pokemon/${favorite.id}`);
-                return {
-                    id: pokemon.id,
-                    name: formatPokemonName(pokemon.name),
-                    sprite: pokemon.sprites.front_default || "https://via.placeholder.com/100?text=No+Image",
-                    types: pokemon.types.map(t => t.type.name).join(", "),
-                    abilities: pokemon.abilities.map(a => a.ability.name).join(", "),
-                    addedAt: favorite.addedAt
-                };
-            } catch (error) {
-                console.error(`Error fetching Pokemon ${favorite.id}:`, error);
-                return null;
-            }
-        });
-        
-        const pokemonList = await Promise.all(pokemonPromises);
-        const validPokemon = pokemonList.filter(pokemon => pokemon !== null);
-        
-        if (validPokemon.length === 0) {
-            alert("Error loading favorites data!");
-            return;
-        }
-        
-        // Create CSV content
-        const headers = ['ID', 'Name', 'Types', 'Abilities', 'Sprite URL', 'Added Date'];
-        const csvRows = [headers];
-        
-        validPokemon.forEach(pokemon => {
-            csvRows.push([
-                pokemon.id,
-                pokemon.name,
-                pokemon.types,
-                pokemon.abilities,
-                pokemon.sprite,
-                new Date(pokemon.addedAt).toLocaleDateString()
-            ]);
-        });
-        
-        // Convert to CSV string
-        const csvContent = csvRows.map(row => 
-            row.map(field => `"${field}"`).join(',')
-        ).join('\n');
-        
-        // Create and download CSV file
-        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const blob = await response.blob();
         const url = URL.createObjectURL(blob);
         const a = document.createElement("a");
         a.href = url;
@@ -165,8 +110,6 @@ async function saveFavoritesAsCsv() {
         alert('Failed to save favorites as CSV. Please try again.');
     }
 }
-
-// Note: fetchPokemonStats and closeStatsModal functions are now available from shared.js
 
 // Applies sorting based on dropdown selections
 function applySort() {
