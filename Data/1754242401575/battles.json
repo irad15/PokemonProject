@@ -1,38 +1,75 @@
 {
   "battles": [
     {
-      "timestamp": 1754578286980,
+      "timestamp": 1754580117130,
       "type": "player-vs-player",
       "opponent": "Irad",
       "details": {
         "myPokemon": {
           "name": "arbok",
           "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/24.png",
-          "score": 79.31452271559668
+          "score": 78.24600651963507
+        },
+        "opponentPokemon": {
+          "name": "bulbasaur",
+          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png",
+          "score": 48.04665638750984
+        },
+        "opponentName": "Irad",
+        "result": "won"
+      }
+    },
+    {
+      "timestamp": 1754580310889,
+      "type": "bot",
+      "opponent": "Bot",
+      "details": {
+        "myPokemon": {
+          "name": "arbok",
+          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/24.png",
+          "score": 78.514880331404
+        },
+        "opponentPokemon": {
+          "name": "pachirisu",
+          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/417.png",
+          "score": 61.0663980641626
+        },
+        "result": "won"
+      }
+    },
+    {
+      "timestamp": 1754580330187,
+      "type": "player-vs-player",
+      "opponent": "Irad",
+      "details": {
+        "myPokemon": {
+          "name": "arcanine",
+          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/59.png",
+          "score": 96.69265109632873
         },
         "opponentPokemon": {
           "name": "pecharunt",
           "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1025.png",
-          "score": 103.07546217538422
+          "score": 102.9920618924965
         },
         "opponentName": "Irad",
         "result": "lost"
       }
     },
     {
-      "timestamp": 1754578645617,
+      "timestamp": 1754580547039,
       "type": "player-vs-player",
       "opponent": "Irad",
       "details": {
         "myPokemon": {
-          "name": "absol",
-          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/359.png",
-          "score": 92.8290913155336
+          "name": "arcanine",
+          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/59.png",
+          "score": 97.07796684043288
         },
         "opponentPokemon": {
           "name": "bulbasaur",
           "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png",
-          "score": 47.53789353755708
+          "score": 48.59448445601606
         },
         "opponentName": "Irad",
         "result": "won"
