@@ -118,39 +118,9 @@ const createUser = (userData) => {
     fs.writeFileSync(battlesFile, JSON.stringify({ battles: [] }, null, 2));
 };
 
-// Authentication utilities
-const checkAuthStatus = async (req) => {
-    try {
-        // Check if user session exists
-        if (!req.session || !req.session.userId) {
-            return { isAuthenticated: false };
-        }
-        
-        // Check if user exists in our data
-        const users = loadUsers();
-        const user = users.find(u => u.id === req.session.userId);
-        
-        if (!user) {
-            return { isAuthenticated: false };
-        }
-        
-        return { 
-            isAuthenticated: true, 
-            user: {
-                id: user.id,
-                firstName: user.firstName,
-                email: user.email
-            }
-        };
-    } catch (error) {
-        console.error('Error checking authentication status:', error);
-        return { isAuthenticated: false };
-    }
-};
+
 
 module.exports = {
-    dataDir,
-    usersFile,
     initializeDataFiles,
     loadUserFavorites,
     saveUserFavorites,
@@ -161,8 +131,6 @@ module.exports = {
     canBattle,
     recordBattle,
     loadUsers,
-    saveUsers,
     findUserByEmail,
-    createUser,
-    checkAuthStatus
+    createUser
 }; 

@@ -68,12 +68,20 @@ function displayPokemon(playerPrefix, pokemon, playerName) {
     
     const imageElement = document.getElementById(`${playerPrefix}Image`);
     const nameElement = document.getElementById(`${playerPrefix}Name`);
+    const typesElement = document.getElementById(`${playerPrefix}Types`);
     const statsElement = document.getElementById(`${playerPrefix}Stats`);
     const scoreElement = document.getElementById(`${playerPrefix}Score`);
     
     console.log('Pokemon sprite:', pokemon.sprite || pokemon.sprites?.front_default);
     imageElement.src = pokemon.sprite || pokemon.sprites?.front_default;
     nameElement.textContent = `${playerName}'s ${pokemon.name}`;
+    
+    // Display types
+    const types = pokemon.types.map(type => type.type.name);
+    const typesHTML = types.map(type => `
+        <span class="type-badge type-${type}">${type}</span>
+    `).join('');
+    typesElement.innerHTML = typesHTML;
     
     // Display stats
     const stats = [

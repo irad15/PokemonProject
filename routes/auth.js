@@ -6,7 +6,6 @@ const router = express.Router();
 // Import data manager utilities
 const { 
     loadUsers, 
-    saveUsers, 
     findUserByEmail, 
     createUser 
 } = require('../utils/dataManager');

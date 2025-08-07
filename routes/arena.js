@@ -8,11 +8,9 @@ const { requireAuth } = require('./auth');
 // Import data manager utilities
 const { 
     loadUserBattles, 
-    saveUserBattles, 
     getBattlesToday, 
     canBattle, 
     recordBattle,
-    loadUsers
 } = require('../utils/dataManager');
 
 // Import arena logic functions
@@ -30,7 +28,20 @@ const {
     calculateLeaderboard,
     pendingChallenges,
     declinedChallenges,
-    botBattles
+    botBattles,
+    validateBattleEligibility,
+    validateChallengeEligibility,
+    validateChallengeAcceptance,
+    checkExistingChallenges,
+    clearAcceptedChallenges,
+    createBotBattle,
+    getArenaStatus,
+    getBattleHistory,
+    getOnlinePlayersStatus,
+    getPendingChallengesForUser,
+    getAcceptedChallengesForUser,
+    getDeclinedChallengesForUser,
+    getBattleData
 } = require('../utils/arenaLogic');
 
 
@@ -40,20 +51,13 @@ const {
 router.get('/api/arena/status', requireAuth, (req, res) => {
     try {
         const userId = req.session.userId;
-        const battlesToday = getBattlesToday(userId);
-        const canBattleToday = canBattle(userId);
         
         // Import loadUserFavorites from favorites route
         const { loadUserFavorites } = require('./favorites');
         const favorites = loadUserFavorites(userId);
         
-        res.json({
-            battlesUsed: battlesToday,
-            battlesRemaining: 5 - battlesToday,
-            canBattle: canBattleToday,
-            hasFavorites: favorites.length > 0,
-            favoritesCount: favorites.length
-        });
+        const status = getArenaStatus(userId, favorites);
+        res.json(status);
     } catch (error) {
         console.error('Error getting arena status:', error);
         res.status(500).json({ error: 'Failed to get arena status' });
@@ -68,14 +72,10 @@ router.post('/api/arena/battle/bot', requireAuth, (req, res) => {
         const { loadUserFavorites } = require('./favorites');
         const favorites = loadUserFavorites(userId);
         
-        // Check if user has favorites
-        if (favorites.length === 0) {
-            return res.status(400).json({ error: 'You need at least one favorite Pokemon to enter battles' });
-        }
-        
-        // Check if user can battle
-        if (!canBattle(userId)) {
-            return res.status(400).json({ error: 'You have used all 5 battles for today. Come back tomorrow!' });
+        // Validate battle eligibility
+        const errors = validateBattleEligibility(userId, favorites);
+        if (errors.length > 0) {
+            return res.status(400).json({ error: errors[0] });
         }
         
         // Record the battle
@@ -100,14 +100,10 @@ router.post('/api/arena/battle/player', requireAuth, (req, res) => {
         const { loadUserFavorites } = require('./favorites');
         const favorites = loadUserFavorites(userId);
         
-        // Check if user has favorites
-        if (favorites.length === 0) {
-            return res.status(400).json({ error: 'You need at least one favorite Pokemon to enter battles' });
-        }
-        
-        // Check if user can battle
-        if (!canBattle(userId)) {
-            return res.status(400).json({ error: 'You have used all 5 battles for today. Come back tomorrow!' });
+        // Validate battle eligibility
+        const errors = validateBattleEligibility(userId, favorites);
+        if (errors.length > 0) {
+            return res.status(400).json({ error: errors[0] });
         }
         
         // Record the battle
@@ -127,12 +123,8 @@ router.post('/api/arena/battle/player', requireAuth, (req, res) => {
 router.get('/api/arena/history', requireAuth, (req, res) => {
     try {
         const userId = req.session.userId;
-        const battlesData = loadUserBattles(userId);
-        
-        res.json({
-            battles: battlesData.battles,
-            totalBattles: battlesData.battles.length
-        });
+        const history = getBattleHistory(userId);
+        res.json(history);
     } catch (error) {
         console.error('Error getting battle history:', error);
         res.status(500).json({ error: 'Failed to get battle history' });
@@ -160,15 +152,8 @@ router.get('/api/arena/online-players', requireAuth, (req, res) => {
         const userId = req.session.userId;
         const firstName = req.session.userFirstName;
         
-        // Update current user's online status
-        updateOnlineStatus(userId, firstName);
-        
-        // Get all online players
-        const onlinePlayersList = getOnlinePlayers();
-        
-        res.json({
-            players: onlinePlayersList
-        });
+        const status = getOnlinePlayersStatus(userId, firstName);
+        res.json(status);
     } catch (error) {
         console.error('Error getting online players:', error);
         res.status(500).json({ error: 'Failed to get online players' });
@@ -198,11 +183,6 @@ router.post('/api/arena/send-challenge', requireAuth, async (req, res) => {
         const userId = req.session.userId;
         const { opponentId } = req.body;
         
-        // Check if user can battle
-        if (!canBattle(userId)) {
-            return res.status(400).json({ error: 'You have used all 5 battles for today. Come back tomorrow!' });
-        }
-        
         // Check if opponent exists and is online
         const onlinePlayersList = getOnlinePlayers();
         const opponent = onlinePlayersList.find(p => p.id === opponentId);
@@ -214,34 +194,24 @@ router.post('/api/arena/send-challenge', requireAuth, async (req, res) => {
         // Import loadUserFavorites from favorites route
         const { loadUserFavorites } = require('./favorites');
         
-        // Check if user has favorites
+        // Get both users' favorites
         const userFavorites = loadUserFavorites(userId);
-        if (userFavorites.length === 0) {
-            return res.status(400).json({ error: 'You need at least one favorite Pokemon to battle' });
-        }
-        
-        // Check if opponent has favorites
         const opponentFavorites = loadUserFavorites(opponentId);
-        if (opponentFavorites.length === 0) {
-            return res.status(400).json({ error: 'Opponent has no favorite Pokemon' });
+        
+        // Validate challenge eligibility
+        const errors = validateChallengeEligibility(userId, opponentId, userFavorites, opponentFavorites);
+        if (errors.length > 0) {
+            return res.status(400).json({ error: errors[0] });
         }
         
-        // Check if there's already a pending challenge between these two users (either direction)
-        for (const [challengeId, challenge] of pendingChallenges.entries()) {
-            if (challenge.status === 'pending' && 
-                ((challenge.challengerId === opponentId && challenge.opponentId === userId) ||
-                 (challenge.challengerId === userId && challenge.opponentId === opponentId))) {
-                return res.status(400).json({ error: 'There is already a pending challenge between you and this player. Please accept or decline it first.' });
-            }
+        // Check for existing challenges
+        const existingChallengeError = checkExistingChallenges(userId, opponentId);
+        if (existingChallengeError) {
+            return res.status(400).json({ error: existingChallengeError });
         }
         
         // Clear any existing accepted challenges for this user
-        for (const [challengeId, challenge] of pendingChallenges.entries()) {
-            if ((challenge.challengerId === userId || challenge.opponentId === userId) && 
-                challenge.status === 'accepted') {
-                pendingChallenges.delete(challengeId);
-            }
-        }
+        clearAcceptedChallenges(userId);
         
         // Create challenge
         const challenge = createChallenge(
@@ -266,15 +236,8 @@ router.post('/api/arena/send-challenge', requireAuth, async (req, res) => {
 router.get('/api/arena/pending-challenges', requireAuth, (req, res) => {
     try {
         const userId = req.session.userId;
-        cleanupExpiredChallenges();
-        
-        const userChallenges = Array.from(pendingChallenges.values()).filter(challenge => 
-            challenge.opponentId === userId && challenge.status === 'pending'
-        );
-        
-        res.json({
-            challenges: userChallenges
-        });
+        const challenges = getPendingChallengesForUser(userId);
+        res.json(challenges);
     } catch (error) {
         console.error('Error getting pending challenges:', error);
         res.status(500).json({ error: 'Failed to get pending challenges' });
@@ -285,34 +248,8 @@ router.get('/api/arena/pending-challenges', requireAuth, (req, res) => {
 router.get('/api/arena/accepted-challenges', requireAuth, (req, res) => {
     try {
         const userId = req.session.userId;
-        cleanupExpiredChallenges();
-        
-        // Find accepted challenges where this user is either the challenger or opponent
-        // and this user hasn't been notified yet
-        const acceptedChallenge = Array.from(pendingChallenges.values()).find(challenge => 
-            (challenge.challengerId === userId || challenge.opponentId === userId) && 
-            challenge.status === 'accepted' &&
-            !challenge.notifiedUsers?.includes(userId)
-        );
-        
-        if (acceptedChallenge && acceptedChallenge.battleData) {
-            // Mark this user as notified
-            if (!acceptedChallenge.notifiedUsers) {
-                acceptedChallenge.notifiedUsers = [];
-            }
-            acceptedChallenge.notifiedUsers.push(userId);
-            
-            res.json({
-                challenge: {
-                    ...acceptedChallenge,
-                    ...acceptedChallenge.battleData
-                }
-            });
-        } else {
-            res.json({
-                challenge: null
-            });
-        }
+        const acceptedChallenge = getAcceptedChallengesForUser(userId);
+        res.json(acceptedChallenge);
     } catch (error) {
         console.error('Error getting accepted challenges:', error);
         res.status(500).json({ error: 'Failed to get accepted challenges' });
@@ -323,21 +260,8 @@ router.get('/api/arena/accepted-challenges', requireAuth, (req, res) => {
 router.get('/api/arena/declined-challenges', requireAuth, (req, res) => {
     try {
         const userId = req.session.userId;
-        
-        // Find declined challenges where this user is the challenger
-        const declinedChallenge = Array.from(declinedChallenges.values()).find(challenge => 
-            challenge.challengerId === userId
-        );
-        
-        if (declinedChallenge) {
-            res.json({
-                challenge: declinedChallenge
-            });
-        } else {
-            res.json({
-                challenge: null
-            });
-        }
+        const declinedChallenge = getDeclinedChallengesForUser(userId);
+        res.json(declinedChallenge);
     } catch (error) {
         console.error('Error getting declined challenges:', error);
         res.status(500).json({ error: 'Failed to get declined challenges' });
@@ -351,18 +275,14 @@ router.post('/api/arena/accept-challenge', requireAuth, async (req, res) => {
         const { challengeId } = req.body;
         
         const challenge = getChallenge(challengeId);
-        if (!challenge || challenge.opponentId !== userId) {
-            return res.status(400).json({ error: 'Invalid challenge' });
-        }
         
-        if (challenge.status !== 'pending') {
-            return res.status(400).json({ error: 'Challenge is no longer pending' });
-        }
-        
-        // Check if both players can still battle
-        if (!canBattle(challenge.challengerId) || !canBattle(userId)) {
-            updateChallengeStatus(challengeId, 'expired');
-            return res.status(400).json({ error: 'One or both players have used all battles for today' });
+        // Validate challenge acceptance
+        const errors = validateChallengeAcceptance(challenge, userId);
+        if (errors.length > 0) {
+            if (errors.includes('One or both players have used all battles for today')) {
+                updateChallengeStatus(challengeId, 'expired');
+            }
+            return res.status(400).json({ error: errors[0] });
         }
         
         // Update challenge status
@@ -445,37 +365,15 @@ router.get('/api/arena/battle-data/:battleId', requireAuth, (req, res) => {
         const battleId = req.params.battleId;
         console.log('Requesting battle data for ID:', battleId);
         
-        // Check if it's a bot battle
-        if (battleId.startsWith('bot_')) {
-            console.log('This is a bot battle');
-            const botBattle = botBattles.get(battleId);
-            console.log('Bot battle found:', !!botBattle);
-            console.log('Available bot battles:', Array.from(botBattles.keys()));
-            
-            if (botBattle && botBattle.battleData) {
-                console.log('Returning bot battle data');
-                res.json({
-                    battleData: botBattle.battleData
-                });
-                return;
-            } else {
-                console.log('Bot battle not found or missing battle data');
-            }
-        } else {
-            console.log('This is a regular challenge');
-            const challenge = getChallenge(battleId);
-            console.log('Challenge found:', !!challenge);
-            
-            if (challenge && challenge.battleData) {
-                res.json({
-                    battleData: challenge.battleData
-                });
-                return;
-            }
-        }
+        const battleData = getBattleData(battleId);
         
-        console.log('Battle data not found for ID:', battleId);
-        res.status(404).json({ error: 'Battle data not found' });
+        if (battleData) {
+            console.log('Returning battle data');
+            res.json(battleData);
+        } else {
+            console.log('Battle data not found for ID:', battleId);
+            res.status(404).json({ error: 'Battle data not found' });
+        }
         
     } catch (error) {
         console.error('Error getting battle data:', error);
@@ -493,44 +391,16 @@ router.post('/api/arena/create-bot-battle', requireAuth, async (req, res) => {
         console.log('Player 1 Pokemon:', player1Pokemon.name);
         console.log('Player 2 Pokemon:', player2Pokemon.name);
         
-        // Check if user can battle
-        if (!canBattle(userId)) {
-            return res.status(400).json({ error: 'You have used all 5 battles for today. Come back tomorrow!' });
-        }
+        const result = await createBotBattle(userId, player1Pokemon, player2Pokemon);
         
-        // Generate a unique battle ID for the bot battle
-        const battleId = `bot_${userId}_${Date.now()}`;
-        console.log('Generated battle ID:', battleId);
+        console.log('Bot battle stored. Total bot battles:', botBattles.size);
+        console.log('Available bot battles:', Array.from(botBattles.keys()));
         
-        // Create battle data using shared function
-        try {
-            const battleData = createBattleData(player1Pokemon, player2Pokemon, 'You', 'Bot', userId, 'bot');
-        
-            // Store the bot battle data (display format for battle page)
-            botBattles.set(battleId, {
-                battleData: battleData.display,
-                createdAt: Date.now()
-            });
-            
-            console.log('Bot battle stored. Total bot battles:', botBattles.size);
-            console.log('Available bot battles:', Array.from(botBattles.keys()));
-            
-            // Record the battle for the user (storage format for battles.json)
-            recordBattle(userId, 'bot', 'Bot', battleData.storage);
-            
-            res.json({
-                battleId: battleId,
-                message: 'Bot battle created successfully'
-            });
-        } catch (error) {
-            console.error('Error creating battle data:', error);
-            res.status(500).json({ error: 'Failed to create battle data' });
-            return;
-        }
+        res.json(result);
         
     } catch (error) {
         console.error('Error creating bot battle:', error);
-        res.status(500).json({ error: 'Failed to create bot battle' });
+        res.status(500).json({ error: error.message || 'Failed to create bot battle' });
     }
 });
 

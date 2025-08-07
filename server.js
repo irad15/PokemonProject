@@ -2,7 +2,6 @@ const express = require('express');
 const path = require('path');
 const fs = require('fs');
 const session = require('express-session');
-const fetch = require('node-fetch');
 const app = express();
 const PORT = 3000;
 
@@ -21,13 +20,7 @@ app.use(session({
     }
 }));
 
-// Debug middleware for sessions
-app.use((req, res, next) => {
-    console.log('Session ID:', req.sessionID);
-    console.log('User ID in session:', req.session.userId);
-    console.log('Session data:', req.session);
-    next();
-});
+
 
 // Import data manager utilities
 const { initializeDataFiles } = require('./utils/dataManager');

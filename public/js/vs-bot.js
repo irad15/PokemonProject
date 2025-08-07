@@ -89,6 +89,13 @@ async function displayFavorites() {
 
 
 
+// Generate HTML for Pokemon types
+function generateTypesHTML(types) {
+    return types.map(type => `
+        <span class="type-badge type-${type.type.name}">${type.type.name}</span>
+    `).join('');
+}
+
 // Generate HTML for Pokemon stats
 function generateStatsHTML(stats) {
     const relevantStats = [
@@ -188,11 +195,13 @@ function displayBattleSetup() {
     // Display selected Pokemon
     document.getElementById('selectedPokemonImage').src = selectedPokemon.sprites.front_default;
     document.getElementById('selectedPokemonName').textContent = formatPokemonName(selectedPokemon.name);
+    document.getElementById('selectedPokemonTypes').innerHTML = generateTypesHTML(selectedPokemon.types);
     document.getElementById('selectedPokemonStats').innerHTML = generateStatsHTML(selectedPokemon.stats);
     
     // Display bot Pokemon
     document.getElementById('botPokemonImage').src = botPokemon.sprites.front_default;
     document.getElementById('botPokemonName').textContent = formatPokemonName(botPokemon.name);
+    document.getElementById('botPokemonTypes').innerHTML = generateTypesHTML(botPokemon.types);
     document.getElementById('botPokemonStats').innerHTML = generateStatsHTML(botPokemon.stats);
     
     // Show battle setup
