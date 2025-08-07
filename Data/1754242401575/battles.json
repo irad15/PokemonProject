@@ -1,56 +1,57 @@
 {
   "battles": [
     {
-      "timestamp": 1754586045478,
+      "timestamp": 1754587435806,
       "type": "player-vs-player",
       "opponent": "Irad",
       "details": {
         "myPokemon": {
           "name": "onix",
           "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/95.png",
-          "score": 67.63157055017221
+          "score": 67.76557759598678
         },
         "opponentPokemon": {
           "name": "blastoise",
           "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/9.png",
-          "score": 185.33594171214688
+          "score": 184.63098827437906
         },
         "opponentName": "Irad",
         "result": "lost"
       }
     },
     {
-      "timestamp": 1754586605766,
-      "type": "bot",
-      "opponent": "Bot",
-      "details": {
-        "myPokemon": {
-          "name": "onix",
-          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/95.png",
-          "score": 86.30201200103015
-        },
-        "opponentPokemon": {
-          "name": "drifloon",
-          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/425.png",
-          "score": 51.43550467858155
-        },
-        "result": "won"
-      }
-    },
-    {
-      "timestamp": 1754586645475,
+      "timestamp": 1754587495128,
       "type": "player-vs-player",
       "opponent": "Irad",
       "details": {
         "myPokemon": {
           "name": "onix",
           "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/95.png",
-          "score": 67.74409903811741
+          "score": 67.57378094842568
         },
         "opponentPokemon": {
           "name": "blastoise",
           "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/9.png",
-          "score": 184.33015772102104
+          "score": 185.34422899525666
+        },
+        "opponentName": "Irad",
+        "result": "lost"
+      }
+    },
+    {
+      "timestamp": 1754587571747,
+      "type": "player-vs-player",
+      "opponent": "Irad",
+      "details": {
+        "myPokemon": {
+          "name": "onix",
+          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/95.png",
+          "score": 67.93018971685949
+        },
+        "opponentPokemon": {
+          "name": "blastoise",
+          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/9.png",
+          "score": 185.41539259416388
         },
         "opponentName": "Irad",
         "result": "lost"

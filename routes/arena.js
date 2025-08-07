@@ -213,6 +213,13 @@ router.post('/api/arena/send-challenge', requireAuth, async (req, res) => {
         // Clear any existing accepted challenges for this user
         clearAcceptedChallenges(userId);
         
+        // Clear any existing declined challenges for this user to prevent old alerts
+        for (const [challengeId, declinedChallenge] of declinedChallenges.entries()) {
+            if (declinedChallenge.challengerId === userId || declinedChallenge.opponentId === userId) {
+                declinedChallenges.delete(challengeId);
+            }
+        }
+        
         // Create challenge
         const challenge = createChallenge(
             userId, 
@@ -285,8 +292,19 @@ router.post('/api/arena/accept-challenge', requireAuth, async (req, res) => {
             return res.status(400).json({ error: errors[0] });
         }
         
+        // If challenge is already accepted, just return the redirect URL
+        if (challenge.status === 'accepted') {
+            return res.json({
+                challengeId: challengeId,
+                redirectUrl: `/arena/battle?challengeId=${challengeId}`
+            });
+        }
+        
         // Update challenge status
         updateChallengeStatus(challengeId, 'accepted');
+        
+        // Clear any declined challenge data for this challenge to prevent false alerts
+        declinedChallenges.delete(challengeId);
         
         // Import loadUserFavorites from favorites route
         const { loadUserFavorites } = require('./favorites');

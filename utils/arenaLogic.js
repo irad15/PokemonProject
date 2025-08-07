@@ -75,6 +75,14 @@ const cleanupExpiredChallenges = () => {
             pendingChallenges.delete(challengeId);
         }
     }
+    
+    // Also cleanup old declined challenges (after 5 minutes)
+    const declinedTimeout = 5 * 60 * 1000; // 5 minutes
+    for (const [challengeId, declinedChallenge] of declinedChallenges.entries()) {
+        if (now - declinedChallenge.declinedAt > declinedTimeout) {
+            declinedChallenges.delete(challengeId);
+        }
+    }
 };
 
 // Ultra-minimal battle record - only essential data
@@ -354,7 +362,8 @@ const validateChallengeAcceptance = (challenge, userId) => {
         return errors;
     }
     
-    if (challenge.status !== 'pending') {
+    // Only check status if it's not already accepted (to handle race conditions)
+    if (challenge.status !== 'pending' && challenge.status !== 'accepted') {
         errors.push('Challenge is no longer pending');
     }
     
@@ -499,6 +508,9 @@ const getDeclinedChallengesForUser = (userId) => {
     );
     
     if (declinedChallenge) {
+        // Clear the declined challenge after retrieving it to prevent duplicate alerts
+        declinedChallenges.delete(declinedChallenge.id);
+        
         return {
             challenge: declinedChallenge
         };

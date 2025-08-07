@@ -160,6 +160,10 @@ async function sendChallenge(opponentId, opponentName) {
 // Accept a challenge
 async function acceptChallenge(challengeId) {
     try {
+        // Clear the intervals immediately to prevent race conditions
+        clearInterval(acceptedCheckInterval);
+        clearInterval(declinedCheckInterval);
+        
         const response = await fetch('/api/arena/accept-challenge', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -172,15 +176,19 @@ async function acceptChallenge(challengeId) {
             // Clear all intervals before redirecting to prevent any lingering requests
             clearInterval(refreshInterval);
             clearInterval(challengesInterval);
-            clearInterval(declinedCheckInterval);
-            clearInterval(acceptedCheckInterval);
             
             window.location.href = data.redirectUrl;
         } else {
+            // If there was an error, restart the intervals
+            acceptedCheckInterval = setInterval(checkForAcceptedChallenges, 500);
+            declinedCheckInterval = setInterval(checkForDeclinedChallenges, 2000);
             alert(data.error || 'Failed to accept challenge');
         }
     } catch (error) {
         console.error('Error accepting challenge:', error);
+        // If there was an error, restart the intervals
+        acceptedCheckInterval = setInterval(checkForAcceptedChallenges, 500);
+        declinedCheckInterval = setInterval(checkForDeclinedChallenges, 2000);
         alert('Failed to accept challenge. Please try again.');
     }
 }
@@ -212,8 +220,15 @@ async function checkForDeclinedChallenges() {
         const data = await response.json();
         
         if (response.ok && data.challenge) {
-            const declinedBy = data.challenge.declinedBy;
-            alert(`${declinedBy} declined your challenge!`);
+            // Only show alert if the challenge is recent (within last 30 seconds)
+            const now = Date.now();
+            const challengeTime = data.challenge.declinedAt || data.challenge.createdAt;
+            const timeDiff = now - challengeTime;
+            
+            if (timeDiff < 30000) { // 30 seconds
+                const declinedBy = data.challenge.declinedBy;
+                alert(`${declinedBy} declined your challenge!`);
+            }
             clearInterval(declinedCheckInterval);
         }
     } catch (error) {

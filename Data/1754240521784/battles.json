@@ -1,92 +1,57 @@
 {
   "battles": [
     {
-      "timestamp": 1754586045479,
+      "timestamp": 1754587435806,
       "type": "player-vs-player",
       "opponent": "Irada",
       "details": {
         "myPokemon": {
           "name": "blastoise",
           "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/9.png",
-          "score": 185.33594171214688
+          "score": 184.63098827437906
         },
         "opponentPokemon": {
           "name": "onix",
           "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/95.png",
-          "score": 67.63157055017221
+          "score": 67.76557759598678
         },
         "opponentName": "Irada",
         "result": "won"
       }
     },
     {
-      "timestamp": 1754586210690,
-      "type": "bot",
-      "opponent": "Bot",
-      "details": {
-        "myPokemon": {
-          "name": "blastoise",
-          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/9.png",
-          "score": 85.80535051785193
-        },
-        "opponentPokemon": {
-          "name": "gothitelle",
-          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/576.png",
-          "score": 69.86467520080699
-        },
-        "result": "won"
-      }
-    },
-    {
-      "timestamp": 1754586215587,
-      "type": "bot",
-      "opponent": "Bot",
-      "details": {
-        "myPokemon": {
-          "name": "blastoise",
-          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/9.png",
-          "score": 85.61232784752612
-        },
-        "opponentPokemon": {
-          "name": "magearna",
-          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/801.png",
-          "score": 73.51570876725722
-        },
-        "result": "won"
-      }
-    },
-    {
-      "timestamp": 1754586220851,
-      "type": "bot",
-      "opponent": "Bot",
-      "details": {
-        "myPokemon": {
-          "name": "blastoise",
-          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/9.png",
-          "score": 68.2737994858809
-        },
-        "opponentPokemon": {
-          "name": "gyarados",
-          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/130.png",
-          "score": 79.19107533533555
-        },
-        "result": "lost"
-      }
-    },
-    {
-      "timestamp": 1754586645475,
+      "timestamp": 1754587495127,
       "type": "player-vs-player",
       "opponent": "Irada",
       "details": {
         "myPokemon": {
           "name": "blastoise",
           "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/9.png",
-          "score": 184.33015772102104
+          "score": 185.34422899525666
         },
         "opponentPokemon": {
           "name": "onix",
           "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/95.png",
-          "score": 67.74409903811741
+          "score": 67.57378094842568
+        },
+        "opponentName": "Irada",
+        "result": "won"
+      }
+    },
+    {
+      "timestamp": 1754587571746,
+      "type": "player-vs-player",
+      "opponent": "Irada",
+      "details": {
+        "myPokemon": {
+          "name": "blastoise",
+          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/9.png",
+          "score": 185.41539259416388
+        },
+        "opponentPokemon": {
+          "name": "onix",
+          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/95.png",
+          "score": 67.93018971685949
         },
         "opponentName": "Irada",
         "result": "won"
