@@ -56,6 +56,42 @@
         "opponentName": "Irada",
         "result": "won"
       }
+    },
+    {
+      "timestamp": 1754589676919,
+      "type": "bot",
+      "opponent": "Bot",
+      "details": {
+        "myPokemon": {
+          "name": "blastoise",
+          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/9.png",
+          "score": 69.53983273451442
+        },
+        "opponentPokemon": {
+          "name": "tympole",
+          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/535.png",
+          "score": 39.94287254359141
+        },
+        "result": "won"
+      }
+    },
+    {
+      "timestamp": 1754590541648,
+      "type": "bot",
+      "opponent": "Bot",
+      "details": {
+        "myPokemon": {
+          "name": "blastoise",
+          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/9.png",
+          "score": 86.2865356416928
+        },
+        "opponentPokemon": {
+          "name": "blitzle",
+          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/522.png",
+          "score": 77.06045043895341
+        },
+        "result": "won"
+      }
     }
   ]
 }

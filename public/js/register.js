@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     
     // Add event listeners for real-time validation
     inputs.forEach(input => {
-        input.addEventListener('blur', () => validateField(input));
+        input.addEventListener('blur', () => validateRegisterField(input));
         input.addEventListener('input', () => clearFieldError(input));
     });
     
@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     form.addEventListener('submit', handleFormSubmission);
 });
 
-function validateField(field) {
+function validateRegisterField(field) {
     const value = field.value.trim();
     const fieldName = field.name;
     let isValid = true;
@@ -92,7 +92,7 @@ function validateForm() {
     let isValid = true;
     
     inputs.forEach(input => {
-        if (!validateField(input)) {
+        if (!validateRegisterField(input)) {
             isValid = false;
         }
     });
@@ -133,9 +133,9 @@ async function handleFormSubmission(event) {
         const result = await response.json();
         
         if (response.ok) {
-            showSuccessMessage('Registration successful! Redirecting to login...', 'registerForm');
+            showSuccessMessage('Registration successful! Redirecting to search page...', 'registerForm');
             setTimeout(() => {
-                window.location.href = '/login';
+                window.location.href = '/search';
             }, 2000);
         } else {
             showErrorMessage(result.error || 'Registration failed. Please try again.', 'registerForm');

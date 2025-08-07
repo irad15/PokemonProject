@@ -10,13 +10,21 @@
 </head>
 <body>
     <h1>Pokémon Search</h1>
-    <div class="search-container">
+    
+    <!-- Navigation buttons section -->
+    <div class="nav-buttons">
         <button onclick="window.location.href='/favorites'" aria-label="View favorite Pokémon">Favorites</button>
         <button onclick="window.location.href='/arena'" aria-label="Enter Battle Arena">Arena</button>
-        <span id="favoritesCounter" class="favorites-counter">Favorites: 0/10</span>
-        <input type="text" id="txtSearch" placeholder="Search by name, ID, type, or ability..." aria-label="Search for Pokémon">
     </div>
-            <div id="loader" class="loader"><img src="/images/loading.gif" alt="Loading..."></div>
+    
+    <!-- Search and counter section -->
+    <div class="search-container">
+        <input type="text" id="txtSearch" placeholder="Search by name, ID, type, or ability..." aria-label="Search for Pokémon">
+        <span id="favoritesCounter" class="favorites-counter">Favorites: 0/10</span>
+    </div>
+    
+    <div id="loader" class="loader"><img src="/images/loading.gif" alt="Loading..."></div>
+    
     <table>
         <thead>
             <tr>
@@ -30,6 +38,7 @@
         </thead>
         <tbody id="pokemonList"></tbody>
     </table>
+    
     <div id="statsModal" class="modal" role="dialog" aria-label="Pokémon stats">
         <div class="modal-content">
             <span class="close-button" onclick="closeStatsModal()" aria-label="Close stats modal">×</span>
@@ -38,6 +47,7 @@
             <ul id="modalStats"></ul>
         </div>
     </div>
+    
     <script src="/js/utils.js"></script>
     <script src="/js/auth-header.js"></script>
     <script src="/js/search_pokemon.js"></script>

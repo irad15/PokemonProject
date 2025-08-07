@@ -92,6 +92,11 @@ router.post('/api/register', async (req, res) => {
         // Save user and initialize data files
         createUser(newUser);
         
+        // Automatically log in the user after successful registration
+        req.session.userId = newUser.id;
+        req.session.userFirstName = newUser.firstName;
+        req.session.userEmail = newUser.email;
+        
         res.json({ message: 'Registration successful' });
         
     } catch (error) {
@@ -164,12 +169,29 @@ function validateRegistrationData(firstName, email, password) {
         return { isValid: false, error: 'First name must be at least 2 characters long' };
     }
     
+    if (!firstName || firstName.trim().length > 50) {
+        return { isValid: false, error: 'First name must be 50 characters or less' };
+    }
+    
+    if (!/^[a-zA-Z\s]+$/.test(firstName.trim())) {
+        return { isValid: false, error: 'First name can only contain letters and spaces' };
+    }
+    
     if (!email || !email.includes('@')) {
         return { isValid: false, error: 'Please enter a valid email address' };
     }
     
-    if (!password || password.length < 6) {
-        return { isValid: false, error: 'Password must be at least 6 characters long' };
+    if (!password || password.length < 7 || password.length > 15) {
+        return { isValid: false, error: 'Password must be between 7 and 15 characters' };
+    }
+    
+    // Check password complexity requirements
+    const hasUpperCase = /[A-Z]/.test(password);
+    const hasLowerCase = /[a-z]/.test(password);
+    const hasNonAlphanumeric = /[^A-Za-z0-9]/.test(password);
+    
+    if (!hasUpperCase || !hasLowerCase || !hasNonAlphanumeric) {
+        return { isValid: false, error: 'Password must contain at least one uppercase letter, one lowercase letter, and one non-alphanumeric character' };
     }
     
     return { isValid: true };
