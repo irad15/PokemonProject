@@ -1,3 +1,26 @@
+/**
+ * Authentication Header - Client-side JavaScript
+ * 
+ * This file handles the authentication header functionality that appears on all pages.
+ * It manages user login/logout state, navigation, and authentication UI elements.
+ * 
+ * Key Features:
+ * - User authentication state management
+ * - Login/logout functionality
+ * - Navigation menu for authenticated users
+ * - User profile display
+ * - Session management
+ * - Authentication status updates
+ * 
+ * Works with:
+ * - All HTML pages (included in header)
+ * - utils.js (for authentication utilities)
+ * - /api/auth/logout (server endpoint)
+ * - Browser localStorage for session data
+ * 
+ * Dependencies: utils.js (for authentication and shared functions)
+ */
+
 // Clear search data from localStorage and URL
 const clearSearchData = () => {
     localStorage.removeItem("searchQuery");

@@ -1,3 +1,27 @@
+/**
+ * Authentication Routes - Server-side JavaScript
+ * 
+ * This file handles all authentication-related server endpoints including user registration,
+ * login, logout, and session management.
+ * 
+ * Key Features:
+ * - User registration with validation
+ * - User login and session creation
+ * - Password hashing and security
+ * - Session management and cookies
+ * - User logout functionality
+ * - Input validation and error handling
+ * 
+ * Works with:
+ * - /api/auth/register (registration endpoint)
+ * - /api/auth/login (login endpoint)
+ * - /api/auth/logout (logout endpoint)
+ * - dataManager.js (for user data persistence)
+ * - Client-side auth forms (register.html, login.html)
+ * 
+ * Dependencies: dataManager.js (for user data management)
+ */
+
 const express = require('express');
 const bcrypt = require('bcrypt');
 const path = require('path');

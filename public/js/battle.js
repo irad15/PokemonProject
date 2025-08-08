@@ -1,3 +1,27 @@
+/**
+ * Battle System - Client-side JavaScript
+ * 
+ * This file contains the core battle mechanics and logic used across different battle modes.
+ * It provides shared battle functionality for turn-based Pokemon battles.
+ * 
+ * Key Features:
+ * - Turn-based battle system
+ * - Move execution and damage calculation
+ * - Health bar management and updates
+ * - Battle state tracking
+ * - Move effectiveness calculations
+ * - Battle result determination
+ * - Animation and visual feedback
+ * 
+ * Works with:
+ * - vs-bot.html (bot battles)
+ * - random-vs-player.html (player vs player)
+ * - utils.js (for Pokemon data and utilities)
+ * - Various battle-related CSS files
+ * 
+ * Dependencies: utils.js (for Pokemon data and shared functions)
+ */
+
 let battleData = null;
 
 // Load battle data on page load

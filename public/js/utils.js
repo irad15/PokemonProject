@@ -1,5 +1,25 @@
-// Shared JavaScript utilities for Pokemon Project
-// Common functions used across multiple pages
+/**
+ * Shared Utilities - Client-side JavaScript
+ * 
+ * This file contains shared utility functions used across multiple pages in the Pokemon project.
+ * It provides common functionality for API calls, data formatting, authentication, and UI interactions.
+ * 
+ * Key Features:
+ * - PokeAPI integration and data fetching
+ * - Pokemon name and data formatting
+ * - Authentication state management
+ * - Error handling and user feedback
+ * - Shared UI utilities and animations
+ * - Local storage management
+ * 
+ * Works with:
+ * - All client-side JavaScript files (imported as dependency)
+ * - PokeAPI (external Pokemon data)
+ * - Server authentication endpoints
+ * - Browser localStorage for session management
+ * 
+ * This is a core dependency file that most other JS files rely on.
+ */
 
 // API utilities
 var API_BASE_URL = 'https://pokeapi.co/api/v2/';
@@ -11,6 +31,10 @@ async function fetchJson(url) {
     const response = await fetch(url);
     if (!response.ok) {
         if (response.status === 429) throw new Error("Too many requests. Please try again later.");
+        if (response.status === 404) {
+            // For search operations, return null instead of throwing for 404s
+            return null;
+        }
         throw new Error(`HTTP error! status: ${response.status}`);
     }
     return response.json();

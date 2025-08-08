@@ -1,3 +1,25 @@
+/**
+ * Search Pokemon Page - Client-side JavaScript
+ * 
+ * This file handles the Pokemon search functionality on the search page.
+ * It provides real-time search capabilities for Pokemon by ID, name, ability, type, and substring.
+ * 
+ * Key Features:
+ * - Real-time search with debouncing
+ * - Multiple search methods (ID, name, ability, type, substring)
+ * - Pokemon stats modal display
+ * - Add Pokemon to favorites functionality
+ * - Search result display with Pokemon sprites and details
+ * 
+ * Works with:
+ * - search_pokemon.html (main page)
+ * - utils.js (shared utilities and API functions)
+ * - /api/favorites (server endpoint for favorites)
+ * - PokeAPI (external Pokemon data)
+ * 
+ * Dependencies: utils.js (for API calls and shared functions)
+ */
+
 // DOM element references for the search page
 const pokemonListBody = document.getElementById("pokemonList"); // Table body for search results
 const txtSearch = document.getElementById("txtSearch"); // Search input field
@@ -74,21 +96,38 @@ async function searchById(id) {
 
 // Search handler: Fetches Pokémon by name
 async function searchByName(name) {
-    return [await fetchJson(`${API_BASE_URL}pokemon/${name.toLowerCase()}`)];
+    // Skip exact name search for single characters or very short queries
+    if (name.length <= 1) {
+        return [];
+    }
+    const result = await fetchJson(`${API_BASE_URL}pokemon/${name.toLowerCase()}`);
+    return result ? [result] : [];
 }
 
 // Search handler: Fetches Pokémon with a specific ability
 async function searchByAbility(ability) {
+    // Skip ability search for single characters
+    if (ability.length <= 1) {
+        return [];
+    }
     const data = await fetchJson(`${API_BASE_URL}ability/${ability.toLowerCase()}`);
+    if (!data) return [];
     const pokemonPromises = data.pokemon.map(p => fetchJson(p.pokemon.url));
-    return Promise.all(pokemonPromises);
+    const results = await Promise.all(pokemonPromises);
+    return results.filter(p => p !== null);
 }
 
 // Search handler: Fetches Pokémon of a specific type
 async function searchByType(type) {
+    // Skip type search for single characters
+    if (type.length <= 1) {
+        return [];
+    }
     const data = await fetchJson(`${API_BASE_URL}type/${type.toLowerCase()}`);
+    if (!data) return [];
     const pokemonPromises = data.pokemon.map(p => fetchJson(p.pokemon.url));
-    return Promise.all(pokemonPromises);
+    const results = await Promise.all(pokemonPromises);
+    return results.filter(p => p !== null);
 }
 
 // Search handler: Fetches Pokémon whose names contain the search query (substring search)
@@ -111,18 +150,18 @@ async function fetchPokemon(searchQuery) {
         if (isId) {
             pokemonArray = await searchById(searchQuery);
         } else {
-            try {
+            // Start with substring search which is most likely to find results
+            pokemonArray = await searchBySubstring(searchQuery);
+            
+            // Only try exact searches if substring search found nothing
+            if (pokemonArray.length === 0) {
                 pokemonArray = await searchByName(searchQuery);
-            } catch {
-                try {
-                    pokemonArray = await searchByAbility(searchQuery);
-                } catch {
-                    try {
-                        pokemonArray = await searchByType(searchQuery);
-                    } catch {
-                        pokemonArray = await searchBySubstring(searchQuery);
-                    }
-                }
+            }
+            if (pokemonArray.length === 0) {
+                pokemonArray = await searchByAbility(searchQuery);
+            }
+            if (pokemonArray.length === 0) {
+                pokemonArray = await searchByType(searchQuery);
             }
         }
 

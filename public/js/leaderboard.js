@@ -1,4 +1,25 @@
-// Leaderboard Page JavaScript
+/**
+ * Leaderboard Page - Client-side JavaScript
+ * 
+ * This file handles the leaderboard functionality to display user rankings and statistics.
+ * It manages the display of user performance data and competitive rankings.
+ * 
+ * Key Features:
+ * - User rankings and statistics display
+ * - Battle win/loss records
+ * - Performance metrics and achievements
+ * - Real-time leaderboard updates
+ * - User profile links and details
+ * - Sorting and filtering options
+ * 
+ * Works with:
+ * - leaderboard.html (leaderboard page)
+ * - utils.js (for data fetching and utilities)
+ * - /api/arena (server endpoint for user statistics)
+ * - auth-header.js (for user authentication)
+ * 
+ * Dependencies: utils.js (for API calls and shared functions)
+ */
 
 // DOM elements
 const loadingSection = document.getElementById('loadingSection');

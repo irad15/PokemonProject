@@ -1,3 +1,26 @@
+/**
+ * Favorites Routes - Server-side JavaScript
+ * 
+ * This file handles all favorites-related server endpoints including Pokemon favorites
+ * management, user collections, and team building functionality.
+ * 
+ * Key Features:
+ * - Add Pokemon to user favorites
+ * - Remove Pokemon from favorites
+ * - Retrieve user's favorite Pokemon list
+ * - Favorites count and limit management
+ * - Pokemon team validation
+ * - User collection management
+ * 
+ * Works with:
+ * - /api/favorites (favorites management endpoint)
+ * - dataManager.js (for favorites data persistence)
+ * - Client-side favorites pages (favorite_pokemon.html, search_pokemon.html)
+ * - PokeAPI (for Pokemon data validation)
+ * 
+ * Dependencies: dataManager.js (for favorites data management)
+ */
+
 const express = require('express');
 const router = express.Router();
 

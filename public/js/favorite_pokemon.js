@@ -1,3 +1,26 @@
+/**
+ * Favorite Pokemon Page - Client-side JavaScript
+ * 
+ * This file handles the favorite Pokemon management functionality.
+ * It allows users to view, manage, and organize their favorite Pokemon collection.
+ * 
+ * Key Features:
+ * - Display user's favorite Pokemon list
+ * - Remove Pokemon from favorites
+ * - Pokemon details and statistics display
+ * - Search and filter favorites
+ * - Pokemon team management
+ * - Integration with battle system
+ * 
+ * Works with:
+ * - favorite_pokemon.html (favorites page)
+ * - utils.js (for Pokemon data and utilities)
+ * - /api/favorites (server endpoint for favorites management)
+ * - PokeAPI (for Pokemon details)
+ * 
+ * Dependencies: utils.js (for API calls and shared functions)
+ */
+
 // DOM element references for the favorites page
 const favoritePokemonList = document.getElementById("favoritePokemonList"); // Table body for favorite Pokémon
 const sortField = document.getElementById("sortField"); // Dropdown for sort field (name or ID)

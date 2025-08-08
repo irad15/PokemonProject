@@ -1,4 +1,26 @@
-// Arena Page JavaScript
+/**
+ * Arena Page - Client-side JavaScript
+ * 
+ * This file handles the arena functionality where users can view battle history,
+ * manage their Pokemon teams, and access various battle modes.
+ * 
+ * Key Features:
+ * - Battle history display and management
+ * - Pokemon team management (add/remove favorites)
+ * - Navigation to different battle modes
+ * - User statistics and performance tracking
+ * - Real-time updates of battle results
+ * - Integration with favorites system
+ * 
+ * Works with:
+ * - arena.html (main arena page)
+ * - utils.js (for shared utilities)
+ * - /api/arena (server endpoint for battle data)
+ * - /api/favorites (server endpoint for favorites)
+ * - Various battle pages (vs-bot, random-vs-player, etc.)
+ * 
+ * Dependencies: utils.js (for API calls and shared functions)
+ */
 
 // DOM elements
 const battlesUsedElement = document.getElementById('battlesUsed');

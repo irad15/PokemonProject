@@ -1,3 +1,25 @@
+/**
+ * User Registration Page - Client-side JavaScript
+ * 
+ * This file handles the user registration functionality on the registration page.
+ * It manages form validation, user input processing, and communication with the server.
+ * 
+ * Key Features:
+ * - Form validation for registration fields
+ * - Password strength validation
+ * - Username availability checking
+ * - Registration form submission handling
+ * - Error handling and user feedback
+ * - Redirect to login after successful registration
+ * 
+ * Works with:
+ * - register.html (registration page)
+ * - /api/auth/register (server endpoint)
+ * - login.html (redirect destination)
+ * 
+ * Dependencies: utils.js (for shared utilities)
+ */
+
 // Password validation
 const isValidPassword = (password) => {
     const hasUpperCase = /[A-Z]/.test(password);

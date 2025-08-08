@@ -1,3 +1,26 @@
+/**
+ * Random vs Player Battle Page - Client-side JavaScript
+ * 
+ * This file handles the random Pokemon vs player battle functionality.
+ * It manages the battle interface, Pokemon selection, and battle mechanics for player vs player matches.
+ * 
+ * Key Features:
+ * - Random Pokemon generation for player 1
+ * - Manual Pokemon selection for player 2
+ * - Battle interface with health bars and stats
+ * - Turn-based battle mechanics
+ * - Battle result tracking and display
+ * - Integration with arena system for match history
+ * 
+ * Works with:
+ * - random-vs-player.html (battle page)
+ * - utils.js (for Pokemon data and utilities)
+ * - /api/arena (server endpoint for battle results)
+ * - PokeAPI (for Pokemon data)
+ * 
+ * Dependencies: utils.js (for API calls and shared functions)
+ */
+
 let currentUser = null;
 let refreshInterval = null;
 let challengesInterval = null;

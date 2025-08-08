@@ -1,3 +1,28 @@
+/**
+ * Arena Routes - Server-side JavaScript
+ * 
+ * This file handles all arena-related server endpoints including battle management,
+ * user statistics, and battle history tracking.
+ * 
+ * Key Features:
+ * - Battle result recording and storage
+ * - User statistics and performance tracking
+ * - Battle history retrieval and display
+ * - Leaderboard data management
+ * - User ranking calculations
+ * - Battle data validation and processing
+ * 
+ * Works with:
+ * - /api/arena/battle (battle recording endpoint)
+ * - /api/arena/history (battle history endpoint)
+ * - /api/arena/leaderboard (leaderboard data endpoint)
+ * - dataManager.js (for battle data persistence)
+ * - arenaLogic.js (for battle calculations)
+ * - Client-side battle pages (vs-bot, random-vs-player)
+ * 
+ * Dependencies: dataManager.js, arenaLogic.js (for battle logic and data management)
+ */
+
 const express = require('express');
 const fetch = require('node-fetch');
 const router = express.Router();

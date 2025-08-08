@@ -1,3 +1,27 @@
+/**
+ * Pokemon Project - Main Server File
+ * 
+ * This is the main entry point for the Pokemon project server application.
+ * It sets up the Express server, middleware, routes, and handles server configuration.
+ * 
+ * Key Features:
+ * - Express server setup and configuration
+ * - Middleware configuration (sessions, static files, body parsing)
+ * - Route registration and API endpoints
+ * - Error handling and logging
+ * - Server startup and port management
+ * - Session management and security
+ * 
+ * Works with:
+ * - All route files in routes/ directory
+ * - Utility files in utils/ directory
+ * - Static files in public/ directory
+ * - HTML views in views/ directory
+ * - Data files in Data/ directory
+ * 
+ * Dependencies: Express.js, various middleware packages
+ */
+
 const express = require('express');
 const path = require('path');
 const fs = require('fs');

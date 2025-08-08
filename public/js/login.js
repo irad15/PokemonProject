@@ -1,3 +1,26 @@
+/**
+ * Login Page - Client-side JavaScript
+ * 
+ * This file handles the user login functionality on the login page.
+ * It manages form validation, authentication, and user session management.
+ * 
+ * Key Features:
+ * - Login form validation and processing
+ * - User authentication with server
+ * - Session management and storage
+ * - Error handling and user feedback
+ * - Redirect to home page after successful login
+ * - Remember me functionality
+ * 
+ * Works with:
+ * - login.html (login page)
+ * - /api/auth/login (server endpoint)
+ * - home.html (redirect destination)
+ * - utils.js (for authentication utilities)
+ * 
+ * Dependencies: utils.js (for authentication and shared functions)
+ */
+
 // Import shared utilities
 // Note: In a real project, you'd use ES6 modules or a bundler
 // For now, we'll assume shared.js is loaded before this file

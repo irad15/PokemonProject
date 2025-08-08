@@ -1,3 +1,26 @@
+/**
+ * Home Page - Client-side JavaScript
+ * 
+ * This file handles the home page functionality and user welcome interface.
+ * It manages the landing page features and user experience for new and returning users.
+ * 
+ * Key Features:
+ * - Welcome message and user introduction
+ * - Quick navigation to main features
+ * - User statistics display
+ * - Recent activity overview
+ * - Feature highlights and tutorials
+ * - Responsive design interactions
+ * 
+ * Works with:
+ * - home.html (main landing page)
+ * - utils.js (for user data and utilities)
+ * - auth-header.js (for user authentication display)
+ * - Various CSS files for styling
+ * 
+ * Dependencies: utils.js (for user data and shared functions)
+ */
+
 document.addEventListener('DOMContentLoaded', function() {
     // Load project information and developer data
     loadProjectData();

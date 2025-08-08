@@ -1,3 +1,22 @@
 {
-  "battles": []
+  "battles": [
+    {
+      "timestamp": 1754593323524,
+      "type": "bot",
+      "opponent": "Bot",
+      "details": {
+        "myPokemon": {
+          "name": "charmeleon",
+          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/5.png",
+          "score": 62.81920744286187
+        },
+        "opponentPokemon": {
+          "name": "stunfisk",
+          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/618.png",
+          "score": 105.89635259339562
+        },
+        "result": "lost"
+      }
+    }
+  ]
 }

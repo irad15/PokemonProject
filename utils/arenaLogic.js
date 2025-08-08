@@ -1,3 +1,27 @@
+/**
+ * Arena Logic - Server-side JavaScript
+ * 
+ * This file contains the core battle logic and calculations for the Pokemon arena system.
+ * It handles battle mechanics, damage calculations, move effectiveness, and battle outcomes.
+ * 
+ * Key Features:
+ * - Battle turn management and sequencing
+ * - Damage calculation with type effectiveness
+ * - Move selection and execution logic
+ * - Health management and battle state tracking
+ * - Battle result determination
+ * - AI opponent behavior and strategy
+ * - Type effectiveness calculations
+ * 
+ * Works with:
+ * - routes/arena.js (for battle endpoint processing)
+ * - dataManager.js (for battle data storage)
+ * - Client-side battle pages (vs-bot, random-vs-player)
+ * - PokeAPI (for Pokemon and move data)
+ * 
+ * Dependencies: dataManager.js (for battle data management)
+ */
+
 const { 
     loadUserBattles, 
     recordBattle,

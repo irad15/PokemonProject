@@ -1,4 +1,25 @@
-// Random Battle vs Bot Page JavaScript
+/**
+ * VS Bot Battle Page - Client-side JavaScript
+ * 
+ * This file handles the player vs bot battle functionality.
+ * It manages the battle interface, Pokemon selection, and AI-controlled battle mechanics.
+ * 
+ * Key Features:
+ * - Manual Pokemon selection for player
+ * - AI-controlled bot Pokemon with strategic moves
+ * - Turn-based battle mechanics
+ * - Battle result tracking and display
+ * - Integration with arena system for match history
+ * - Bot difficulty and move selection logic
+ * 
+ * Works with:
+ * - vs-bot.html (battle page)
+ * - utils.js (for Pokemon data and utilities)
+ * - /api/arena (server endpoint for battle results)
+ * - PokeAPI (for Pokemon data)
+ * 
+ * Dependencies: utils.js (for API calls and shared functions)
+ */
 
 let userFavorites = [];
 let selectedPokemon = null;

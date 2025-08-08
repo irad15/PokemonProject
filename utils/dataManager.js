@@ -1,3 +1,27 @@
+/**
+ * Data Manager - Server-side JavaScript
+ * 
+ * This file handles all data persistence and management operations for the Pokemon project.
+ * It manages user data, battle records, favorites, and file system operations.
+ * 
+ * Key Features:
+ * - User data management (registration, authentication)
+ * - Battle history storage and retrieval
+ * - Favorites management and persistence
+ * - File system operations and data validation
+ * - User session management
+ * - Data backup and recovery
+ * 
+ * Works with:
+ * - routes/auth.js (user authentication data)
+ * - routes/arena.js (battle data management)
+ * - routes/favorites.js (favorites data management)
+ * - Data/ directory (file-based storage)
+ * - All server-side route files
+ * 
+ * This is a core utility file that handles all data persistence operations.
+ */
+
 const fs = require('fs');
 const path = require('path');
 
