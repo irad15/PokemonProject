@@ -1,3 +1,78 @@
 {
-  "battles": []
+  "battles": [
+    {
+      "timestamp": 1754835534500,
+      "type": "bot",
+      "opponent": "Bot",
+      "details": {
+        "myPokemon": {
+          "name": "mewtwo",
+          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/150.png",
+          "score": 152.60581086277787
+        },
+        "opponentPokemon": {
+          "name": "pancham",
+          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/674.png",
+          "score": 54.08916253428825
+        },
+        "result": "won"
+      }
+    },
+    {
+      "timestamp": 1754835548981,
+      "type": "bot",
+      "opponent": "Bot",
+      "details": {
+        "myPokemon": {
+          "name": "magikarp",
+          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/129.png",
+          "score": 30.332530554750683
+        },
+        "opponentPokemon": {
+          "name": "patrat",
+          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/504.png",
+          "score": 48.30626099971297
+        },
+        "result": "lost"
+      }
+    },
+    {
+      "timestamp": 1754835611461,
+      "type": "player-vs-player",
+      "opponent": "IradFive",
+      "details": {
+        "myPokemon": {
+          "name": "magikarp",
+          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/129.png",
+          "score": 27.354639516092192
+        },
+        "opponentPokemon": {
+          "name": "magikarp",
+          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/129.png",
+          "score": 27.8500088365392
+        },
+        "opponentName": "IradFive",
+        "result": "lost"
+      }
+    },
+    {
+      "timestamp": 1754835821961,
+      "type": "player-vs-player",
+      "opponent": "IradFive",
+      "details": {
+        "myPokemon": {
+          "name": "mewtwo",
+          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/150.png",
+          "score": 107.41800267250986
+        },
+        "opponentPokemon": {
+          "name": "magikarp",
+          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/129.png",
+          "score": 29.22898307687898
+        },
+        "opponentName": "IradFive",
+        "result": "won"
+      }
+    }
+  ]
 }

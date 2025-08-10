@@ -2,7 +2,7 @@ body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     margin: 0;
     padding: 0;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #ff6b6b 0%, #ffd93d 100%);
     color: #333;
     min-height: 100vh;
 }
@@ -215,25 +215,33 @@ h1 {
 
 /* Win rate styling */
 .win-rate {
-    font-weight: bold;
+    color: #333;
 }
 
 .win-rate.high {
-    color: #28a745;
+    color: #333;
 }
 
 .win-rate.medium {
-    color: #ffc107;
+    color: #333;
 }
 
 .win-rate.low {
-    color: #dc3545;
+    color: #333;
 }
 
 /* Points styling */
 .points {
-    font-weight: bold;
-    color: #007bff;
+    color: #333;
+}
+
+/* Current user styling - white text for highlighted user */
+.leaderboard-table tbody tr.current-user .win-rate,
+.leaderboard-table tbody tr.current-user .win-rate.high,
+.leaderboard-table tbody tr.current-user .win-rate.medium,
+.leaderboard-table tbody tr.current-user .win-rate.low,
+.leaderboard-table tbody tr.current-user .points {
+    color: white;
 }
 
 /* No Data Section */

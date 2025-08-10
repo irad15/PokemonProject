@@ -50,8 +50,7 @@ async function saveToFavorites(pokemon) {
             alert(result.error || 'Failed to add to favorites');
         }
     } catch (error) {
-        console.error('Error adding to favorites:', error);
-        alert('Failed to add to favorites. Please try again.');
+        handleApiError(error, 'add to favorites');
     }
 }
 
@@ -169,7 +168,7 @@ async function fetchPokemon(searchQuery) {
         displayPokemon(pokemonArray);
     } catch (error) {
         // Log and display error if search fails
-        console.error("Error fetching Pokémon:", error);
+        handleApiError(error, 'fetch Pokémon');
         pokemonListBody.innerHTML = "<tr><td colspan='6'>No results found</td></tr>";
     } finally {
         loader.classList.remove("active"); // Hide loading spinner

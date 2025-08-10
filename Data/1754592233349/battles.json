@@ -17,6 +17,62 @@
         },
         "result": "lost"
       }
+    },
+    {
+      "timestamp": 1754835611461,
+      "type": "player-vs-player",
+      "opponent": "iradisan",
+      "details": {
+        "myPokemon": {
+          "name": "magikarp",
+          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/129.png",
+          "score": 27.8500088365392
+        },
+        "opponentPokemon": {
+          "name": "magikarp",
+          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/129.png",
+          "score": 27.354639516092192
+        },
+        "opponentName": "iradisan",
+        "result": "won"
+      }
+    },
+    {
+      "timestamp": 1754835821960,
+      "type": "player-vs-player",
+      "opponent": "iradisan",
+      "details": {
+        "myPokemon": {
+          "name": "magikarp",
+          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/129.png",
+          "score": 29.22898307687898
+        },
+        "opponentPokemon": {
+          "name": "mewtwo",
+          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/150.png",
+          "score": 107.41800267250986
+        },
+        "opponentName": "iradisan",
+        "result": "lost"
+      }
+    },
+    {
+      "timestamp": 1754835902326,
+      "type": "bot",
+      "opponent": "Bot",
+      "details": {
+        "myPokemon": {
+          "name": "magikarp",
+          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/129.png",
+          "score": 28.355417966069975
+        },
+        "opponentPokemon": {
+          "name": "sunflora",
+          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/192.png",
+          "score": 97.01764670028453
+        },
+        "result": "lost"
+      }
     }
   ]
 }

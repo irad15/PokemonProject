@@ -2,7 +2,7 @@ body {
     font-family: Arial, sans-serif; 
     margin: 0;
     padding: 20px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #ff6b6b 0%, #ffd93d 100%);
     min-height: 100vh;
     color: #333;
 }
@@ -205,11 +205,19 @@ h1 {
     border: 2px solid #28a745;
 }
 
+.battle-result.lose {
+    border-color: #dc3545;
+}
+
 .winner-announcement {
     font-size: 1.5em;
     font-weight: bold;
     color: #28a745;
     margin-bottom: 10px;
+}
+
+.winner-announcement.lose {
+    color: #dc3545;
 }
 
 .battle-score {

@@ -11,37 +11,36 @@
 <body>
     <h1>Favorite Pokémon</h1>
     
-    <!-- Navigation buttons section -->
-    <div class="nav-buttons">
-        <button onclick="window.location.href='/search'" aria-label="Go to Pokémon search page">Search Pokémon</button>
-        <button onclick="window.location.href='/arena'" aria-label="Enter Battle Arena">Arena</button>
-    </div>
-    
-    <!-- Action buttons section -->
-    <div class="action-buttons">
-        <button onclick="saveFavoritesAsJson()" aria-label="Save favorite Pokémon list as JSON file">Save as JSON</button>
-        <button onclick="saveFavoritesAsCsv()" aria-label="Save favorite Pokémon list as CSV file">Save as CSV</button>
-    </div>
-    
-    <!-- Sorting controls section -->
-    <div class="sorting-controls">
-        <select id="sortField" aria-label="Select sort field">
-            <option value="name">Name</option>
-            <option value="id">ID</option>
-        </select>
-        <select id="sortDirection" aria-label="Select sort direction">
-            <option value="asc">Ascending</option>
-            <option value="desc">Descending</option>
-        </select>
-        <button onclick="applySort()" aria-label="Apply sorting">Sort</button>
+    <!-- Unified button row -->
+    <div class="button-row">
+        <div class="nav-buttons">
+            <button onclick="window.location.href='/search'" aria-label="Go to Pokémon search page">Search Pokémon</button>
+            <button onclick="window.location.href='/arena'" aria-label="Enter Battle Arena">Arena</button>
+        </div>
+        
+        <div class="save-dropdown">
+            <button class="save-btn" onclick="toggleSaveDropdown()" aria-label="Save favorites">
+                Save as ▼
+            </button>
+            <div class="save-dropdown-content" id="saveDropdown">
+                <button onclick="saveFavoritesAsJson()" aria-label="Save as JSON">JSON</button>
+                <button onclick="saveFavoritesAsCsv()" aria-label="Save as CSV">CSV</button>
+            </div>
+        </div>
     </div>
     
     <table>
         <thead>
             <tr>
                 <th>Sprite</th>
-                <th>Name</th>
-                <th>ID</th>
+                <th class="sortable" onclick="sortTable('name')">
+                    Name 
+                    <span class="sort-arrow" id="name-arrow">↕</span>
+                </th>
+                <th class="sortable" onclick="sortTable('id')">
+                    ID 
+                    <span class="sort-arrow" id="id-arrow">↕</span>
+                </th>
                 <th>Type</th>
                 <th>Abilities</th>
                 <th>Action</th>

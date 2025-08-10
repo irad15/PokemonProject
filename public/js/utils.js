@@ -293,6 +293,49 @@ function closeStatsModal() {
     modalTitle.textContent = "";
 }
 
+// Shared favorites loading function (reduces code duplication)
+async function loadUserFavoritesData() {
+    try {
+        const response = await fetch('/api/favorites');
+        const favoriteIds = await response.json();
+        
+        const pokemonPromises = favoriteIds.map(async (favorite) => {
+            try {
+                const pokemon = await fetchJson(`${API_BASE_URL}pokemon/${favorite.id}`);
+                return { ...pokemon, addedAt: favorite.addedAt };
+            } catch (error) {
+                console.error(`Error fetching Pokemon ${favorite.id}:`, error);
+                return null;
+            }
+        });
+        
+        const pokemonList = await Promise.all(pokemonPromises);
+        return pokemonList.filter(pokemon => pokemon !== null);
+    } catch (error) {
+        console.error('Error loading favorites:', error);
+        throw error;
+    }
+}
+
+// Shared Pokemon data processing function (reduces code duplication)
+function processPokemonData(pokemon, addedAt = null) {
+    return {
+        id: pokemon.id,
+        name: formatPokemonName(pokemon.name),
+        sprites: pokemon.sprites,
+        types: pokemon.types.map(t => t.type.name),
+        abilities: pokemon.abilities.map(a => a.ability.name),
+        stats: pokemon.stats,
+        addedAt: addedAt || pokemon.addedAt
+    };
+}
+
+// Shared error handler (reduces code duplication)
+function handleApiError(error, operation) {
+    console.error(`Error ${operation}:`, error);
+    alert(`Failed to ${operation}. Please try again.`);
+}
+
 
 
 
@@ -315,6 +358,9 @@ if (typeof module !== 'undefined' && module.exports) {
         showPokemonDetailsModal,
         fetchPokemonStats,
         closeStatsModal,
+        loadUserFavoritesData,
+        processPokemonData,
+        handleApiError,
         API_BASE_URL
     };
 }
@@ -334,5 +380,8 @@ if (typeof window !== 'undefined') {
     window.showPokemonDetailsModal = showPokemonDetailsModal;
     window.fetchPokemonStats = fetchPokemonStats;
     window.closeStatsModal = closeStatsModal;
+    window.loadUserFavoritesData = loadUserFavoritesData;
+    window.processPokemonData = processPokemonData;
+    window.handleApiError = handleApiError;
     window.API_BASE_URL = API_BASE_URL;
 } 

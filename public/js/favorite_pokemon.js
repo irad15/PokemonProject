@@ -23,12 +23,14 @@
 
 // DOM element references for the favorites page
 const favoritePokemonList = document.getElementById("favoritePokemonList"); // Table body for favorite Pokémon
-const sortField = document.getElementById("sortField"); // Dropdown for sort field (name or ID)
-const sortDirection = document.getElementById("sortDirection"); // Dropdown for sort direction (ascending or descending)
 const statsModal = document.getElementById("statsModal"); // Modal for displaying stats
 const modalTitle = document.getElementById("modalTitle"); // Modal title (Pokémon name)
 const modalStats = document.getElementById("modalStats"); // Modal stats list
 const modalLoader = document.getElementById("modalLoader"); // Modal loading spinner
+
+// Sorting state
+let currentSortField = null;
+let currentSortDirection = 'asc';
 
 // Removes a Pokémon from the user's favorites via server API
 async function removeFromFavorites(pokemonId) {
@@ -43,48 +45,23 @@ async function removeFromFavorites(pokemonId) {
         const result = await response.json();
         
         if (response.ok) {
-            alert("Pokémon removed from favorites!");
             displayFavorites(); // Refresh the table
         } else {
             alert(result.error || 'Failed to remove from favorites');
         }
     } catch (error) {
-        console.error('Error removing from favorites:', error);
-        alert('Failed to remove from favorites. Please try again.');
+        handleApiError(error, 'remove from favorites');
     }
 }
 
 // Saves the favorites list as a downloadable JSON file
 async function saveFavoritesAsJson() {
     try {
-        const response = await fetch('/api/favorites');
-        const favoriteIds = await response.json();
+        const validPokemon = await loadUserFavoritesData();
         
         // Check if there are favorites to save
-        if (favoriteIds.length === 0) {
-            alert("No favorite Pokémon to save!");
-            return;
-        }
-        
-        // Fetch full Pokemon data for each favorite ID
-        const pokemonPromises = favoriteIds.map(async (favorite) => {
-            try {
-                const pokemon = await fetchJson(`${API_BASE_URL}pokemon/${favorite.id}`);
-                return {
-                    ...pokemon,
-                    addedAt: favorite.addedAt
-                };
-            } catch (error) {
-                console.error(`Error fetching Pokemon ${favorite.id}:`, error);
-                return null;
-            }
-        });
-        
-        const pokemonList = await Promise.all(pokemonPromises);
-        const validPokemon = pokemonList.filter(pokemon => pokemon !== null);
-        
         if (validPokemon.length === 0) {
-            alert("Error loading favorites data!");
+            alert("No favorite Pokémon to save!");
             return;
         }
         
@@ -102,10 +79,11 @@ async function saveFavoritesAsJson() {
         // Clean up
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
-        alert("Favorites saved as favorites.json!");
+        
+        // Close dropdown after saving
+        toggleSaveDropdown();
     } catch (error) {
-        console.error('Error saving favorites:', error);
-        alert('Failed to save favorites. Please try again.');
+        handleApiError(error, 'save favorites');
     }
 }
 
@@ -127,26 +105,71 @@ async function saveFavoritesAsCsv() {
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
         
-        alert("Favorites saved as favorites.csv!");
+        // Close dropdown after saving
+        toggleSaveDropdown();
     } catch (error) {
-        console.error('Error saving favorites as CSV:', error);
-        alert('Failed to save favorites as CSV. Please try again.');
+        handleApiError(error, 'save favorites as CSV');
     }
 }
 
-// Applies sorting based on dropdown selections
-function applySort() {
-    // Refresh table with sorted data
+// Toggle save dropdown visibility
+function toggleSaveDropdown() {
+    const dropdown = document.getElementById('saveDropdown');
+    dropdown.classList.toggle('show');
+}
+
+// Close dropdown when clicking outside
+document.addEventListener('click', function(event) {
+    const dropdown = document.getElementById('saveDropdown');
+    const saveBtn = document.querySelector('.save-btn');
+    
+    if (!saveBtn.contains(event.target) && !dropdown.contains(event.target)) {
+        dropdown.classList.remove('show');
+    }
+});
+
+// Sort table by clicking on headers
+function sortTable(field) {
+    // If clicking the same field, toggle direction
+    if (currentSortField === field) {
+        currentSortDirection = currentSortDirection === 'asc' ? 'desc' : 'asc';
+    } else {
+        // New field, start with ascending
+        currentSortField = field;
+        currentSortDirection = 'asc';
+    }
+    
+    // Update arrow indicators
+    updateSortArrows();
+    
+    // Refresh the table with sorted data
     displayFavorites();
+}
+
+// Update sort arrow indicators
+function updateSortArrows() {
+    // Reset all arrows
+    document.querySelectorAll('.sort-arrow').forEach(arrow => {
+        arrow.textContent = '↕';
+        arrow.className = 'sort-arrow';
+    });
+    
+    // Set the active arrow
+    if (currentSortField) {
+        const activeArrow = document.getElementById(`${currentSortField}-arrow`);
+        if (activeArrow) {
+            activeArrow.textContent = currentSortDirection === 'asc' ? '↑' : '↓';
+            activeArrow.className = `sort-arrow ${currentSortDirection}`;
+        }
+    }
 }
 
 // Renders favorite Pokémon from server API to the table
 async function displayFavorites() {
     try {
-        const response = await fetch('/api/favorites');
-        const favoriteIds = await response.json();
+        const validPokemon = await loadUserFavoritesData();
         
-        if (favoriteIds.length === 0) {
+        if (validPokemon.length === 0) {
             favoritePokemonList.innerHTML = "<tr><td colspan='6'>No favorites yet</td></tr>";
             return;
         }
@@ -154,32 +177,11 @@ async function displayFavorites() {
         // Show loading state
         favoritePokemonList.innerHTML = "<tr><td colspan='6' style='text-align: center;'>Loading favorites...</td></tr>";
         
-        // Fetch full Pokemon data for each favorite ID
-        const pokemonPromises = favoriteIds.map(async (favorite) => {
-            try {
-                const pokemon = await fetchJson(`${API_BASE_URL}pokemon/${favorite.id}`);
-                return {
-                    ...pokemon,
-                    addedAt: favorite.addedAt
-                };
-            } catch (error) {
-                console.error(`Error fetching Pokemon ${favorite.id}:`, error);
-                return null;
-            }
-        });
-        
-        const pokemonList = await Promise.all(pokemonPromises);
-        const validPokemon = pokemonList.filter(pokemon => pokemon !== null);
-        
-        // Get sort field and direction from dropdowns
-        const field = sortField.value;
-        const direction = sortDirection.value;
-        
-        // Sort favorites based on selected field and direction
-        if (field === "name") {
-            validPokemon.sort((a, b) => direction === "asc" ? a.name.localeCompare(b.name) : b.name.localeCompare(a.name));
-        } else if (field === "id") {
-            validPokemon.sort((a, b) => direction === "asc" ? a.id - b.id : b.id - a.id);
+        // Sort favorites based on current sort state
+        if (currentSortField === "name") {
+            validPokemon.sort((a, b) => currentSortDirection === "asc" ? a.name.localeCompare(b.name) : b.name.localeCompare(a.name));
+        } else if (currentSortField === "id") {
+            validPokemon.sort((a, b) => currentSortDirection === "asc" ? a.id - b.id : b.id - a.id);
         }
         
         // Generate table rows for favorites
@@ -196,7 +198,7 @@ async function displayFavorites() {
             : "<tr><td colspan='6'>Error loading some favorites</td></tr>";
             
     } catch (error) {
-        console.error('Error loading favorites:', error);
+        handleApiError(error, 'load favorites');
         favoritePokemonList.innerHTML = "<tr><td colspan='6'>Error loading favorites</td></tr>";
     }
 }

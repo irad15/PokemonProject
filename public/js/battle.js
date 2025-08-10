@@ -23,11 +23,29 @@
  */
 
 let battleData = null;
+let currentUserId = null;
 
 // Load battle data on page load
 document.addEventListener('DOMContentLoaded', async () => {
+    await loadCurrentUser();
     await loadBattleData();
 });
+
+// Load current user info
+async function loadCurrentUser() {
+    try {
+        const response = await fetch('/api/auth-status');
+        const data = await response.json();
+        
+        if (data.isAuthenticated) {
+            currentUserId = data.user.id;
+        } else {
+            window.location.href = '/login';
+        }
+    } catch (error) {
+        console.error('Error loading current user:', error);
+    }
+}
 
 // Load battle data from URL parameters or server
 async function loadBattleData() {
@@ -98,7 +116,14 @@ function displayPokemon(playerPrefix, pokemon, playerName) {
     
     console.log('Pokemon sprite:', pokemon.sprite || pokemon.sprites?.front_default);
     imageElement.src = pokemon.sprite || pokemon.sprites?.front_default;
-    nameElement.textContent = `${playerName}'s ${pokemon.name}`;
+    
+    // Determine if this player is the current user
+    const playerId = playerPrefix === 'player1' ? battleData.player1Id : battleData.player2Id;
+    const isCurrentUser = playerId === currentUserId;
+    
+    // Display name: "Your Pokemon" for current user, "Opponent's Pokemon" for others
+    const displayName = isCurrentUser ? 'Your' : `${playerName}'s`;
+    nameElement.textContent = `${displayName} ${pokemon.name}`;
     
     // Display types
     const types = pokemon.types.map(type => type.type.name);
@@ -179,15 +204,36 @@ function executeBattle() {
     player1ScoreElement.style.display = 'block';
     player2ScoreElement.style.display = 'block';
     
-    // Determine winner
+    // Remove any existing lose classes
+    battleResult.classList.remove('lose');
+    winnerAnnouncement.classList.remove('lose');
+    
+    // Determine which player is the current user
+    const isPlayer1CurrentUser = battleData.player1Id === currentUserId;
+    const isPlayer2CurrentUser = battleData.player2Id === currentUserId;
+    
+    // Determine winner and show appropriate message
     if (player1Score > player2Score) {
         player1Card.classList.add('winner');
         player2Card.classList.add('loser');
-        winnerAnnouncement.textContent = `${battleData.player1Name} wins!`;
+        // If player1 is the current user, show "You won!", otherwise show player1's name
+        if (isPlayer1CurrentUser) {
+            winnerAnnouncement.textContent = 'You won!';
+        } else {
+            winnerAnnouncement.textContent = `${battleData.player1Name} wins!`;
+        }
     } else if (player2Score > player1Score) {
         player2Card.classList.add('winner');
         player1Card.classList.add('loser');
-        winnerAnnouncement.textContent = `${battleData.player2Name} wins!`;
+        // If player1 is the current user, show "You lost!", otherwise show player2's name
+        if (isPlayer1CurrentUser) {
+            winnerAnnouncement.textContent = 'You lost!';
+            // Add lose styling for red color
+            battleResult.classList.add('lose');
+            winnerAnnouncement.classList.add('lose');
+        } else {
+            winnerAnnouncement.textContent = `${battleData.player2Name} wins!`;
+        }
     } else {
         winnerAnnouncement.textContent = "It's a tie!";
     }
@@ -197,5 +243,4 @@ function executeBattle() {
     
     // Remove players from online list after battle ends
     removeFromOnlinePlayers();
-
 } 

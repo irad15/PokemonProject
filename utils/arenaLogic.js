@@ -141,6 +141,8 @@ const createBattleData = (player1Pokemon, player2Pokemon, player1Name, player2Na
             },
             player1Name,
             player2Name,
+            player1Id,
+            player2Id,
             battleType: player2Id === 'bot' ? 'bot' : 'player-vs-player',
             result
         };

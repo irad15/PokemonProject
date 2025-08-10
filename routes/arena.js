@@ -69,6 +69,12 @@ const {
     getBattleData
 } = require('../utils/arenaLogic');
 
+// Helper function to get user favorites (reduces code duplication)
+const getUserFavorites = (userId) => {
+    const { loadUserFavorites } = require('./favorites');
+    return loadUserFavorites(userId);
+};
+
 
 
 
@@ -77,9 +83,7 @@ router.get('/api/arena/status', requireAuth, (req, res) => {
     try {
         const userId = req.session.userId;
         
-        // Import loadUserFavorites from favorites route
-        const { loadUserFavorites } = require('./favorites');
-        const favorites = loadUserFavorites(userId);
+        const favorites = getUserFavorites(userId);
         
         const status = getArenaStatus(userId, favorites);
         res.json(status);
@@ -93,9 +97,7 @@ router.post('/api/arena/battle/bot', requireAuth, (req, res) => {
     try {
         const userId = req.session.userId;
         
-        // Import loadUserFavorites from favorites route
-        const { loadUserFavorites } = require('./favorites');
-        const favorites = loadUserFavorites(userId);
+        const favorites = getUserFavorites(userId);
         
         // Validate battle eligibility
         const errors = validateBattleEligibility(userId, favorites);
@@ -121,9 +123,7 @@ router.post('/api/arena/battle/player', requireAuth, (req, res) => {
     try {
         const userId = req.session.userId;
         
-        // Import loadUserFavorites from favorites route
-        const { loadUserFavorites } = require('./favorites');
-        const favorites = loadUserFavorites(userId);
+        const favorites = getUserFavorites(userId);
         
         // Validate battle eligibility
         const errors = validateBattleEligibility(userId, favorites);
@@ -216,12 +216,9 @@ router.post('/api/arena/send-challenge', requireAuth, async (req, res) => {
             return res.status(400).json({ error: 'Opponent is no longer online' });
         }
         
-        // Import loadUserFavorites from favorites route
-        const { loadUserFavorites } = require('./favorites');
-        
         // Get both users' favorites
-        const userFavorites = loadUserFavorites(userId);
-        const opponentFavorites = loadUserFavorites(opponentId);
+        const userFavorites = getUserFavorites(userId);
+        const opponentFavorites = getUserFavorites(opponentId);
         
         // Validate challenge eligibility
         const errors = validateChallengeEligibility(userId, opponentId, userFavorites, opponentFavorites);
@@ -331,12 +328,9 @@ router.post('/api/arena/accept-challenge', requireAuth, async (req, res) => {
         // Clear any declined challenge data for this challenge to prevent false alerts
         declinedChallenges.delete(challengeId);
         
-        // Import loadUserFavorites from favorites route
-        const { loadUserFavorites } = require('./favorites');
-        
         // Get both users' favorites
-        const challengerFavorites = loadUserFavorites(challenge.challengerId);
-        const opponentFavorites = loadUserFavorites(userId);
+        const challengerFavorites = getUserFavorites(challenge.challengerId);
+        const opponentFavorites = getUserFavorites(userId);
         
         // Randomly select Pokemon for each player
         const challengerPokemonId = challengerFavorites[Math.floor(Math.random() * challengerFavorites.length)].id;

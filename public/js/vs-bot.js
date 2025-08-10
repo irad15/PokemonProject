@@ -40,49 +40,23 @@ document.addEventListener('DOMContentLoaded', async () => {
 // Load user's favorite Pokemon
 async function loadUserFavorites() {
     try {
-        const response = await fetch('/api/favorites');
-        const favorites = await response.json();
+        const validPokemon = await loadUserFavoritesData();
+        userFavorites = validPokemon.map(pokemon => ({ id: pokemon.id, addedAt: pokemon.addedAt }));
         
-        if (response.ok) {
-            userFavorites = favorites;
-                    if (userFavorites.length === 0) {
+        if (userFavorites.length === 0) {
             showNoFavoritesMessage(favoritesGrid);
         } else {
             displayFavorites();
         }
-        } else {
-            alert('Failed to load favorites. Please try again.');
-        }
     } catch (error) {
-        console.error('Error loading favorites:', error);
-        alert('Failed to load favorites. Please try again.');
+        handleApiError(error, 'load favorites');
     }
 }
 
 // Display favorites in grid format
 async function displayFavorites() {
     try {
-        // Fetch full Pokemon data for each favorite
-        const pokemonPromises = userFavorites.map(async (favorite) => {
-            try {
-                const pokemon = await fetchJson(`${API_BASE_URL}pokemon/${favorite.id}`);
-                return {
-                    id: pokemon.id,
-                    name: formatPokemonName(pokemon.name),
-                    sprites: pokemon.sprites,
-                    types: pokemon.types.map(t => t.type.name),
-                    abilities: pokemon.abilities.map(a => a.ability.name),
-                    stats: pokemon.stats,
-                    addedAt: favorite.addedAt
-                };
-            } catch (error) {
-                console.error(`Error fetching Pokemon ${favorite.id}:`, error);
-                return null;
-            }
-        });
-        
-        const pokemonList = await Promise.all(pokemonPromises);
-        const validPokemon = pokemonList.filter(pokemon => pokemon !== null);
+        const validPokemon = await loadUserFavoritesData();
         
         if (validPokemon.length === 0) {
             showNoFavoritesMessage(favoritesGrid);
@@ -103,8 +77,7 @@ async function displayFavorites() {
         `).join('');
         
     } catch (error) {
-        console.error('Error displaying favorites:', error);
-        alert('Failed to display favorites. Please try again.');
+        handleApiError(error, 'display favorites');
     }
 }
 
