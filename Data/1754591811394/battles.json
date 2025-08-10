@@ -1,132 +1,93 @@
 {
   "battles": [
     {
-      "timestamp": 1754687740488,
-      "type": "player-vs-player",
-      "opponent": "Irad",
-      "details": {
-        "myPokemon": {
-          "name": "bulbasaur",
-          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png",
-          "score": 68.69565907657892
-        },
-        "opponentPokemon": {
-          "name": "blastoise",
-          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/9.png",
-          "score": 69.79687554928206
-        },
-        "opponentName": "Irad",
-        "result": "lost"
-      }
-    },
-    {
-      "timestamp": 1754687779873,
-      "type": "player-vs-player",
-      "opponent": "Irad",
-      "details": {
-        "myPokemon": {
-          "name": "bulbasaur",
-          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png",
-          "score": 68.67757270541281
-        },
-        "opponentPokemon": {
-          "name": "blastoise",
-          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/9.png",
-          "score": 69.74010662526236
-        },
-        "opponentName": "Irad",
-        "result": "lost"
-      }
-    },
-    {
-      "timestamp": 1754833833863,
-      "type": "player-vs-player",
-      "opponent": "Irada",
-      "details": {
-        "myPokemon": {
-          "name": "bulbasaur",
-          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png",
-          "score": 38.33055617727803
-        },
-        "opponentPokemon": {
-          "name": "rapidash",
-          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/78.png",
-          "score": 125.48440247827892
-        },
-        "opponentName": "Irada",
-        "result": "lost"
-      }
-    },
-    {
-      "timestamp": 1754833852872,
-      "type": "player-vs-player",
-      "opponent": "Irada",
-      "details": {
-        "myPokemon": {
-          "name": "bulbasaur",
-          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png",
-          "score": 39.50288634633746
-        },
-        "opponentPokemon": {
-          "name": "rapidash",
-          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/78.png",
-          "score": 125.73463633376471
-        },
-        "opponentName": "Irada",
-        "result": "lost"
-      }
-    },
-    {
-      "timestamp": 1754835287612,
-      "type": "bot",
-      "opponent": "Bot",
-      "details": {
-        "myPokemon": {
-          "name": "bulbasaur",
-          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png",
-          "score": 37.906246213894185
-        },
-        "opponentPokemon": {
-          "name": "nymble",
-          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/919.png",
-          "score": 42.32468100356248
-        },
-        "result": "lost"
-      }
-    },
-    {
-      "timestamp": 1754835332780,
-      "type": "bot",
-      "opponent": "Bot",
-      "details": {
-        "myPokemon": {
-          "name": "mewtwo",
-          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/150.png",
-          "score": 108.53580938038091
-        },
-        "opponentPokemon": {
-          "name": "graveler",
-          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/75.png",
-          "score": 82.102101221761
-        },
-        "result": "won"
-      }
-    },
-    {
-      "timestamp": 1754835389183,
+      "timestamp": 1754838767845,
       "type": "bot",
       "opponent": "Bot",
       "details": {
         "myPokemon": {
           "name": "magikarp",
           "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/129.png",
-          "score": 29.384255500574998
+          "score": 29.347935201303976
         },
         "opponentPokemon": {
-          "name": "manectric",
-          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/310.png",
-          "score": 104.37166472121322
+          "name": "beedrill",
+          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/15.png",
+          "score": 71.14643339537321
         },
+        "result": "lost"
+      }
+    },
+    {
+      "timestamp": 1754838780502,
+      "type": "bot",
+      "opponent": "Bot",
+      "details": {
+        "myPokemon": {
+          "name": "magikarp",
+          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/129.png",
+          "score": 27.32541706372347
+        },
+        "opponentPokemon": {
+          "name": "slowking",
+          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/199.png",
+          "score": 63.784509807315274
+        },
+        "result": "lost"
+      }
+    },
+    {
+      "timestamp": 1754838833989,
+      "type": "bot",
+      "opponent": "Bot",
+      "details": {
+        "myPokemon": {
+          "name": "mewtwo",
+          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/150.png",
+          "score": 151.593259836982
+        },
+        "opponentPokemon": {
+          "name": "emboar",
+          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/500.png",
+          "score": 78.94613208256345
+        },
+        "result": "won"
+      }
+    },
+    {
+      "timestamp": 1754838856114,
+      "type": "bot",
+      "opponent": "Bot",
+      "details": {
+        "myPokemon": {
+          "name": "bulbasaur",
+          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png",
+          "score": 38.664696551767065
+        },
+        "opponentPokemon": {
+          "name": "raging-bolt",
+          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1021.png",
+          "score": 79.11651802038845
+        },
+        "result": "lost"
+      }
+    },
+    {
+      "timestamp": 1754839657166,
+      "type": "player-vs-player",
+      "opponent": "iradisan",
+      "details": {
+        "myPokemon": {
+          "name": "mewtwo",
+          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/150.png",
+          "score": 85.61608159484462
+        },
+        "opponentPokemon": {
+          "name": "mewtwo",
+          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/150.png",
+          "score": 86.2971187507097
+        },
+        "opponentName": "iradisan",
         "result": "lost"
       }
     }

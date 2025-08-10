@@ -1,225 +1,94 @@
 {
   "battles": [
     {
-      "timestamp": 1754686082977,
+      "timestamp": 1754840174996,
       "type": "bot",
       "opponent": "Bot",
       "details": {
         "myPokemon": {
           "name": "blastoise",
           "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/9.png",
-          "score": 84.76906581009129
+          "score": 69.5488566088485
         },
         "opponentPokemon": {
-          "name": "fezandipiti",
-          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1016.png",
-          "score": 89.27616281598601
+          "name": "shroomish",
+          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/285.png",
+          "score": 66.93116407563018
         },
-        "result": "lost"
+        "result": "won"
       }
     },
     {
-      "timestamp": 1754686687677,
-      "type": "bot",
-      "opponent": "Bot",
+      "timestamp": 1754847720291,
+      "type": "player-vs-player",
+      "opponent": "IradFive",
+      "details": {
+        "myPokemon": {
+          "name": "venusaur",
+          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/3.png",
+          "score": 114.73300010606266
+        },
+        "opponentPokemon": {
+          "name": "magikarp",
+          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/129.png",
+          "score": 27.821570599271674
+        },
+        "opponentName": "IradFive",
+        "result": "won"
+      }
+    },
+    {
+      "timestamp": 1754847853690,
+      "type": "player-vs-player",
+      "opponent": "IradFive",
       "details": {
         "myPokemon": {
           "name": "blastoise",
           "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/9.png",
-          "score": 85.8806085879027
+          "score": 68.11880839928817
         },
         "opponentPokemon": {
-          "name": "slaking",
-          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/289.png",
-          "score": 139.31375935099615
+          "name": "magikarp",
+          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/129.png",
+          "score": 28.52877149855418
         },
-        "result": "lost"
-      }
-    },
-    {
-      "timestamp": 1754687315023,
-      "type": "player-vs-player",
-      "opponent": "Irada",
-      "details": {
-        "myPokemon": {
-          "name": "blastoise",
-          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/9.png",
-          "score": 184.74979735073703
-        },
-        "opponentPokemon": {
-          "name": "onix",
-          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/95.png",
-          "score": 68.10644271758468
-        },
-        "opponentName": "Irada",
+        "opponentName": "IradFive",
         "result": "won"
       }
     },
     {
-      "timestamp": 1754687336935,
-      "type": "player-vs-player",
-      "opponent": "Irada",
-      "details": {
-        "myPokemon": {
-          "name": "donphan",
-          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/232.png",
-          "score": 152.11099834615132
-        },
-        "opponentPokemon": {
-          "name": "onix",
-          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/95.png",
-          "score": 60.21448686219243
-        },
-        "opponentName": "Irada",
-        "result": "won"
-      }
-    },
-    {
-      "timestamp": 1754687361306,
-      "type": "player-vs-player",
-      "opponent": "Irada",
-      "details": {
-        "myPokemon": {
-          "name": "blastoise",
-          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/9.png",
-          "score": 186.01105270528362
-        },
-        "opponentPokemon": {
-          "name": "onix",
-          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/95.png",
-          "score": 68.3596117732651
-        },
-        "opponentName": "Irada",
-        "result": "won"
-      }
-    },
-    {
-      "timestamp": 1754687740489,
-      "type": "player-vs-player",
-      "opponent": "Irados",
-      "details": {
-        "myPokemon": {
-          "name": "blastoise",
-          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/9.png",
-          "score": 69.79687554928206
-        },
-        "opponentPokemon": {
-          "name": "bulbasaur",
-          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png",
-          "score": 68.69565907657892
-        },
-        "opponentName": "Irados",
-        "result": "won"
-      }
-    },
-    {
-      "timestamp": 1754687779873,
-      "type": "player-vs-player",
-      "opponent": "Irados",
-      "details": {
-        "myPokemon": {
-          "name": "blastoise",
-          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/9.png",
-          "score": 69.74010662526236
-        },
-        "opponentPokemon": {
-          "name": "bulbasaur",
-          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png",
-          "score": 68.67757270541281
-        },
-        "opponentName": "Irados",
-        "result": "won"
-      }
-    },
-    {
-      "timestamp": 1754831870589,
-      "type": "bot",
-      "opponent": "Bot",
-      "details": {
-        "myPokemon": {
-          "name": "misdreavus",
-          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/200.png",
-          "score": 51.872347845668756
-        },
-        "opponentPokemon": {
-          "name": "yveltal",
-          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/717.png",
-          "score": 172.84525072802882
-        },
-        "result": "lost"
-      }
-    },
-    {
-      "timestamp": 1754831997166,
-      "type": "player-vs-player",
-      "opponent": "Irada",
-      "details": {
-        "myPokemon": {
-          "name": "rattata",
-          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/19.png",
-          "score": 34.94858550887258
-        },
-        "opponentPokemon": {
-          "name": "onix",
-          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/95.png",
-          "score": 68.20513121174139
-        },
-        "opponentName": "Irada",
-        "result": "lost"
-      }
-    },
-    {
-      "timestamp": 1754832342770,
-      "type": "bot",
-      "opponent": "Bot",
-      "details": {
-        "myPokemon": {
-          "name": "donphan",
-          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/232.png",
-          "score": 81.73291915810097
-        },
-        "opponentPokemon": {
-          "name": "shedinja",
-          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/292.png",
-          "score": 50.13403394866097
-        },
-        "result": "won"
-      }
-    },
-    {
-      "timestamp": 1754833129542,
+      "timestamp": 1754847875007,
       "type": "bot",
       "opponent": "Bot",
       "details": {
         "myPokemon": {
           "name": "venusaur",
           "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/3.png",
-          "score": 82.87425271165367
+          "score": 66.98428612596737
         },
         "opponentPokemon": {
-          "name": "maschiff",
-          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/942.png",
-          "score": 66.65657286254549
+          "name": "dodrio",
+          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/85.png",
+          "score": 131.7502528723469
         },
-        "result": "won"
+        "result": "lost"
       }
     },
     {
-      "timestamp": 1754833254660,
-      "type": "player-vs-player",
-      "opponent": "Irada",
+      "timestamp": 1754847921197,
+      "type": "bot",
+      "opponent": "Bot",
       "details": {
         "myPokemon": {
-          "name": "misdreavus",
-          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/200.png",
-          "score": 63.94698740247367
+          "name": "mudsdale",
+          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/750.png",
+          "score": 78.70176494508085
         },
         "opponentPokemon": {
-          "name": "onix",
-          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/95.png",
-          "score": 68.71765144391043
+          "name": "quilladin",
+          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/651.png",
+          "score": 106.13079088732478
         },
-        "opponentName": "Irada",
         "result": "lost"
       }
     }

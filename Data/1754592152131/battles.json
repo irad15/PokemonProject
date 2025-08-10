@@ -1,76 +1,57 @@
 {
   "battles": [
     {
-      "timestamp": 1754835534500,
+      "timestamp": 1754839120221,
       "type": "bot",
       "opponent": "Bot",
       "details": {
         "myPokemon": {
           "name": "mewtwo",
           "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/150.png",
-          "score": 152.60581086277787
+          "score": 107.37142124499692
         },
         "opponentPokemon": {
-          "name": "pancham",
-          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/674.png",
-          "score": 54.08916253428825
+          "name": "cacturne",
+          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/332.png",
+          "score": 131.38595165382617
+        },
+        "result": "lost"
+      }
+    },
+    {
+      "timestamp": 1754839597203,
+      "type": "bot",
+      "opponent": "Bot",
+      "details": {
+        "myPokemon": {
+          "name": "mewtwo",
+          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/150.png",
+          "score": 107.19305807096093
+        },
+        "opponentPokemon": {
+          "name": "oshawott",
+          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/501.png",
+          "score": 53.4491317219377
         },
         "result": "won"
       }
     },
     {
-      "timestamp": 1754835548981,
-      "type": "bot",
-      "opponent": "Bot",
-      "details": {
-        "myPokemon": {
-          "name": "magikarp",
-          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/129.png",
-          "score": 30.332530554750683
-        },
-        "opponentPokemon": {
-          "name": "patrat",
-          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/504.png",
-          "score": 48.30626099971297
-        },
-        "result": "lost"
-      }
-    },
-    {
-      "timestamp": 1754835611461,
+      "timestamp": 1754839657166,
       "type": "player-vs-player",
-      "opponent": "IradFive",
-      "details": {
-        "myPokemon": {
-          "name": "magikarp",
-          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/129.png",
-          "score": 27.354639516092192
-        },
-        "opponentPokemon": {
-          "name": "magikarp",
-          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/129.png",
-          "score": 27.8500088365392
-        },
-        "opponentName": "IradFive",
-        "result": "lost"
-      }
-    },
-    {
-      "timestamp": 1754835821961,
-      "type": "player-vs-player",
-      "opponent": "IradFive",
+      "opponent": "Irados",
       "details": {
         "myPokemon": {
           "name": "mewtwo",
           "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/150.png",
-          "score": 107.41800267250986
+          "score": 86.2971187507097
         },
         "opponentPokemon": {
-          "name": "magikarp",
-          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/129.png",
-          "score": 29.22898307687898
+          "name": "mewtwo",
+          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/150.png",
+          "score": 85.61608159484462
         },
-        "opponentName": "IradFive",
+        "opponentName": "Irados",
         "result": "won"
       }
     }
