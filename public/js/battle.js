@@ -216,23 +216,26 @@ function executeBattle() {
     if (player1Score > player2Score) {
         player1Card.classList.add('winner');
         player2Card.classList.add('loser');
-        // If player1 is the current user, show "You won!", otherwise show player1's name
+        // If player1 is the current user, show "You won!", otherwise show "You lost!" for player2
         if (isPlayer1CurrentUser) {
             winnerAnnouncement.textContent = 'You won!';
         } else {
-            winnerAnnouncement.textContent = `${battleData.player1Name} wins!`;
+            winnerAnnouncement.textContent = 'You lost!';
+            // Add lose styling for red color
+            battleResult.classList.add('lose');
+            winnerAnnouncement.classList.add('lose');
         }
     } else if (player2Score > player1Score) {
         player2Card.classList.add('winner');
         player1Card.classList.add('loser');
-        // If player1 is the current user, show "You lost!", otherwise show player2's name
+        // If player1 is the current user, show "You lost!", otherwise show "You won!" for player2
         if (isPlayer1CurrentUser) {
             winnerAnnouncement.textContent = 'You lost!';
             // Add lose styling for red color
             battleResult.classList.add('lose');
             winnerAnnouncement.classList.add('lose');
         } else {
-            winnerAnnouncement.textContent = `${battleData.player2Name} wins!`;
+            winnerAnnouncement.textContent = 'You won!';
         }
     } else {
         winnerAnnouncement.textContent = "It's a tie!";

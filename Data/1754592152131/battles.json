@@ -54,6 +54,43 @@
         "opponentName": "Irados",
         "result": "won"
       }
+    },
+    {
+      "timestamp": 1756466352157,
+      "type": "bot",
+      "opponent": "Bot",
+      "details": {
+        "myPokemon": {
+          "name": "kadabra",
+          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/64.png",
+          "score": 36.81605760195401
+        },
+        "opponentPokemon": {
+          "name": "cosmoem",
+          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/790.png",
+          "score": 50.25356525642129
+        },
+        "result": "lost"
+      }
+    },
+    {
+      "timestamp": 1756466473723,
+      "type": "player-vs-player",
+      "opponent": "Irada",
+      "details": {
+        "myPokemon": {
+          "name": "magikarp",
+          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/129.png",
+          "score": 34.11907893417319
+        },
+        "opponentPokemon": {
+          "name": "rapidash",
+          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/78.png",
+          "score": 64.88397227909681
+        },
+        "opponentName": "Irada",
+        "result": "lost"
+      }
     }
   ]
 }

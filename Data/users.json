@@ -30,5 +30,17 @@
     "firstName": "IradFive",
     "email": "Iradyaacoby@gmail.com5",
     "password": "$2b$10$GyBZaAXZcmvl4WGL5Zrdvu0N5sxogg./cko7gtaVG//6lwy7MUI4G"
+  },
+  {
+    "id": "1756465540321",
+    "firstName": "IradSix",
+    "email": "Iradyaacoby@gmail.com6",
+    "password": "$2b$10$Au1XLcIciUbiDxWlli8hder9ScT4/5VZAvipnK8AytdozIfla3qAe"
+  },
+  {
+    "id": "1756468450405",
+    "firstName": "IradSeven",
+    "email": "Iradyaacoby@gmail.com7",
+    "password": "$2b$10$KbJyS3OcegGPqTIXOPhILe1eVnAz5oAEx5s/5S8Jitf8f0pUw31le"
   }
 ]

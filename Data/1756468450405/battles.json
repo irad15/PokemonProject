@@ -1,0 +1,60 @@
+{
+  "battles": [
+    {
+      "timestamp": 1756468519492,
+      "type": "player-vs-player",
+      "opponent": "IradFive",
+      "details": {
+        "myPokemon": {
+          "name": "golem",
+          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/76.png",
+          "score": 102.99474114462068
+        },
+        "opponentPokemon": {
+          "name": "mewtwo",
+          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/150.png",
+          "score": 107.30090980817795
+        },
+        "opponentName": "IradFive",
+        "result": "lost"
+      }
+    },
+    {
+      "timestamp": 1756468691834,
+      "type": "bot",
+      "opponent": "Bot",
+      "details": {
+        "myPokemon": {
+          "name": "golem",
+          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/76.png",
+          "score": 79.60479663513155
+        },
+        "opponentPokemon": {
+          "name": "palpitoad",
+          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/536.png",
+          "score": 249.88541141684104
+        },
+        "result": "lost"
+      }
+    },
+    {
+      "timestamp": 1756468706977,
+      "type": "player-vs-player",
+      "opponent": "IradFive",
+      "details": {
+        "myPokemon": {
+          "name": "golem",
+          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/76.png",
+          "score": 103.94623851126062
+        },
+        "opponentPokemon": {
+          "name": "magikarp",
+          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/129.png",
+          "score": 42.593286892597
+        },
+        "opponentName": "IradFive",
+        "result": "won"
+      }
+    }
+  ]
+}

@@ -71,6 +71,44 @@
         "opponentName": "Irad",
         "result": "lost"
       }
+    },
+    {
+      "timestamp": 1756468519492,
+      "type": "player-vs-player",
+      "opponent": "IradSeven",
+      "details": {
+        "myPokemon": {
+          "name": "mewtwo",
+          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/150.png",
+          "score": 107.30090980817795
+        },
+        "opponentPokemon": {
+          "name": "golem",
+          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/76.png",
+          "score": 102.99474114462068
+        },
+        "opponentName": "IradSeven",
+        "result": "won"
+      }
+    },
+    {
+      "timestamp": 1756468706977,
+      "type": "player-vs-player",
+      "opponent": "IradSeven",
+      "details": {
+        "myPokemon": {
+          "name": "magikarp",
+          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/129.png",
+          "score": 42.593286892597
+        },
+        "opponentPokemon": {
+          "name": "golem",
+          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/76.png",
+          "score": 103.94623851126062
+        },
+        "opponentName": "IradSeven",
+        "result": "lost"
+      }
     }
   ]
 }

@@ -91,6 +91,44 @@
         },
         "result": "lost"
       }
+    },
+    {
+      "timestamp": 1756465644646,
+      "type": "player-vs-player",
+      "opponent": "IradSix",
+      "details": {
+        "myPokemon": {
+          "name": "mudsdale",
+          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/750.png",
+          "score": 105.1935672921428
+        },
+        "opponentPokemon": {
+          "name": "machamp",
+          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/68.png",
+          "score": 101.44007532279012
+        },
+        "opponentName": "IradSix",
+        "result": "won"
+      }
+    },
+    {
+      "timestamp": 1756465675936,
+      "type": "player-vs-player",
+      "opponent": "IradSix",
+      "details": {
+        "myPokemon": {
+          "name": "venusaur",
+          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/3.png",
+          "score": 81.66745319124166
+        },
+        "opponentPokemon": {
+          "name": "machoke",
+          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/67.png",
+          "score": 63.93426406010205
+        },
+        "opponentName": "IradSix",
+        "result": "won"
+      }
     }
   ]
 }

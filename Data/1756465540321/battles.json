@@ -1,0 +1,98 @@
+{
+  "battles": [
+    {
+      "timestamp": 1756465594280,
+      "type": "bot",
+      "opponent": "Bot",
+      "details": {
+        "myPokemon": {
+          "name": "machamp",
+          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/68.png",
+          "score": 76.05435217615
+        },
+        "opponentPokemon": {
+          "name": "illumise",
+          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/314.png",
+          "score": 52.790084973732924
+        },
+        "result": "won"
+      }
+    },
+    {
+      "timestamp": 1756465644647,
+      "type": "player-vs-player",
+      "opponent": "Irad",
+      "details": {
+        "myPokemon": {
+          "name": "machamp",
+          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/68.png",
+          "score": 101.44007532279012
+        },
+        "opponentPokemon": {
+          "name": "mudsdale",
+          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/750.png",
+          "score": 105.1935672921428
+        },
+        "opponentName": "Irad",
+        "result": "lost"
+      }
+    },
+    {
+      "timestamp": 1756465675936,
+      "type": "player-vs-player",
+      "opponent": "Irad",
+      "details": {
+        "myPokemon": {
+          "name": "machoke",
+          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/67.png",
+          "score": 63.93426406010205
+        },
+        "opponentPokemon": {
+          "name": "venusaur",
+          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/3.png",
+          "score": 81.66745319124166
+        },
+        "opponentName": "Irad",
+        "result": "lost"
+      }
+    },
+    {
+      "timestamp": 1756465713146,
+      "type": "player-vs-player",
+      "opponent": "Irados",
+      "details": {
+        "myPokemon": {
+          "name": "machamp",
+          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/68.png",
+          "score": 76.38927909900792
+        },
+        "opponentPokemon": {
+          "name": "mewtwo",
+          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/150.png",
+          "score": 151.64993555375156
+        },
+        "opponentName": "Irados",
+        "result": "lost"
+      }
+    },
+    {
+      "timestamp": 1756465753741,
+      "type": "player-vs-player",
+      "opponent": "Irados",
+      "details": {
+        "myPokemon": {
+          "name": "machamp",
+          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/68.png",
+          "score": 75.99542186732397
+        },
+        "opponentPokemon": {
+          "name": "mewtwo",
+          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/150.png",
+          "score": 151.490840833757
+        },
+        "opponentName": "Irados",
+        "result": "lost"
+      }
+    }
+  ]
+}

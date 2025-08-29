@@ -90,6 +90,62 @@
         "opponentName": "iradisan",
         "result": "lost"
       }
+    },
+    {
+      "timestamp": 1756465713144,
+      "type": "player-vs-player",
+      "opponent": "IradSix",
+      "details": {
+        "myPokemon": {
+          "name": "mewtwo",
+          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/150.png",
+          "score": 151.64993555375156
+        },
+        "opponentPokemon": {
+          "name": "machamp",
+          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/68.png",
+          "score": 76.38927909900792
+        },
+        "opponentName": "IradSix",
+        "result": "won"
+      }
+    },
+    {
+      "timestamp": 1756465753741,
+      "type": "player-vs-player",
+      "opponent": "IradSix",
+      "details": {
+        "myPokemon": {
+          "name": "mewtwo",
+          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/150.png",
+          "score": 151.490840833757
+        },
+        "opponentPokemon": {
+          "name": "machamp",
+          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/68.png",
+          "score": 75.99542186732397
+        },
+        "opponentName": "IradSix",
+        "result": "won"
+      }
+    },
+    {
+      "timestamp": 1756465786709,
+      "type": "bot",
+      "opponent": "Bot",
+      "details": {
+        "myPokemon": {
+          "name": "magikarp",
+          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/129.png",
+          "score": 29.13445900957236
+        },
+        "opponentPokemon": {
+          "name": "noctowl",
+          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/164.png",
+          "score": 68.73190056155258
+        },
+        "result": "lost"
+      }
     }
   ]
 }

@@ -49013,6 +49013,25 @@
         },
         "result": "won"
       }
+    },
+    {
+      "timestamp": 1756466473732,
+      "type": "player-vs-player",
+      "opponent": "iradisan",
+      "details": {
+        "myPokemon": {
+          "name": "rapidash",
+          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/78.png",
+          "score": 64.88397227909681
+        },
+        "opponentPokemon": {
+          "name": "magikarp",
+          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/129.png",
+          "score": 34.11907893417319
+        },
+        "opponentName": "iradisan",
+        "result": "won"
+      }
     }
   ]
 }
