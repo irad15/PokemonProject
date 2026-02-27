@@ -40,9 +40,3 @@ A web-based Pokemon battle and collection management system built with Node.js, 
 - **Frontend**: Vanilla JavaScript, HTML5, CSS3
 - **Database**: JSON file-based storage
 - **External APIs**: PokeAPI
-
-## Developer
-
-**Student**: Irad Yaacoby  
-**Course**: Web Development  
-**Year**: 2025
